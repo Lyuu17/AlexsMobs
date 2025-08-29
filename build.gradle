@@ -22,11 +22,11 @@ repositories{
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
     }
-    maven {
+    /*maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.dev"
-    }
+    }*/
     maven {
         name = "CurseMaven"
         url = "https://www.cursemaven.com"
@@ -60,6 +60,9 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 alexsmobs {
@@ -107,9 +110,6 @@ dependencies {
     minecraft 'net.neoforged:forge:1.20.1-47.1.65'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     implementation fg.deobf("curse.maven:citadel-331936:5633260")
-    compileOnly(fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}"))
-    runtimeOnly(fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}"))
 }
 
 
