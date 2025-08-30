@@ -1,0 +1,17 @@
+package com.github.alexthe666.alexsmobs.registry;
+
+import com.github.alexthe666.alexsmobs.AlexsMobs;
+import dev.architectury.registry.registries.DeferredRegister;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.enchantment.Enchantment;
+
+public class AMEnchantmentRegistry {
+
+    public static final DeferredRegister<Enchantment> DEF_REG = DeferredRegister.create(AlexsMobs.MOD_ID, Registries.ENCHANTMENT);
+//    public static final EnchantmentCategory STRADDLEBOARD = EnchantmentCategory.create("straddleboard", (item -> item instanceof ItemStraddleboard));
+//
+//    public static final RegistrySupplier<Enchantment> STRADDLE_JUMP = DEF_REG.register("straddle_jump", () -> new StraddleJumpEnchantment(Enchantment.Rarity.COMMON, STRADDLEBOARD, EquipmentSlot.MAINHAND));
+//    public static final RegistrySupplier<Enchantment> STRADDLE_LAVAWAX = DEF_REG.register("lavawax", () -> new StraddleEnchantment(Enchantment.Rarity.UNCOMMON, STRADDLEBOARD, EquipmentSlot.MAINHAND));
+//    public static final RegistrySupplier<Enchantment> STRADDLE_SERPENTFRIEND = DEF_REG.register("serpentfriend", () -> new StraddleEnchantment(Enchantment.Rarity.RARE, STRADDLEBOARD, EquipmentSlot.MAINHAND));
+//    public static final RegistrySupplier<Enchantment> STRADDLE_BOARDRETURN = DEF_REG.register("board_return", () -> new StraddleEnchantment(Enchantment.Rarity.UNCOMMON, STRADDLEBOARD, EquipmentSlot.MAINHAND));
+}

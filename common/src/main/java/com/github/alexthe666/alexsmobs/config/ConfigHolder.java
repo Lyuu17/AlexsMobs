@@ -1,0 +1,15 @@
+package com.github.alexthe666.alexsmobs.config;
+
+public final class ConfigHolder {
+
+//    public static final ForgeConfigSpec COMMON_SPEC;
+//    public static final CommonConfig COMMON;
+//
+//    static {
+//        {
+//            final Pair<CommonConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(CommonConfig::new);
+//            COMMON = specPair.getLeft();
+//            COMMON_SPEC = specPair.getRight();
+//        }
+//    }
+}
