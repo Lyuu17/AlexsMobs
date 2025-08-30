@@ -1,120 +1,125 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
-import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
-import net.minecraft.network.protocol.game.DebugPackets;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.PathFinder;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.PathNodeNavigator;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.server.network.DebugInfoSender;
+import net.minecraft.util.Util;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.RaycastContext;
+import net.minecraft.world.World;
 
-public class BoneSerpentPathNavigator extends PathNavigation {
+public class BoneSerpentPathNavigator extends EntityNavigation {
 
-    public BoneSerpentPathNavigator(Mob entitylivingIn, Level worldIn) {
+    public BoneSerpentPathNavigator(MobEntity entitylivingIn, World worldIn) {
         super(entitylivingIn, worldIn);
     }
 
-    protected PathFinder createPathFinder(int p_179679_1_) {
-        this.nodeEvaluator = new BoneSerpentNodeProcessor();
-        return new PathFinder(this.nodeEvaluator, p_179679_1_);
+    @Override
+    protected PathNodeNavigator createPathNodeNavigator(int range) {
+        this.nodeMaker = new BoneSerpentNodeProcessor();
+        return new PathNodeNavigator(this.nodeMaker, range);
     }
 
     /**
      * If on ground or swimming and can swim
      */
-    protected boolean canUpdatePath() {
+    @Override
+    protected boolean isAtValidPosition() {
         return true;
     }
 
-    protected Vec3 getTempMobPos() {
-        return new Vec3(this.mob.getX(), this.mob.getY(0.5D), this.mob.getZ());
+    @Override
+    protected Vec3d getPos() {
+        return new Vec3d(this.entity.getX(), this.entity.getBodyY(0.5D), this.entity.getZ());
     }
 
+    @Override
     public void tick() {
-        ++this.tick;
-        if (this.hasDelayedRecomputation) {
-            this.recomputePath();
+        ++this.tickCount;
+        if (this.inRecalculationCooldown) {
+            this.recalculatePath();
         }
 
-        if (!this.isDone()) {
-            if (this.canUpdatePath()) {
+        if (!this.isIdle()) {
+            if (this.isAtValidPosition()) {
                 this.followThePath();
-            } else if (this.path != null && !this.path.isDone()) {
-                Vec3 vector3d = this.path.getNextEntityPos(this.mob);
-                if (Mth.floor(this.mob.getX()) == Mth.floor(vector3d.x) && Mth.floor(this.mob.getY()) == Mth.floor(vector3d.y) && Mth.floor(this.mob.getZ()) == Mth.floor(vector3d.z)) {
-                    this.path.advance();
+            } else if (this.currentPath != null && !this.currentPath.isFinished()) {
+                var vector3d = this.currentPath.getNodePosition(this.entity);
+                if (MathHelper.floor(this.entity.getX()) == MathHelper.floor(vector3d.x) && MathHelper.floor(this.entity.getY()) == MathHelper.floor(vector3d.y) && MathHelper.floor(this.entity.getZ()) == MathHelper.floor(vector3d.z)) {
+                    this.currentPath.next();
                 }
             }
 
-            DebugPackets.sendPathFindingPacket(this.level, this.mob, this.path, this.maxDistanceToWaypoint);
-            if (!this.isDone()) {
-                Vec3 vector3d1 = this.path.getNextEntityPos(this.mob);
-                this.mob.getMoveControl().setWantedPosition(vector3d1.x, vector3d1.y, vector3d1.z, this.speedModifier);
+            DebugInfoSender.sendPathfindingData(this.world, this.entity, this.currentPath, this.nodeReachProximity);
+            if (!this.isIdle()) {
+                var vector3d1 = this.currentPath.getNodePosition(this.entity);
+                this.entity.getMoveControl().moveTo(vector3d1.x, vector3d1.y, vector3d1.z, this.speed);
             }
         }
     }
 
     protected void followThePath() {
-        if (this.path != null) {
-            Vec3 vector3d = this.getTempMobPos();
-            float f = this.mob.getBbWidth();
+        if (this.currentPath != null) {
+            var vector3d = this.getPos();
+            float f = this.entity.getWidth();
             float f1 = 3;
-            Vec3 vector3d1 = this.mob.getDeltaMovement();
+            var vector3d1 = this.entity.getVelocity();
             if (Math.abs(vector3d1.x) > 0.2D || Math.abs(vector3d1.z) > 0.2D) {
                 f1 = (float)((double)f1 * vector3d1.length() * 6.0D);
             }
 
             int i = 6;
-            Vec3 vector3d2 = Vec3.atBottomCenterOf(this.path.getNextNodePos());
-            if (Math.abs(this.mob.getX() - vector3d2.x) < (double)f1 && Math.abs(this.mob.getZ() - vector3d2.z) < (double)f1 && Math.abs(this.mob.getY() - vector3d2.y) < (double)(f1 * 2.0F)) {
-                this.path.advance();
+            var vector3d2 = Vec3d.ofBottomCenter(this.currentPath.getCurrentNodePos());
+            if (Math.abs(this.entity.getX() - vector3d2.x) < (double)f1 && Math.abs(this.entity.getZ() - vector3d2.z) < (double)f1 && Math.abs(this.entity.getY() - vector3d2.y) < (double)(f1 * 2.0F)) {
+                this.currentPath.next();
             }
 
-            for(int j = Math.min(this.path.getNextNodeIndex() + 6, this.path.getNodeCount() - 1); j > this.path.getNextNodeIndex(); --j) {
-                vector3d2 = this.path.getEntityPosAtNode(this.mob, j);
-                if (!(vector3d2.distanceToSqr(vector3d) > 36.0D) && this.canMoveDirectly(vector3d, vector3d2, 0, 0, 0)) {
-                    this.path.setNextNodeIndex(j);
+            for(int j = Math.min(this.currentPath.getCurrentNodeIndex() + 6, this.currentPath.getLength() - 1); j > this.currentPath.getCurrentNodeIndex(); --j) {
+                vector3d2 = this.currentPath.getNodePosition(this.entity, j);
+                if (!(vector3d2.squaredDistanceTo(vector3d) > 36.0D) && this.canPathDirectlyThrough(vector3d, vector3d2)) {
+                    this.currentPath.setCurrentNodeIndex(j);
                     break;
                 }
             }
 
-            this.doStuckDetection(vector3d);
+            this.checkTimeouts(vector3d);
         }
     }
 
-    protected void doStuckDetection(Vec3 positionVec3) {
-        if (this.tick - this.lastStuckCheck > 100) {
-            if (positionVec3.distanceToSqr(this.lastStuckCheckPos) < 2.25D) {
+    @Override
+    protected void checkTimeouts(Vec3d positionVec3) {
+        if (this.tickCount - this.pathStartTime > 100) {
+            if (positionVec3.squaredDistanceTo(this.pathStartPos) < 2.25D) {
                 this.stop();
             }
 
-            this.lastStuckCheck = this.tick;
-            this.lastStuckCheckPos = positionVec3;
+            this.pathStartTime = this.tickCount;
+            this.pathStartPos = positionVec3;
         }
 
-        if (this.path != null && !this.path.isDone()) {
-            Vec3i vector3i = this.path.getNextNodePos();
-            if (vector3i.equals(this.timeoutCachedNode)) {
-                this.timeoutTimer += Util.getMillis() - this.lastTimeoutCheck;
+        if (this.currentPath != null && !this.currentPath.isFinished()) {
+            var vector3i = this.currentPath.getCurrentNodePos();
+            if (vector3i.equals(this.lastNodePosition)) {
+                this.currentNodeMs += Util.getMeasuringTimeMs() - this.lastActiveTickMs;
             } else {
-                this.timeoutCachedNode = vector3i;
-                double d0 = positionVec3.distanceTo(Vec3.atCenterOf(this.timeoutCachedNode));
-                this.timeoutLimit = this.mob.getSpeed() > 0.0F ? d0 / (double)this.mob.getSpeed() * 100.0D : 0.0D;
+                this.lastNodePosition = vector3i;
+                double d0 = positionVec3.distanceTo(Vec3d.ofCenter(this.lastNodePosition));
+                this.currentNodeTimeout = this.entity.getMovementSpeed() > 0.0F ? d0 / (double)this.entity.getMovementSpeed() * 100.0D : 0.0D;
             }
 
-            if (this.timeoutLimit > 0.0D && (double)this.timeoutTimer > this.timeoutLimit * 2.0D) {
-                this.timeoutCachedNode = Vec3i.ZERO;
-                this.timeoutTimer = 0L;
-                this.timeoutLimit = 0.0D;
+            if (this.currentNodeTimeout > 0.0D && (double)this.currentNodeMs > this.currentNodeTimeout * 2.0D) {
+                this.lastNodePosition = Vec3i.ZERO;
+                this.currentNodeMs = 0L;
+                this.currentNodeTimeout = 0.0D;
                 this.stop();
             }
 
-            this.lastTimeoutCheck = Util.getMillis();
+            this.lastActiveTickMs = Util.getMeasuringTimeMs();
         }
 
     }
@@ -122,15 +127,18 @@ public class BoneSerpentPathNavigator extends PathNavigation {
     /**
      * Checks if the specified entity can safely walk to the specified location.
      */
-    protected boolean canMoveDirectly(Vec3 posVec31, Vec3 posVec32, int sizeX, int sizeY, int sizeZ) {
-        Vec3 vector3d = new Vec3(posVec32.x, posVec32.y + (double)this.mob.getBbHeight() * 0.5D, posVec32.z);
-        return this.level.clip(new ClipContext(posVec31, vector3d, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this.mob)).getType() == HitResult.Type.MISS;
+    @Override
+    protected boolean canPathDirectlyThrough(Vec3d posVec31, Vec3d posVec32) {
+        var vector3d = new Vec3d(posVec32.x, posVec32.y + (double)this.entity.getHeight() * 0.5D, posVec32.z);
+        return this.world.raycast(new RaycastContext(posVec31, vector3d, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this.entity)).getType() == HitResult.Type.MISS;
     }
 
-    public boolean isStableDestination(BlockPos pos) {
-        return !this.level.getBlockState(pos).isSolidRender(this.level, pos);
+    @Override
+    public boolean isValidPosition(BlockPos pos) {
+        return !this.world.getBlockState(pos).isOpaqueFullCube(this.world, pos);
     }
 
-    public void setCanFloat(boolean canSwim) {
+    @Override
+    public void setCanSwim(boolean canSwim) {
     }
 }

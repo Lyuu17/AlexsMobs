@@ -1,46 +1,45 @@
 package com.github.alexthe666.alexsmobs.misc;
 
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.critereon.*;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.advancement.criterion.AbstractCriterion;
+import net.minecraft.advancement.criterion.AbstractCriterionConditions;
+import net.minecraft.advancement.criterion.ConstructBeaconCriterion;
+import net.minecraft.predicate.NumberRange;
+import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
+import net.minecraft.predicate.entity.AdvancementEntityPredicateSerializer;
+import net.minecraft.predicate.entity.LootContextPredicate;
+import net.minecraft.util.Identifier;
 
-public class AMAdvancementTrigger extends SimpleCriterionTrigger<AMAdvancementTrigger.Instance> {
-    public final ResourceLocation resourceLocation;
+public class AMAdvancementTrigger extends AbstractCriterion<AMAdvancementTrigger.Instance> {
+    public final Identifier id;
 
-    public AMAdvancementTrigger(ResourceLocation resourceLocation) {
-        this.resourceLocation = resourceLocation;
-    }
-
-    public AMAdvancementTrigger.Instance createInstance(JsonObject p_230241_1_, ContextAwarePredicate p_230241_2_, DeserializationContext p_230241_3_) {
-        return new AMAdvancementTrigger.Instance(p_230241_2_, resourceLocation);
-    }
-
-    public void trigger(ServerPlayer p_192180_1_) {
-        this.trigger(p_192180_1_, (p_226308_1_) -> true);
+    public AMAdvancementTrigger(Identifier resourceLocation) {
+        this.id = resourceLocation;
     }
 
     @Override
-    public ResourceLocation getId() {
-        return resourceLocation;
+    public Identifier getId() {
+        return id;
     }
 
+    @Override
+    protected Instance conditionsFromJson(JsonObject obj, LootContextPredicate playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {
+        return new AMAdvancementTrigger.Instance(id, playerPredicate);
+    }
 
-    public static class Instance extends AbstractCriterionTriggerInstance {
+    public static class Instance extends AbstractCriterionConditions {
 
-        public Instance(ContextAwarePredicate p_i231507_1_, ResourceLocation res) {
-            super(res, p_i231507_1_);
+        public Instance(Identifier id, LootContextPredicate entity) {
+            super(id, entity);
         }
 
-        public static ConstructBeaconTrigger.TriggerInstance forLevel(MinMaxBounds.Ints p_203912_0_) {
-            return new ConstructBeaconTrigger.TriggerInstance(ContextAwarePredicate.ANY, p_203912_0_);
+        public static ConstructBeaconCriterion.Conditions forLevel(NumberRange.IntRange intRange) {
+            return new ConstructBeaconCriterion.Conditions(LootContextPredicate.EMPTY, intRange);
         }
 
-
-
-        public JsonObject serializeToJson(SerializationContext p_230240_1_) {
-            JsonObject lvt_2_1_ = super.serializeToJson(p_230240_1_);
-            return lvt_2_1_;
+        @Override
+        public JsonObject toJson(AdvancementEntityPredicateSerializer predicateSerializer) {
+            return super.toJson(predicateSerializer);
         }
     }
 }

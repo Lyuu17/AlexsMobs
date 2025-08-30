@@ -1,21 +1,16 @@
 package com.github.alexthe666.alexsmobs.entity;
 
-import com.github.alexthe666.alexsmobs.AlexsMobs;
-import com.github.alexthe666.alexsmobs.message.MessageHurtMultipart;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.PartEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public class EntityGiantSquidPart extends PartEntity<EntityGiantSquid> implements IHurtableMultipart {
@@ -26,8 +21,8 @@ public class EntityGiantSquidPart extends PartEntity<EntityGiantSquid> implement
 
     public EntityGiantSquidPart(EntityGiantSquid parent, float sizeX, float sizeY) {
         super(parent);
-        this.size = EntityDimensions.scalable(sizeX, sizeY);
-        this.refreshDimensions();
+        this.size = EntityDimensions.changing(sizeX, sizeY);
+        this.calculateDimensions();
     }
 
     public EntityGiantSquidPart(EntityGiantSquid parent, float sizeX, float sizeY, boolean collisionOnly) {
@@ -35,87 +30,95 @@ public class EntityGiantSquidPart extends PartEntity<EntityGiantSquid> implement
         this.collisionOnly = collisionOnly;
     }
 
-    public boolean fireImmune() {
+    @Override
+    public boolean isFireImmune() {
         return true;
     }
 
     @Override
-    public Vec3 getLeashOffset() {
-        return new Vec3(0.0D, (double)this.getEyeHeight() * 0.15F, (double)(this.getBbWidth() * 0.1F));
+    public Vec3d getLeashOffset() {
+        return new Vec3d(0.0D, (double)this.getStandingEyeHeight() * 0.15F, (double)(this.getWidth() * 0.1F));
     }
 
+    @Deprecated
     protected void collideWithNearbyEntities() {
 
     }
 
-    public InteractionResult interact(Player player, InteractionHand hand) {
-        if(this.level().isClientSide && this.getParent() != null){
+    @Override
+    public ActionResult interact(PlayerEntity player, Hand hand) {
+        if(this.getWorld().isClient && this.getParent() != null){
             //FIXME
 //            AlexsMobs.sendMSGToServer(new MessageInteractMultipart(this.getParent().getId(), hand == InteractionHand.OFF_HAND));
         }
-        return this.getParent() == null ? InteractionResult.PASS : this.getParent().mobInteract(player, hand);
+        return this.getParent() == null ? ActionResult.PASS : this.getParent().interactMob(player, hand);
     }
 
-    public boolean canBeCollidedWith() {
+    @Override
+    public boolean isCollidable() {
         return !collisionOnly;
     }
 
+    @Deprecated
     protected void collideWithEntity(Entity entityIn) {
         if(!collisionOnly){
-            entityIn.push(this);
+            entityIn.pushAwayFrom(this);
         }
     }
 
-    public boolean isPickable() {
+    @Override
+    public boolean canHit() {
         return !collisionOnly;
     }
 
     @Nullable
-    public ItemStack getPickResult() {
+    @Override
+    public ItemStack getPickBlockStack() {
         Entity parent = this.getParent();
-        return parent != null ? parent.getPickResult() : ItemStack.EMPTY;
+        return parent != null ? parent.getPickBlockStack() : ItemStack.EMPTY;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if(this.level().isClientSide && this.getParent() != null && !this.getParent().isInvulnerableTo(source) && !collisionOnly){
-            AlexsMobs.sendMSGToServer(new MessageHurtMultipart(this.getId(), this.getParent().getId(), amount, source.getMsgId()));
+    @Override
+    public boolean damage(DamageSource source, float amount) {
+        if(this.getWorld().isClient && this.getParent() != null && !this.getParent().isInvulnerableTo(source) && !collisionOnly){
+            //TODO
+//            AlexsMobs.sendMSGToServer(new MessageHurtMultipart(this.getId(), this.getParent().getId(), amount, source.getMsgId()));
         }
         return !collisionOnly && !this.isInvulnerableTo(source) && this.getParent().attackEntityPartFrom(this, source, amount);
     }
 
-    public boolean is(Entity entityIn) {
+    @Override
+    public boolean isPartOf(Entity entityIn) {
         return this == entityIn || this.getParent() == entityIn;
     }
 
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        throw new UnsupportedOperationException();
-    }
-
-    public EntityDimensions getDimensions(Pose poseIn) {
-        return this.size == null ? EntityDimensions.scalable(0, 0) : this.size.scale(scale);
+    @Override
+    public EntityDimensions getDimensions(EntityPose poseIn) {
+        return this.size == null ? EntityDimensions.changing(0, 0) : this.size.scaled(scale);
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void initDataTracker() {
 
     }
 
+    @Override
     public void tick(){
         super.tick();
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    protected void readCustomDataFromNbt(NbtCompound compound) {
 
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void writeCustomDataToNbt(NbtCompound compound) {
 
     }
 
     @Override
     public void onAttackedFromServer(LivingEntity parent, float damage, DamageSource damageSource) {
-        parent.hurt(damageSource, damage);
+        parent.damage(damageSource, damage);
     }
 }

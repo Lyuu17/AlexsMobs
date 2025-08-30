@@ -1,22 +1,25 @@
 package com.github.alexthe666.alexsmobs.enchantment;
 
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.entity.EquipmentSlot;
 
 public class StraddleJumpEnchantment extends StraddleEnchantment {
 
-    public StraddleJumpEnchantment(Rarity p_i46729_1_, EnchantmentCategory p_i46729_2_, EquipmentSlot... p_i46729_3_) {
-        super(p_i46729_1_, p_i46729_2_, p_i46729_3_);
+    public StraddleJumpEnchantment(Rarity rarity, EnchantmentTarget enchantmentTarget, EquipmentSlot... types) {
+        super(rarity, enchantmentTarget, types);
     }
 
-    public int getMinCost(int p_77321_1_) {
-        return 4 + (p_77321_1_ - 1) * 5;
+    @Override
+    public int getMinPower(int i) {
+        return 4 + (i - 1) * 5;
     }
 
-    public int getMaxCost(int p_223551_1_) {
-        return super.getMinCost(p_223551_1_) + 10;
+    @Override
+    public int getMaxPower(int i) {
+        return super.getMaxPower(i) + 10;
     }
 
+    @Override
     public int getMaxLevel() {
         return 3;
     }

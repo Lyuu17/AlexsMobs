@@ -2,24 +2,21 @@ package com.github.alexthe666.alexsmobs.entity.ai;
 
 import com.github.alexthe666.alexsmobs.entity.ITargetsDroppedItems;
 import com.google.common.base.Predicate;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.ai.goal.TrackTargetGoal;
+import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
-import java.util.Collections;
+
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 
-public class CreatureAITargetItems<T extends ItemEntity> extends TargetGoal {
-    protected final CreatureAITargetItems.Sorter theNearestAttackableTargetSorter;
+public class CreatureAITargetItems<T extends ItemEntity> extends TrackTargetGoal {
+    protected final Sorter theNearestAttackableTargetSorter;
     protected final Predicate<? super ItemEntity> targetEntitySelector;
     protected int executionChance;
     protected boolean mustUpdate;
@@ -29,65 +26,63 @@ public class CreatureAITargetItems<T extends ItemEntity> extends TargetGoal {
     private float radius = 9F;
     private int walkCooldown = 0;
 
-    public CreatureAITargetItems(PathfinderMob creature, boolean checkSight) {
+    public CreatureAITargetItems(PathAwareEntity creature, boolean checkSight) {
         this(creature, checkSight, false);
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+        this.setControls(EnumSet.of(Control.MOVE));
     }
 
-    public CreatureAITargetItems(PathfinderMob creature, boolean checkSight, int tickThreshold) {
+    public CreatureAITargetItems(PathAwareEntity creature, boolean checkSight, int tickThreshold) {
         this(creature, checkSight, false, tickThreshold, 9);
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+        this.setControls(EnumSet.of(Control.MOVE));
     }
 
-
-    public CreatureAITargetItems(PathfinderMob creature, boolean checkSight, boolean onlyNearby) {
+    public CreatureAITargetItems(PathAwareEntity creature, boolean checkSight, boolean onlyNearby) {
         this(creature, 10, checkSight, onlyNearby, null, 0);
     }
 
-    public CreatureAITargetItems(PathfinderMob creature, boolean checkSight, boolean onlyNearby, int tickThreshold, int radius) {
+    public CreatureAITargetItems(PathAwareEntity creature, boolean checkSight, boolean onlyNearby, int tickThreshold, int radius) {
         this(creature, 10, checkSight, onlyNearby, null, tickThreshold);
         this.radius = radius;
     }
 
-
-    public CreatureAITargetItems(PathfinderMob creature, int chance, boolean checkSight, boolean onlyNearby, @Nullable final Predicate<? super T> targetSelector, int ticksExisted) {
+    public CreatureAITargetItems(PathAwareEntity creature, int chance, boolean checkSight, boolean onlyNearby, @Nullable final Predicate<? super T> targetSelector, int ticksExisted) {
         super(creature, checkSight, onlyNearby);
         this.executionChance = chance;
         this.tickThreshold = ticksExisted;
         this.hunter = (ITargetsDroppedItems) creature;
-        this.theNearestAttackableTargetSorter = new CreatureAITargetItems.Sorter(creature);
-        this.targetEntitySelector = new Predicate<ItemEntity>() {
+        this.theNearestAttackableTargetSorter = new Sorter(creature);
+        this.targetEntitySelector = new Predicate<>() {
             @Override
             public boolean apply(@Nullable ItemEntity item) {
-                ItemStack stack = item.getItem();
-                return !stack.isEmpty()  && hunter.canTargetItem(stack) && item.tickCount > tickThreshold;
+                var stack = item.getStack();
+                return !stack.isEmpty() && hunter.canTargetItem(stack) && item.getItemAge() > tickThreshold;
             }
         };
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+        this.setControls(EnumSet.of(Control.MOVE));
     }
 
     @Override
-    public boolean canUse() {
-        if (this.mob.isPassenger() || mob.isVehicle() && mob.getControllingPassenger() != null) {
+    public boolean canStart() {
+        if (this.mob.hasVehicle() || mob.hasPassengers() && mob.getControllingPassenger() != null) {
             return false;
         }
-        if(!mob.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()){
+        if(!mob.getStackInHand(Hand.MAIN_HAND).isEmpty()){
             return false;
         }
         if (!this.mustUpdate) {
-            long worldTime = this.mob.level().getGameTime() % 10;
-            if (this.mob.getNoActionTime() >= 100 && worldTime != 0) {
+            long worldTime = this.mob.getWorld().getTime() % 10;
+            if (this.mob.getDespawnCounter() >= 100 && worldTime != 0) {
                 return false;
             }
             if (this.mob.getRandom().nextInt(this.executionChance) != 0 && worldTime != 0) {
                 return false;
             }
         }
-        List<ItemEntity> list = this.mob.level().getEntitiesOfClass(ItemEntity.class, this.getTargetableArea(this.getFollowDistance()), this.targetEntitySelector);
+        List<ItemEntity> list = this.mob.getWorld().getEntitiesByClass(ItemEntity.class, this.getTargetableArea(this.getFollowDistance()), this.targetEntitySelector);
         if (list.isEmpty()) {
             return false;
         } else {
-            Collections.sort(list, this.theNearestAttackableTargetSorter);
+            list.sort(this.theNearestAttackableTargetSorter);
             this.targetEntity = list.get(0);
             this.mustUpdate = false;
             this.hunter.onFindTarget(targetEntity);
@@ -100,10 +95,10 @@ public class CreatureAITargetItems<T extends ItemEntity> extends TargetGoal {
     }
 
 
-    protected AABB getTargetableArea(double targetDistance) {
-        Vec3 renderCenter = new Vec3(this.mob.getX() + 0.5, this.mob.getY()+ 0.5, this.mob.getZ() + 0.5D);
-        AABB aabb = new AABB(-radius, -radius, -radius, radius, radius, radius);
-        return aabb.move(renderCenter);
+    protected Box getTargetableArea(double targetDistance) {
+        var renderCenter = new Vec3d(this.mob.getX() + 0.5, this.mob.getY()+ 0.5, this.mob.getZ() + 0.5D);
+        var aabb = new Box(-radius, -radius, -radius, radius, radius, radius);
+        return aabb.offset(renderCenter);
     }
 
     @Override
@@ -113,10 +108,10 @@ public class CreatureAITargetItems<T extends ItemEntity> extends TargetGoal {
     }
 
     protected void moveTo(){
-        if(walkCooldown > 0){
+        if (walkCooldown > 0){
             walkCooldown--;
         }else{
-            this.mob.getNavigation().moveTo(this.targetEntity.getX(), this.targetEntity.getY(), this.targetEntity.getZ(), 1);
+            this.mob.getNavigation().startMovingTo(this.targetEntity.getX(), this.targetEntity.getY(), this.targetEntity.getZ(), 1);
             walkCooldown = 30 + this.mob.getRandom().nextInt(40);
         }
     }
@@ -136,12 +131,12 @@ public class CreatureAITargetItems<T extends ItemEntity> extends TargetGoal {
         }else{
             moveTo();
         }
-        if(targetEntity != null && this.mob.hasLineOfSight(targetEntity) && this.mob.getBbWidth() > 2D && this.mob.onGround()){
-            this.mob.getMoveControl().setWantedPosition(targetEntity.getX(), targetEntity.getY(), targetEntity.getZ(), 1);
+        if(targetEntity != null && this.mob.canSee(targetEntity) && this.mob.getWidth() > 2D && this.mob.isOnGround()){
+            this.mob.getMoveControl().moveTo(targetEntity.getX(), targetEntity.getY(), targetEntity.getZ(), 1);
         }
-        if (this.targetEntity != null && this.targetEntity.isAlive() && this.mob.distanceToSqr(this.targetEntity) < this.hunter.getMaxDistToItem() && mob.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
+        if (this.targetEntity != null && this.targetEntity.isAlive() && this.mob.squaredDistanceTo(this.targetEntity) < this.hunter.getMaxDistToItem() && mob.getStackInHand(Hand.MAIN_HAND).isEmpty()) {
             hunter.onGetItem(targetEntity);
-            this.targetEntity.getItem().shrink(1);
+            this.targetEntity.getStack().decrement(1);
             stop();
         }
     }
@@ -151,15 +146,15 @@ public class CreatureAITargetItems<T extends ItemEntity> extends TargetGoal {
     }
 
     @Override
-    public boolean canContinueToUse() {
-        boolean path = this.mob.getBbWidth() > 2D ||  !this.mob.getNavigation().isDone();
+    public boolean shouldContinue() {
+        boolean path = this.mob.getWidth() > 2D ||  !this.mob.getNavigation().isIdle();
         return path && targetEntity != null && targetEntity.isAlive();
     }
 
     public record Sorter(Entity theEntity) implements Comparator<Entity> {
         public int compare(Entity p_compare_1_, Entity p_compare_2_) {
-            final double d0 = this.theEntity.distanceToSqr(p_compare_1_);
-            final double d1 = this.theEntity.distanceToSqr(p_compare_2_);
+            final double d0 = this.theEntity.squaredDistanceTo(p_compare_1_);
+            final double d1 = this.theEntity.squaredDistanceTo(p_compare_2_);
             return Double.compare(d0, d1);
         }
     }

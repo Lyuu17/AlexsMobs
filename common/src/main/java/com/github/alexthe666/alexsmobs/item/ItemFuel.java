@@ -1,13 +1,13 @@
 package com.github.alexthe666.alexsmobs.item;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class ItemFuel extends Item {
 
     private final int burnTime;
 
-    public ItemFuel(Properties props, int burnTime) {
+    public ItemFuel(Item.Settings props, int burnTime) {
         super(props);
         this.burnTime = burnTime;
     }

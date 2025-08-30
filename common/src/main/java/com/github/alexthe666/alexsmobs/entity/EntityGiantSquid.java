@@ -9,63 +9,54 @@ import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMItemRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMTagRegistry;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.TryFindWaterGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.entity.animal.WaterAnimal;
-import net.minecraft.world.entity.monster.Guardian;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.control.YawAdjustingLookControl;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.ai.goal.LookAroundGoal;
+import net.minecraft.entity.ai.goal.MoveIntoWaterGoal;
+import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.PathNodeType;
+import net.minecraft.entity.ai.pathing.SwimNavigation;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.GuardianEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.WaterCreatureEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.*;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
-import java.util.List;
 
-public class EntityGiantSquid extends WaterAnimal {
+public class EntityGiantSquid extends WaterCreatureEntity {
 
-    private static final EntityDataAccessor<Float> SQUID_PITCH = SynchedEntityData.defineId(EntityGiantSquid.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> DEPRESSURIZATION = SynchedEntityData.defineId(EntityGiantSquid.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Boolean> OVERRIDE_BODYROT = SynchedEntityData.defineId(EntityGiantSquid.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> GRABBING = SynchedEntityData.defineId(EntityGiantSquid.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> CAPTURED = SynchedEntityData.defineId(EntityGiantSquid.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> BLUE = SynchedEntityData.defineId(EntityGiantSquid.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Integer> GRAB_ENTITY = SynchedEntityData.defineId(EntityGiantSquid.class, EntityDataSerializers.INT);
+    private static final TrackedData<Float> SQUID_PITCH = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.FLOAT);
+    private static final TrackedData<Float> DEPRESSURIZATION = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.FLOAT);
+    private static final TrackedData<Boolean> OVERRIDE_BODYROT = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> GRABBING = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> CAPTURED = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> BLUE = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Integer> GRAB_ENTITY = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.INTEGER);
     public final EntityGiantSquidPart mantlePart1;
     public final EntityGiantSquidPart mantlePart2;
     public final EntityGiantSquidPart mantlePart3;
@@ -91,9 +82,9 @@ public class EntityGiantSquid extends WaterAnimal {
     private int holdTime;
     private int resetCapturedStateIn;
 
-    protected EntityGiantSquid(EntityType type, Level level) {
+    public EntityGiantSquid(EntityType<? extends EntityGiantSquid> type, World level) {
         super(type, level);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
         this.mantlePart1 = new EntityGiantSquidPart(this, 0.9F, 0.9F);
         this.mantlePart2 = new EntityGiantSquidPart(this, 1.2F, 1.2F);
         this.mantlePart3 = new EntityGiantSquidPart(this, 0.45F, 0.45F);
@@ -105,108 +96,117 @@ public class EntityGiantSquid extends WaterAnimal {
         this.tentaclesPart6 = new EntityGiantSquidPart(this, 1.2F, 1.2F);
         this.mantleCollisionPart = new EntityGiantSquidPart(this, 2.9F, 2.9F, true);
         this.allParts = new EntityGiantSquidPart[]{this.mantlePart1, this.mantlePart2, this.mantlePart3, this.mantleCollisionPart, this.tentaclesPart1, this.tentaclesPart2, this.tentaclesPart3, this.tentaclesPart4, this.tentaclesPart5, this.tentaclesPart6};
-        this.lookControl = new SmoothSwimmingLookControl(this, 4);
+        this.lookControl = new YawAdjustingLookControl(this, 4);
         this.moveControl = new AquaticMoveController(this, 1.2F, 5);
     }
 
-
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    @Override
+    public boolean canSpawn(WorldAccess worldIn, SpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.giantSquidSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canGiantSquidSpawn(EntityType<EntityGiantSquid> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return reason == MobSpawnType.SPAWNER || iServerWorld.isWaterAt(pos) && iServerWorld.isWaterAt(pos.above());
+    public static <T extends MobEntity> boolean canGiantSquidSpawn(EntityType<T> entityType, ServerWorldAccess iServerWorld, SpawnReason reason, BlockPos pos, Random random) {
+        return reason == SpawnReason.SPAWNER || iServerWorld.isWater(pos) && iServerWorld.isWater(pos.up());
     }
 
-
-    @javax.annotation.Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        if (reason == MobSpawnType.NATURAL) {
+    @Nullable
+    @Override
+    public EntityData initialize(ServerWorldAccess worldIn, LocalDifficulty difficultyIn, SpawnReason reason, EntityData spawnDataIn, NbtCompound dataTag) {
+        if (reason == SpawnReason.NATURAL) {
             doInitialPosing(worldIn);
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.initialize(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
-    private void doInitialPosing(LevelAccessor world) {
-        BlockPos down = this.blockPosition();
+    private void doInitialPosing(ServerWorldAccess world) {
+        var down = this.getBlockPos();
         while(!world.getFluidState(down).isEmpty() && down.getY() > 1){
-            down = down.below();
+            down = down.down();
         }
         this.setPos(down.getX() + 0.5F, down.getY() + 3 + random.nextInt(3), down.getZ() + 0.5F);
     }
 
+    @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
         return AMSoundRegistry.GIANT_SQUID_HURT.get();
     }
 
+    @Override
     protected SoundEvent getDeathSound() {
         return AMSoundRegistry.GIANT_SQUID_HURT.get();
     }
 
-
-    public static AttributeSupplier.Builder bakeAttributes() {
-        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 38.0D).add(Attributes.ATTACK_DAMAGE, 8.0D).add(Attributes.MOVEMENT_SPEED, 0.25F);
+    public static DefaultAttributeContainer.Builder createAttributes() {
+        return MobEntity.createLivingAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 38.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 8.0D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25F);
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SQUID_PITCH, 0F);
-        this.entityData.define(OVERRIDE_BODYROT, false);
-        this.entityData.define(DEPRESSURIZATION, 0F);
-        this.entityData.define(GRABBING, false);
-        this.entityData.define(CAPTURED, false);
-        this.entityData.define(BLUE, false);
-        this.entityData.define(GRAB_ENTITY, -1);
+    protected void initDataTracker() {
+        super.initDataTracker();
+        this.dataTracker.startTracking(SQUID_PITCH, 0F);
+        this.dataTracker.startTracking(OVERRIDE_BODYROT, false);
+        this.dataTracker.startTracking(DEPRESSURIZATION, 0F);
+        this.dataTracker.startTracking(GRABBING, false);
+        this.dataTracker.startTracking(CAPTURED, false);
+        this.dataTracker.startTracking(BLUE, false);
+        this.dataTracker.startTracking(GRAB_ENTITY, -1);
     }
 
     @Nullable
     public Entity getGrabbedEntity() {
-        if (!this.level().isClientSide || this.entityData.get(GRAB_ENTITY) == -1) {
+        if (!this.getWorld().isClient || this.dataTracker.get(GRAB_ENTITY) == -1) {
             return this.getTarget();
         } else {
-            return this.level().getEntity(this.entityData.get(GRAB_ENTITY));
+            return this.getWorld().getEntityById(this.dataTracker.get(GRAB_ENTITY));
         }
     }
 
-
-    public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-        Item item = itemstack.getItem();
-        return super.mobInteract(player, hand);
+    @Override
+    public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        var itemstack = player.getStackInHand(hand);
+        var item = itemstack.getItem();
+        return super.interactMob(player, hand);
     }
 
-    protected PathNavigation createNavigation(Level worldIn) {
-        return new WaterBoundPathNavigation(this, worldIn);
+    @Override
+    protected EntityNavigation createNavigation(World worldIn) {
+        return new SwimNavigation(this, worldIn);
     }
 
-
-    protected void registerGoals() {
-        this.goalSelector.addGoal(1, new TryFindWaterGoal(this));
-        this.goalSelector.addGoal(1, new AIAvoidWhales());
-        this.goalSelector.addGoal(2, new AIMelee());
-        this.goalSelector.addGoal(3, new AIDeepwaterSwimming());
-        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, EntityCachalotWhale.class)));
-        this.targetSelector.addGoal(2, new EntityAINearestTarget3D(this, Guardian.class, 20, true, true, null) {
-            public boolean canUse() {
-                return super.canUse();
+    @Override
+    protected void initGoals() {
+        this.goalSelector.add(1, new MoveIntoWaterGoal(this));
+        this.goalSelector.add(1, new AIAvoidWhales());
+        this.goalSelector.add(2, new AIMelee());
+        this.goalSelector.add(3, new AIDeepwaterSwimming());
+        this.goalSelector.add(5, new LookAroundGoal(this));
+        this.targetSelector.add(1, (new RevengeGoal(this, EntityCachalotWhale.class)));
+        this.targetSelector.add(2, new EntityAINearestTarget3D<>(this, GuardianEntity.class, 20, true, true, null) {
+            @Override
+            public boolean canStart() {
+                return super.canStart();
             }
         });
-        this.targetSelector.addGoal(3, new EntityAINearestTarget3D(this, LivingEntity.class, 70, false, true, AMEntityRegistry.buildPredicateFromTag(AMTagRegistry.GIANT_SQUID_TARGETS)) {
-            public boolean canUse() {
-                return  !EntityGiantSquid.this.isInWaterOrBubble() && !EntityGiantSquid.this.isCaptured() && super.canUse();
+        this.targetSelector.add(3, new EntityAINearestTarget3D<>(this, LivingEntity.class, 70, false, true, AMEntityRegistry.buildPredicateFromTag(AMTagRegistry.GIANT_SQUID_TARGETS)) {
+            @Override
+            public boolean canStart() {
+                return  !EntityGiantSquid.this.isInsideWaterOrBubbleColumn() && !EntityGiantSquid.this.isCaptured() && super.canStart();
             }
         });
     }
 
-    public void aiStep() {
-        super.aiStep();
-        if (!this.isNoAi()) {
+    @Override
+    public void tickMovement() {
+        super.tickMovement();
+        if (!this.isAiDisabled()) {
             if (this.ringBufferIndex < 0) {
                 //initial population of buffer
                 for (int i = 0; i < this.ringBuffer.length; ++i) {
-                    this.ringBuffer[i][0] = 180 + this.getYRot();
+                    this.ringBuffer[i][0] = 180 + this.getYaw();
                     this.ringBuffer[i][1] = this.getSquidPitch();
                 }
             }
@@ -214,27 +214,28 @@ public class EntityGiantSquid extends WaterAnimal {
             if (this.ringBufferIndex == this.ringBuffer.length) {
                 this.ringBufferIndex = 0;
             }
-            this.ringBuffer[this.ringBufferIndex][0] = this.yBodyRot;
+            this.ringBuffer[this.ringBufferIndex][0] = this.bodyYaw;
             this.ringBuffer[this.ringBufferIndex][1] = this.getSquidPitch();
         }
     }
 
+    @Override
     public void tick() {
         super.tick();
-        if(this.tickCount % 100 == 0){
+        if(this.age % 100 == 0){
             this.heal(2);
         }
-        float f = Mth.wrapDegrees(180 + this.getYRot());
-        this.yBodyRot = rotlerp(this.yBodyRot, f, 180);
+        float f = MathHelper.wrapDegrees(180 + this.getYaw());
+        this.bodyYaw = rotlerp(this.bodyYaw, f, 180);
         prevSquidPitch = getSquidPitch();
         prevDepressurization = getDepressurization();
         prevDryProgress = dryProgress;
         prevGrabProgress = grabProgress;
         prevCapturedProgress = capturedProgress;
-        if (!this.isInWater() && dryProgress < 5F) {
+        if (!this.isTouchingWater() && dryProgress < 5F) {
             dryProgress++;
         }
-        if (this.isInWater() && dryProgress > 0F) {
+        if (this.isTouchingWater() && dryProgress > 0F) {
             dryProgress--;
         }
 
@@ -255,19 +256,19 @@ public class EntityGiantSquid extends WaterAnimal {
         }
 
         if (this.isGrabbing()) {
-            Entity target = getGrabbedEntity();
-            if(!this.level().isClientSide && target != null){
-                this.entityData.set(GRAB_ENTITY, target.getId());
+            var target = getGrabbedEntity();
+            if(!this.getWorld().isClient && target != null){
+                this.dataTracker.set(GRAB_ENTITY, target.getId());
                 if (holdTime % 20 == 0 && holdTime > 30) {
-                    target.hurt(this.damageSources().mobAttack(this), 3 + random.nextInt(5));
+                    target.damage(this.getDamageSources().mobAttack(this), 3 + random.nextInt(5));
                 }
             }
             if (target != null && target.isAlive()) {
-                this.setXRot(0);
+                this.setPitch(0);
                 float invert = 1F - grabProgress * 0.2F;
-                Vec3 extraVec = new Vec3(0, 0, 2F + invert * 7F).xRot(-this.getXRot() * Mth.DEG_TO_RAD).yRot(-this.yBodyRot * Mth.DEG_TO_RAD);
-                Vec3 minus = new Vec3(this.getX() + extraVec.x - target.getX(), this.getY() + extraVec.y - target.getY(), this.getZ() + extraVec.z - target.getZ());
-                target.setDeltaMovement(minus);
+                var extraVec = new Vec3d(0, 0, 2F + invert * 7F).rotateX(-this.getPitch() * MathHelper.RADIANS_PER_DEGREE).rotateY(-this.bodyYaw * MathHelper.RADIANS_PER_DEGREE);
+                var minus = new Vec3d(this.getX() + extraVec.x - target.getX(), this.getY() + extraVec.y - target.getY(), this.getZ() + extraVec.z - target.getZ());
+                target.setVelocity(minus);
             }
             holdTime++;
             if (holdTime > 1000) {
@@ -277,14 +278,14 @@ public class EntityGiantSquid extends WaterAnimal {
         } else {
             holdTime = 0;
         }
-        if (!this.isNoAi()) {
-            Vec3[] avector3d = new Vec3[this.allParts.length];
+        if (!this.isAiDisabled()) {
+            var avector3d = new Vec3d[this.allParts.length];
             for (int j = 0; j < this.allParts.length; ++j) {
                 this.allParts[j].collideWithNearbyEntities();
-                avector3d[j] = new Vec3(this.allParts[j].getX(), this.allParts[j].getY(), this.allParts[j].getZ());
+                avector3d[j] = new Vec3d(this.allParts[j].getX(), this.allParts[j].getY(), this.allParts[j].getZ());
             }
-            final float pitch = this.getXRot() * Mth.DEG_TO_RAD * 0.8F;
-            this.mantleCollisionPart.setPos(this.getX(), this.getY() - ((this.mantleCollisionPart.getBbHeight() - this.getEyeHeight()) * 0.5F) * (1F - dryProgress * 0.2F), this.getZ());
+            final float pitch = this.getPitch() * MathHelper.RADIANS_PER_DEGREE * 0.8F;
+            this.mantleCollisionPart.setPos(this.getX(), this.getY() - ((this.mantleCollisionPart.getHeight() - this.getStandingEyeHeight()) * 0.5F) * (1F - dryProgress * 0.2F), this.getZ());
             this.setPartPositionFromBuffer(this.mantlePart1, pitch, 0.9F, 0);
             this.setPartPositionFromBuffer(this.mantlePart2, pitch, 1.6F, 0);
             this.setPartPositionFromBuffer(this.mantlePart3, pitch, 2.45F, 0);
@@ -294,28 +295,28 @@ public class EntityGiantSquid extends WaterAnimal {
             this.setPartPositionFromBuffer(this.tentaclesPart4, pitch, -3.4F, 10);
             this.setPartPositionFromBuffer(this.tentaclesPart5, pitch, -5.4F, 15);
             this.setPartPositionFromBuffer(this.tentaclesPart6, pitch, -7.4F, 20);
-            if (this.isInWaterOrBubble()) {
+            if (this.isInsideWaterOrBubbleColumn()) {
                 if (this.mantleCollisionPart.scale != 1F) {
                     this.mantleCollisionPart.scale = 1F;
-                    this.mantleCollisionPart.refreshDimensions();
+                    this.mantleCollisionPart.calculateDimensions();
                 }
             } else {
                 if (this.mantleCollisionPart.scale != 0.25F) {
                     this.mantleCollisionPart.scale = 0.25F;
-                    this.mantleCollisionPart.refreshDimensions();
+                    this.mantleCollisionPart.calculateDimensions();
                 }
             }
             for (int l = 0; l < this.allParts.length; ++l) {
-                this.allParts[l].xo = avector3d[l].x;
-                this.allParts[l].yo = avector3d[l].y;
-                this.allParts[l].zo = avector3d[l].z;
-                this.allParts[l].xOld = avector3d[l].x;
-                this.allParts[l].yOld = avector3d[l].y;
-                this.allParts[l].zOld = avector3d[l].z;
+                this.allParts[l].prevX = avector3d[l].x;
+                this.allParts[l].prevY = avector3d[l].y;
+                this.allParts[l].prevZ = avector3d[l].z;
+                this.allParts[l].lastRenderX = avector3d[l].x;
+                this.allParts[l].lastRenderY = avector3d[l].y;
+                this.allParts[l].lastRenderZ = avector3d[l].z;
             }
-            this.setNoGravity(this.isInWater());
+            this.setNoGravity(this.isTouchingWater());
         }
-        if (!this.level().isClientSide) {
+        if (!this.getWorld().isClient) {
             if (this.getSquidPitch() > 0F) {
                 float decrease = Math.min(2F, this.getSquidPitch());
                 this.decrementSquidPitch(decrease);
@@ -324,18 +325,18 @@ public class EntityGiantSquid extends WaterAnimal {
                 float decrease = Math.min(2F, -this.getSquidPitch());
                 this.incrementSquidPitch(decrease);
             }
-            if (this.isInWaterOrBubble()) {
-                float dist = (float) this.getDeltaMovement().y() * 45;
-                if (entityData.get(OVERRIDE_BODYROT)) {
+            if (this.isInsideWaterOrBubbleColumn()) {
+                float dist = (float) this.getVelocity().y * 45;
+                if (dataTracker.get(OVERRIDE_BODYROT)) {
                     this.decrementSquidPitch(dist);
                 } else {
                     this.incrementSquidPitch(dist);
                 }
             }
-            if (!this.onGround() && this.getFluidHeight(FluidTags.WATER) < this.getBbHeight()) {
-                this.setDeltaMovement(this.getDeltaMovement().add(0, -0.1F, 0));
+            if (!this.isOnGround() && this.getFluidHeight(FluidTags.WATER) < this.getHeight()) {
+                this.setVelocity(this.getVelocity().add(0, -0.1F, 0));
             }
-            float pressure = getDepressureLevel();
+            float pressure = getDepressuregetWorld();
             if (this.getDepressurization() < pressure) {
                 this.setDepressurization(this.getDepressurization() + 0.1F);
             }
@@ -350,7 +351,7 @@ public class EntityGiantSquid extends WaterAnimal {
             }
             humTick++;
         }
-        if(!this.level().isClientSide){
+        if(!this.getWorld().isClient){
             if(resetCapturedStateIn > 0){
                 resetCapturedStateIn--;
             }else{
@@ -360,7 +361,7 @@ public class EntityGiantSquid extends WaterAnimal {
     }
 
     private boolean isHumming() {
-        String s = ChatFormatting.stripFormatting(this.getName().getString());
+        var s = Formatting.strip(this.getName().getString());
         return s != null && s.toLowerCase().contains("squid games!!") || AlexsMobs.isAprilFools();
     }
 
@@ -375,185 +376,168 @@ public class EntityGiantSquid extends WaterAnimal {
     }
 
     private void setPartPosition(EntityGiantSquidPart part, double offsetX, double offsetY, double offsetZ, float offsetScale) {
-        part.setPos(this.getX() + offsetX * offsetScale * part.scale, this.getY() + offsetY * offsetScale * part.scale, this.getZ() + offsetZ * offsetScale * part.scale);
+        part.setPosition(this.getX() + offsetX * offsetScale * part.scale, this.getY() + offsetY * offsetScale * part.scale, this.getZ() + offsetZ * offsetScale * part.scale);
     }
 
     private void setPartPositionFromBuffer(EntityGiantSquidPart part, float pitch, float offsetScale, int ringBufferOffset) {
-        float f2 = Mth.sin(getRingBuffer(ringBufferOffset, 1.0F, false) * Mth.DEG_TO_RAD) * (1 - Math.abs((this.getXRot()) / 90F));
-        float f3 = Mth.cos(getRingBuffer(ringBufferOffset, 1.0F, false) * Mth.DEG_TO_RAD) * (1 - Math.abs((this.getXRot()) / 90F));
+        float f2 = MathHelper.sin(getRingBuffer(ringBufferOffset, 1.0F, false) * MathHelper.RADIANS_PER_DEGREE) * (1 - Math.abs((this.getPitch()) / 90F));
+        float f3 = MathHelper.cos(getRingBuffer(ringBufferOffset, 1.0F, false) * MathHelper.RADIANS_PER_DEGREE) * (1 - Math.abs((this.getPitch()) / 90F));
         setPartPosition(part, f2, pitch, -f3, offsetScale);
     }
 
-    public int getMaxHeadXRot() {
+    @Override
+    public int getMaxLookPitchChange() {
         return 1;
     }
 
-    public int getMaxHeadYRot() {
+    @Override
+    public int getMaxHeadRotation() {
         return 3;
     }
 
-    public void travel(Vec3 travelVector) {
-        if (this.isEffectiveAi() && this.isInWater()) {
-            if (entityData.get(OVERRIDE_BODYROT)) {
-                travelVector = new Vec3(travelVector.x, travelVector.y, -travelVector.z);
+    @Override
+    public void travel(Vec3d travelVector) {
+        if (this.canMoveVoluntarily() && this.isTouchingWater()) {
+            if (dataTracker.get(OVERRIDE_BODYROT)) {
+                travelVector = new Vec3d(travelVector.x, travelVector.y, -travelVector.z);
             }
-            this.moveRelative(this.getSpeed(), travelVector);
+            this.updateVelocity(this.getMovementSpeed(), travelVector);
             double d = this.getTarget() == null ? 0.6D : 0.9D;
-            this.setDeltaMovement(this.getDeltaMovement().multiply(0.9D, d, 0.9D));
-            this.move(MoverType.SELF, this.getDeltaMovement());
+            this.setVelocity(this.getVelocity().multiply(0.9D, d, 0.9D));
+            this.move(MovementType.SELF, this.getVelocity());
         } else {
             super.travel(travelVector);
         }
     }
 
-    public boolean canBreatheUnderwater() {
+    @Override
+    public boolean canBreatheInWater() {
         return true;
     }
 
-    public boolean isPushedByFluid() {
+    @Override
+    public boolean isPushedByFluids() {
         return false;
     }
 
-    public MobType getMobType() {
-        return MobType.WATER;
+    @Override
+    public EntityGroup getGroup() {
+        return EntityGroup.AQUATIC;
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    @Override
+    public void readCustomDataFromNbt(NbtCompound compound) {
+        super.readCustomDataFromNbt(compound);
         this.setBlue(compound.getBoolean("Blue"));
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    @Override
+    public void writeCustomDataToNbt(NbtCompound compound) {
+        super.writeCustomDataToNbt(compound);
         compound.putBoolean("Blue", isBlue());
     }
 
-    public boolean checkSpawnObstruction(LevelReader worldIn) {
-        return worldIn.isUnobstructed(this);
+    @Override
+    public boolean canSpawn(WorldView worldIn) {
+        return worldIn.doesNotIntersectEntities(this);
     }
 
     public float getDepressurization() {
-        return Mth.clamp(entityData.get(DEPRESSURIZATION).floatValue(), 0, 1F);
+        return MathHelper.clamp(dataTracker.get(DEPRESSURIZATION), 0, 1F);
     }
 
     public void setDepressurization(float depressurization) {
-        entityData.set(DEPRESSURIZATION, depressurization);
+        dataTracker.set(DEPRESSURIZATION, depressurization);
     }
 
     public float getSquidPitch() {
-        return Mth.clamp(entityData.get(SQUID_PITCH).floatValue(), -90, 90);
+        return MathHelper.clamp(dataTracker.get(SQUID_PITCH), -90, 90);
     }
 
     public void setSquidPitch(float pitch) {
-        entityData.set(SQUID_PITCH, pitch);
+        dataTracker.set(SQUID_PITCH, pitch);
     }
 
     public void incrementSquidPitch(float pitch) {
-        entityData.set(SQUID_PITCH, getSquidPitch() + pitch);
+        dataTracker.set(SQUID_PITCH, getSquidPitch() + pitch);
     }
 
     public void decrementSquidPitch(float pitch) {
-        entityData.set(SQUID_PITCH, getSquidPitch() - pitch);
+        dataTracker.set(SQUID_PITCH, getSquidPitch() - pitch);
     }
 
     public boolean isGrabbing() {
-        return this.entityData.get(GRABBING);
+        return this.dataTracker.get(GRABBING);
     }
 
     public void setGrabbing(boolean running) {
-        this.entityData.set(GRABBING, Boolean.valueOf(running));
+        this.dataTracker.set(GRABBING, running);
     }
 
     public boolean isCaptured() {
-        return this.entityData.get(CAPTURED);
+        return this.dataTracker.get(CAPTURED);
     }
 
     public void setCaptured(boolean running) {
-        this.entityData.set(CAPTURED, Boolean.valueOf(running));
+        this.dataTracker.set(CAPTURED, running);
     }
 
     public boolean isBlue() {
-        return this.entityData.get(BLUE);
+        return this.dataTracker.get(BLUE);
     }
 
     public void setBlue(boolean t) {
-        this.entityData.set(BLUE, Boolean.valueOf(t));
+        this.dataTracker.set(BLUE, t);
     }
 
-    public void push(Entity entity) {
+    @Override
+    public void pushAway(Entity entity) {
         if (!this.isCaptured()) {
-            super.push(entity);
+            super.pushAway(entity);
         }
     }
 
     @Override
-    public void calculateEntityAnimation(boolean flying) {
-        float f1 = (float)Mth.length(this.getX() - this.xo, this.getY() - this.yo, this.getZ() - this.zo);
+    public void updateLimbs(boolean flying) {
+        float f1 = (float)MathHelper.magnitude(this.getX() - this.prevX, this.getY() - this.prevY, this.getZ() - this.prevZ);
         float f2 = Math.min(f1 * 8.0F, 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.limbAnimator.updateLimbs(f2, 0.4F);
     }
 
-    public boolean canBeCollidedWith() {
+    @Override
+    public boolean isCollidable() {
         return this.isAlive();
     }
 
-    public Vec3 collide(Vec3 movement) {
-        if (touchingUnloadedChunk() || !this.isInWaterOrBubble()) {
-            return super.collide(movement);
-        } else {
-            AABB aabb = this.mantleCollisionPart.getBoundingBox();
-            List<VoxelShape> list = this.level().getEntityCollisions(this, aabb.expandTowards(movement));
-            Vec3 vec3 = movement.lengthSqr() == 0.0D ? movement : collideBoundingBox(this, movement, aabb, this.level(), list);
-            boolean flag = movement.x != vec3.x;
-            boolean flag1 = movement.y != vec3.y;
-            boolean flag2 = movement.z != vec3.z;
-            boolean flag3 = this.onGround() || flag1 && movement.y < 0.0D;
-            if (this.getStepHeight() > 0.0F && flag3 && (flag || flag2)) {
-                Vec3 vec31 = collideBoundingBox(this, new Vec3(movement.x, this.getStepHeight(), movement.z), aabb, this.level(), list);
-                Vec3 vec32 = collideBoundingBox(this, new Vec3(0.0D, this.getStepHeight(), 0.0D), aabb.expandTowards(movement.x, 0.0D, movement.z), this.level(), list);
-                if (vec32.y < (double) this.getStepHeight()) {
-                    Vec3 vec33 = collideBoundingBox(this, new Vec3(movement.x, 0.0D, movement.z), aabb.move(vec32), this.level(), list).add(vec32);
-                    if (vec33.horizontalDistanceSqr() > vec31.horizontalDistanceSqr()) {
-                        vec31 = vec33;
-                    }
-                }
-
-                if (vec31.horizontalDistanceSqr() > vec3.horizontalDistanceSqr()) {
-                    return vec31.add(collideBoundingBox(this, new Vec3(0.0D, -vec31.y + movement.y, 0.0D), aabb.move(vec31), this.level(), list));
-                }
-            }
-
-            return vec3;
-        }
-    }
-
-    public float getXRot() {
+    @Override
+    public float getSoundPitch() {
         return getSquidPitch();
     }
 
-    @Override
-    public boolean isMultipartEntity() {
-        return true;
-    }
-
-    @Override
-    public net.minecraftforge.entity.PartEntity<?>[] getParts() {
-        return this.allParts;
-    }
+    //FIXME forge
+//    @Override
+//    public boolean isMultipartEntity() {
+//        return true;
+//    }
+//
+//    @Override
+//    public net.minecraftforge.entity.PartEntity<?>[] getParts() {
+//        return this.allParts;
+//    }
 
     public boolean attackEntityPartFrom(EntityGiantSquidPart part, DamageSource source, float amount) {
-        return this.hurt(source, amount);
+        return this.damage(source, amount);
     }
 
     public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo(source);
+        return source.isOf(DamageTypes.IN_WALL) || super.isInvulnerableTo(source);
     }
 
     public void directPitch(double d0, double d1, double d2, double d3) {
-        boolean shift = this.entityData.get(OVERRIDE_BODYROT);
+        boolean shift = this.dataTracker.get(OVERRIDE_BODYROT);
         float add = shift ? 90.0F : -90.0F;
-        float f = (float) (Mth.atan2(d2, d0) * 57.2957763671875D) + add;
-        this.setYRot(this.rotlerp(this.getYRot(), f, shift ? 10 : 5));
+        float f = (float) (MathHelper.atan2(d2, d0) * 57.2957763671875D) + add;
+        this.setYaw(this.rotlerp(this.getYaw(), f, shift ? 10 : 5));
     }
 
     public float getViewXRot(float partialTick) {
@@ -561,11 +545,11 @@ public class EntityGiantSquid extends WaterAnimal {
     }
 
     public float getViewYRot(float partialTick) {
-        return partialTick == 1.0F ? this.yBodyRot : Mth.lerp(partialTick, this.yBodyRotO, this.yBodyRot);
+        return partialTick == 1.0F ? this.bodyYaw : MathHelper.lerp(partialTick, this.prevBodyYaw, this.bodyYaw);
     }
 
     protected float rotlerp(float in, float target, float maxShift) {
-        float f = Mth.wrapDegrees(target - in);
+        float f = MathHelper.wrapDegrees(target - in);
         if (f > maxShift) {
             f = maxShift;
         }
@@ -584,12 +568,12 @@ public class EntityGiantSquid extends WaterAnimal {
         return f1;
     }
 
-    private float getDepressureLevel() {
-        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
+    private float getDepressuregetWorld() {
+        var blockpos$mutable = new BlockPos.Mutable();
         int waterLevelAbove = 0;
         while (waterLevelAbove < 10) {
-            BlockState blockstate = level().getBlockState(blockpos$mutable.set(this.getX(), this.getY() + waterLevelAbove, this.getZ()));
-            if (!blockstate.getFluidState().is(FluidTags.WATER) && !blockstate.isSolid()) {
+            var blockstate = getWorld().getBlockState(blockpos$mutable.set(this.getX(), this.getY() + waterLevelAbove, this.getZ()));
+            if (!blockstate.getFluidState().isIn(FluidTags.WATER) && !blockstate.isSolid()) {
                 break;
             } else {
                 waterLevelAbove++;
@@ -607,11 +591,11 @@ public class EntityGiantSquid extends WaterAnimal {
         resetCapturedStateIn = 25;
         if (random.nextInt(13) == 0) {
             spawnInk();
-            whale.hurt(this.damageSources().mobAttack(this), 4 + random.nextInt(4));
+            whale.damage(this.getDamageSources().mobAttack(this), 4 + random.nextInt(4));
             if (random.nextFloat() <= 0.3F) {
                 this.setCaptured(false);
                 if(random.nextFloat() < 0.2F){
-                    this.spawnAtLocation(AMItemRegistry.LOST_TENTACLE.get());
+                    this.dropStack(AMItemRegistry.LOST_TENTACLE.get().getDefaultStack());
                 }
                 return true;
             }
@@ -621,15 +605,14 @@ public class EntityGiantSquid extends WaterAnimal {
         return false;
     }
 
-    //FIXME
-//    @OnlyIn(Dist.CLIENT)
-//    public void handleEntityEvent(byte id) {
-//        super.handleEntityEvent(id);
-//
-//    }
+    @Override
+    public void handleStatus(byte id) {
+        super.handleStatus(id);
+    }
 
-    public boolean hurt(DamageSource src, float f) {
-        if (super.hurt(src, f) && this.getLastHurtByMob() != null && !this.isCaptured() && random.nextBoolean()) {
+    @Override
+    public boolean damage(DamageSource src, float f) {
+        if (super.damage(src, f) && this.getLastAttacker() != null && !this.isCaptured() && random.nextBoolean()) {
             this.spawnInk();
             return true;
         } else {
@@ -638,14 +621,14 @@ public class EntityGiantSquid extends WaterAnimal {
     }
 
     private void spawnInk() {
-        this.gameEvent(GameEvent.ENTITY_INTERACT);
-        this.playSound(SoundEvents.SQUID_SQUIRT, this.getSoundVolume(), 0.5F * this.getVoicePitch());
-        if (!this.level().isClientSide) {
-            Vec3 inkDirection = new Vec3(0, 0, 1.2F).xRot(-this.getXRot() * Mth.DEG_TO_RAD).yRot(-this.yBodyRot * Mth.DEG_TO_RAD);
-            Vec3 vec3 = this.position().add(inkDirection);
+        this.emitGameEvent(GameEvent.ENTITY_INTERACT);
+        this.playSound(SoundEvents.ENTITY_SQUID_SQUIRT, this.getSoundVolume(), 0.5F * this.getSoundPitch());
+        if (!this.getWorld().isClient) {
+            var inkDirection = new Vec3d(0, 0, 1.2F).rotateX(-this.getPitch() * MathHelper.RADIANS_PER_DEGREE).rotateY(-this.bodyYaw * MathHelper.RADIANS_PER_DEGREE);
+            var vec3 = this.getPos().add(inkDirection);
             for (int i = 0; i < 30; ++i) {
-                Vec3 vec32 = inkDirection.add(random.nextFloat() - 0.5F, random.nextFloat() - 0.5F, random.nextFloat() - 0.5F).scale(0.8D + (double) (this.random.nextFloat() * 2.0F));
-                ((ServerLevel) this.level()).sendParticles(ParticleTypes.SQUID_INK, vec3.x, vec3.y + 0.5D, vec3.z, 0, vec32.x, vec32.y, vec32.z, 0.1F);
+                var vec32 = inkDirection.add(random.nextFloat() - 0.5F, random.nextFloat() - 0.5F, random.nextFloat() - 0.5F).multiply(0.8D + (double) (this.random.nextFloat() * 2.0F));
+                ((ServerWorld) this.getWorld()).spawnParticles(ParticleTypes.SQUID_INK, vec3.x, vec3.y + 0.5D, vec3.z, 0, vec32.x, vec32.y, vec32.z, 0.1F);
             }
         }
     }
@@ -653,19 +636,19 @@ public class EntityGiantSquid extends WaterAnimal {
     private class AIAvoidWhales extends Goal {
 
         private EntityCachalotWhale whale;
-        private Vec3 moveTo;
+        private Vec3d moveTo;
         private int runDelay;
 
         public AIAvoidWhales() {
-            this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+            this.setControls(EnumSet.of(Goal.Control.MOVE));
         }
 
         @Override
-        public boolean canUse() {
-            if (EntityGiantSquid.this.isInWaterOrBubble() && !EntityGiantSquid.this.horizontalCollision && !EntityGiantSquid.this.isCaptured() && runDelay-- <= 0) {
+        public boolean canStart() {
+            if (EntityGiantSquid.this.isInsideWaterOrBubbleColumn() && !EntityGiantSquid.this.horizontalCollision && !EntityGiantSquid.this.isCaptured() && runDelay-- <= 0) {
                 EntityCachalotWhale closest = null;
                 float dist = 50;
-                for (EntityCachalotWhale dude : EntityGiantSquid.this.level().getEntitiesOfClass(EntityCachalotWhale.class, EntityGiantSquid.this.getBoundingBox().inflate(dist))) {
+                for (var dude : EntityGiantSquid.this.getWorld().getNonSpectatingEntities(EntityCachalotWhale.class, EntityGiantSquid.this.getBoundingBox().expand(dist))) {
                     if (closest == null || dude.distanceTo(EntityGiantSquid.this) < closest.distanceTo(EntityGiantSquid.this)) {
                         closest = dude;
                     }
@@ -681,19 +664,21 @@ public class EntityGiantSquid extends WaterAnimal {
         }
 
         @Override
-        public boolean canContinueToUse() {
+        public boolean shouldContinue() {
             return whale != null && whale.isAlive() && !EntityGiantSquid.this.horizontalCollision && EntityGiantSquid.this.distanceTo(whale) < 60;
         }
 
+        @Override
         public void tick() {
             if (whale != null && whale.isAlive()) {
                 double dist = EntityGiantSquid.this.distanceTo(whale);
-                Vec3 vec = EntityGiantSquid.this.position().subtract(whale.position()).normalize();
-                Vec3 vec2 = EntityGiantSquid.this.position().add(vec.scale(12 + random.nextInt(5)));
-                EntityGiantSquid.this.getNavigation().moveTo(vec2.x, vec2.y, vec2.z, dist < 20 ? 1.9F : 1.3F);
+                var vec = EntityGiantSquid.this.getPos().subtract(whale.getPos()).normalize();
+                var vec2 = EntityGiantSquid.this.getPos().add(vec.multiply(12 + random.nextInt(5)));
+                EntityGiantSquid.this.getNavigation().startMovingTo(vec2.x, vec2.y, vec2.z, dist < 20 ? 1.9F : 1.3F);
             }
         }
 
+        @Override
         public void stop() {
             whale = null;
             moveTo = null;
@@ -705,15 +690,15 @@ public class EntityGiantSquid extends WaterAnimal {
         private BlockPos moveTo;
 
         public AIDeepwaterSwimming() {
-            this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+            this.setControls(EnumSet.of(Goal.Control.MOVE));
         }
 
         @Override
-        public boolean canUse() {
-            if (EntityGiantSquid.this.isVehicle() || EntityGiantSquid.this.getTarget() != null && !EntityGiantSquid.this.isGrabbing() || !EntityGiantSquid.this.isInWater() && !EntityGiantSquid.this.isInLava()) {
+        public boolean canStart() {
+            if (EntityGiantSquid.this.hasPassengers() || EntityGiantSquid.this.getTarget() != null && !EntityGiantSquid.this.isGrabbing() || !EntityGiantSquid.this.isTouchingWater() && !EntityGiantSquid.this.isInLava()) {
                 return false;
             } else {
-                if (EntityGiantSquid.this.getNavigation().isDone() || EntityGiantSquid.this.getRandom().nextInt(30) == 0) {
+                if (EntityGiantSquid.this.getNavigation().isIdle() || EntityGiantSquid.this.getRandom().nextInt(30) == 0) {
                     BlockPos found = findTargetPos();
                     if (found != null) {
                         moveTo = found;
@@ -725,10 +710,10 @@ public class EntityGiantSquid extends WaterAnimal {
         }
 
         private BlockPos findTargetPos() {
-            RandomSource r = EntityGiantSquid.this.getRandom();
+            var r = EntityGiantSquid.this.getRandom();
             for (int i = 0; i < 15; i++) {
-                BlockPos pos = EntityGiantSquid.this.blockPosition().offset(r.nextInt(16) - 8, r.nextInt(32) - 16, r.nextInt(16) - 8);
-                if (EntityGiantSquid.this.level().isWaterAt(pos) && EntityGiantSquid.this.canFitAt(pos)) {
+                var pos = EntityGiantSquid.this.getBlockPos().add(r.nextInt(16) - 8, r.nextInt(32) - 16, r.nextInt(16) - 8);
+                if (EntityGiantSquid.this.getWorld().isWater(pos) && EntityGiantSquid.this.canFitAt(pos)) {
                     return getDeeperTarget(pos);
                 }
             }
@@ -736,29 +721,30 @@ public class EntityGiantSquid extends WaterAnimal {
         }
 
         private BlockPos getDeeperTarget(BlockPos waterAtPos){
-            BlockPos surface = new BlockPos(waterAtPos);
-            BlockPos seafloor = new BlockPos(waterAtPos);
-            while (EntityGiantSquid.this.level().isWaterAt(surface) && surface.getY() < 320){
-                surface = surface.above();
+            var surface = new BlockPos(waterAtPos);
+            var seafloor = new BlockPos(waterAtPos);
+            while (EntityGiantSquid.this.getWorld().isWater(surface) && surface.getY() < 320){
+                surface = surface.up();
             }
-            while (EntityGiantSquid.this.level().isWaterAt(seafloor) && seafloor.getY() > -64){
-                seafloor = seafloor.below();
+            while (EntityGiantSquid.this.getWorld().isWater(seafloor) && seafloor.getY() > -64){
+                seafloor = seafloor.down();
             }
             int distance = surface.getY() - seafloor.getY();
             if(distance < 10){
                 return waterAtPos;
             }else{
                 int i = (int) (distance * 0.4);
-                return seafloor.above(1 + EntityGiantSquid.this.getRandom().nextInt(i));
+                return seafloor.up(1 + EntityGiantSquid.this.getRandom().nextInt(i));
             }
         }
 
+        @Override
         public void start() {
-            EntityGiantSquid.this.getNavigation().moveTo(moveTo.getX() + 0.5F, moveTo.getY() + 0.5F, moveTo.getZ() + 0.5F, 1.0F);
+            EntityGiantSquid.this.getNavigation().startMovingTo(moveTo.getX() + 0.5F, moveTo.getY() + 0.5F, moveTo.getZ() + 0.5F, 1.0F);
         }
 
         @Override
-        public boolean canContinueToUse() {
+        public boolean shouldContinue() {
             return false;
         }
     }
@@ -766,30 +752,31 @@ public class EntityGiantSquid extends WaterAnimal {
     private class AIMelee extends Goal {
 
         @Override
-        public boolean canUse() {
-            return EntityGiantSquid.this.isInWaterOrBubble() && EntityGiantSquid.this.getTarget() != null && EntityGiantSquid.this.getTarget().isAlive();
+        public boolean canStart() {
+            return EntityGiantSquid.this.isInsideWaterOrBubbleColumn() && EntityGiantSquid.this.getTarget() != null && EntityGiantSquid.this.getTarget().isAlive();
         }
 
+        @Override
         public void tick() {
-            EntityGiantSquid squid = EntityGiantSquid.this;
-            LivingEntity target = EntityGiantSquid.this.getTarget();
+            var squid = EntityGiantSquid.this;
+            var target = EntityGiantSquid.this.getTarget();
             double dist = squid.distanceTo(target);
-            if (squid.hasLineOfSight(target) && dist < 7.0F) {
+            if (squid.canSee(target) && dist < 7.0F) {
                 squid.setGrabbing(true);
             } else {
-                Vec3 moveBodyTo = target.position();
-                squid.getNavigation().moveTo(moveBodyTo.x, moveBodyTo.y, moveBodyTo.z, 1.0F);
+                var moveBodyTo = target.getPos();
+                squid.getNavigation().startMovingTo(moveBodyTo.x, moveBodyTo.y, moveBodyTo.z, 1.0F);
             }
             if (dist < 14.0F) {
-                squid.entityData.set(OVERRIDE_BODYROT, true);
+                squid.dataTracker.set(OVERRIDE_BODYROT, true);
             } else {
-                squid.entityData.set(OVERRIDE_BODYROT, false);
+                squid.dataTracker.set(OVERRIDE_BODYROT, false);
             }
         }
 
         @Override
         public void stop() {
-            EntityGiantSquid.this.entityData.set(OVERRIDE_BODYROT, false);
+            EntityGiantSquid.this.dataTracker.set(OVERRIDE_BODYROT, false);
             EntityGiantSquid.this.setGrabbing(false);
         }
     }

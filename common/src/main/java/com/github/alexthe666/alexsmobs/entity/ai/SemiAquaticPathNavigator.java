@@ -1,41 +1,45 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
-import net.minecraft.world.level.pathfinder.PathFinder;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.ai.pathing.AmphibiousPathNodeMaker;
+import net.minecraft.entity.ai.pathing.PathNodeNavigator;
+import net.minecraft.entity.ai.pathing.SwimNavigation;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
+import net.minecraft.world.World;
 
-public class SemiAquaticPathNavigator extends WaterBoundPathNavigation {
+public class SemiAquaticPathNavigator extends SwimNavigation {
 
-    public SemiAquaticPathNavigator(Mob entitylivingIn, Level worldIn) {
+    public SemiAquaticPathNavigator(MobEntity entitylivingIn, World worldIn) {
         super(entitylivingIn, worldIn);
     }
 
-    protected PathFinder createPathFinder(int p_179679_1_) {
-        this.nodeEvaluator = new AmphibiousNodeEvaluator(true);
-        return new PathFinder(this.nodeEvaluator, p_179679_1_);
+    @Override
+    protected PathNodeNavigator createPathNodeNavigator(int p_179679_1_) {
+        this.nodeMaker = new AmphibiousPathNodeMaker(true);
+        return new PathNodeNavigator(this.nodeMaker, p_179679_1_);
     }
 
-    protected boolean canUpdatePath() {
+    @Override
+    protected boolean isAtValidPosition() {
         return true;
     }
 
-    protected Vec3 getTempMobPos() {
-        return new Vec3(this.mob.getX(), this.mob.getY(0.5D), this.mob.getZ());
+    @Override
+    protected Vec3d getPos() {
+        return new Vec3d(this.entity.getX(), this.entity.getBodyY(0.5D), this.entity.getZ());
     }
 
-    protected boolean canMoveDirectly(Vec3 posVec31, Vec3 posVec32, int sizeX, int sizeY, int sizeZ) {
-        Vec3 vector3d = new Vec3(posVec32.x, posVec32.y + (double)this.mob.getBbHeight() * 0.5D, posVec32.z);
-        return this.level.clip(new ClipContext(posVec31, vector3d, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this.mob)).getType() == HitResult.Type.MISS;
+    protected boolean canMoveDirectly(Vec3d posVec31, Vec3d posVec32, int sizeX, int sizeY, int sizeZ) {
+        var vector3d = new Vec3d(posVec32.x, posVec32.y + (double)this.entity.getHeight() * 0.5D, posVec32.z);
+        return this.world.raycast(new RaycastContext(posVec31, vector3d, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this.entity))
+                .getType() == HitResult.Type.MISS;
     }
 
     public boolean isStableDestination(BlockPos pos) {
-        return !this.level.getBlockState(pos.below()).isAir();
+        return !this.world.getBlockState(pos.down()).isAir();
     }
 
     public void setCanFloat(boolean canSwim) {

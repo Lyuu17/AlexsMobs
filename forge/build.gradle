@@ -3,8 +3,11 @@ plugins {
 }
 
 loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
     forge {
-        mixinConfig "example_mod.mixins.json"
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+        mixinConfig "alexsmobs.mixins.json"
     }
 }
 
@@ -38,6 +41,9 @@ dependencies {
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
+
+    modImplementation "maven.modrinth:uranus:Xgpvchiq"
+    modImplementation "maven.modrinth:jupiter:quscWB5K"
 }
 
 processResources {

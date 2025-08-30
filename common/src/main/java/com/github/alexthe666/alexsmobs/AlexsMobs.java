@@ -28,11 +28,12 @@ public class AlexsMobs {
     public static void init() {
         AMAdvancementTriggerRegistry.init();
         AMBannerRegistry.DEF_REG.register();
-        AMCreativeTabRegistry.DEF_REG.register();
-        AMPaintingRegistry.DEF_REG.register();
-        AMPointOfInterestRegistry.DEF_REG.register();
-        AMRecipeRegistry.DEF_REG.register();
+        AMBlockRegistry.DEF_REG.register();
+        AMEntityRegistry.DEF_REG.register();
+        AMEntityRegistry.initializeAttributes();
+        AMItemRegistry.DEF_REG.register();
         AMSoundRegistry.DEF_REG.register();
+        AMParticleRegistry.DEF_REG.register();
 
 //        IEventBus modBusEvent = FMLJavaModLoadingContext.get().getModEventBus();
 //        modBusEvent.addListener(this::setup);

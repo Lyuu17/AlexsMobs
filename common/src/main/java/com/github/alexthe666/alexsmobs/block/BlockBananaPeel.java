@@ -1,60 +1,58 @@
 package com.github.alexthe666.alexsmobs.block;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.BushBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.block.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
-public class BlockBananaPeel extends BushBlock {
+public class BlockBananaPeel extends PlantBlock {
 
-    protected static final VoxelShape SHAPE_COLLISON = Block.box(0, 0, 0, 16.0D, 9.0D, 16.0D);
-    protected static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 4.0D, 14.0D);
+    protected static final VoxelShape SHAPE_COLLISON = Block.createCuboidShape(0, 0, 0, 16.0D, 9.0D, 16.0D);
+    protected static final VoxelShape SHAPE = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 4.0D, 14.0D);
 
     public BlockBananaPeel() {
-        super(BlockBehaviour.Properties.of().dynamicShape().sound(SoundType.WET_GRASS).noCollission().requiresCorrectToolForDrops().strength(0.2F).friction(0.9999999999F));
+        super(AbstractBlock.Settings.create()
+                .dynamicBounds()
+                .sounds(BlockSoundGroup.WET_GRASS)
+                .noCollision()
+                .requiresTool()
+                .strength(0.2F)
+                .slipperiness(0.9999999999F));
     }
 
-    public void entityInside(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Entity entityIn) {
-    }
-
-    protected boolean mayPlaceOn(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
-        return canSupportRigidBlock(worldIn, pos);
-    }
-
-    public BlockBehaviour.OffsetType getOffsetType() {
-        return BlockBehaviour.OffsetType.XZ;
-    }
-
-    @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+    }
+
+    @Override
+    protected boolean canPlantOnTop(BlockState state, BlockView worldIn, BlockPos pos) {
+        return hasTopRim(worldIn, pos);
+    }
+
+    public AbstractBlock.OffsetType getOffsetType() {
+        return AbstractBlock.OffsetType.XZ;
+    }
+
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
 
-    @NotNull
     @Override
-    public VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return SHAPE_COLLISON;
-    }
-    @NotNull
-    @Override
-    public VoxelShape getBlockSupportShape(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return SHAPE_COLLISON;
     }
 
-    @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getVisualShape(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public VoxelShape getSidesShape(BlockState state, BlockView reader, BlockPos pos) {
+        return SHAPE_COLLISON;
+    }
+
+    @Override
+    public VoxelShape getCameraCollisionShape(BlockState state, BlockView reader, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
 

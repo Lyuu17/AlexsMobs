@@ -2,12 +2,12 @@ package com.github.alexthe666.alexsmobs.registry;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import dev.architectury.registry.registries.DeferredRegister;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.block.entity.BannerPattern;
+import net.minecraft.registry.RegistryKeys;
 
 public class AMBannerRegistry {
 
-    public static final DeferredRegister<BannerPattern> DEF_REG = DeferredRegister.create(AlexsMobs.MOD_ID, Registries.BANNER_PATTERN);
+    public static final DeferredRegister<BannerPattern> DEF_REG = DeferredRegister.create(AlexsMobs.MOD_ID, RegistryKeys.BANNER_PATTERN);
 
     static {
         DEF_REG.register("bear", () -> new BannerPattern("bear"));

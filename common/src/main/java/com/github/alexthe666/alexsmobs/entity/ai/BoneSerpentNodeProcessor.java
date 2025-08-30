@@ -1,104 +1,107 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.pathfinder.*;
-
+import net.minecraft.entity.ai.pathing.*;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-public class BoneSerpentNodeProcessor extends NodeEvaluator {
+public class BoneSerpentNodeProcessor extends PathNodeMaker {
 
     public BoneSerpentNodeProcessor() {
     }
 
-    public Node getStart() {
-        return super.getNode(Mth.floor(this.mob.getBoundingBox().minX), Mth.floor(this.mob.getBoundingBox().minY + 0.5D), Mth.floor(this.mob.getBoundingBox().minZ));
+    @Override
+    public PathNode getStart() {
+        return super.getNode(MathHelper.floor(this.entity.getBoundingBox().minX), MathHelper.floor(this.entity.getBoundingBox().minY + 0.5D), MathHelper.floor(this.entity.getBoundingBox().minZ));
     }
 
-    public Target getGoal(double p_224768_1_, double p_224768_3_, double p_224768_5_) {
-        return new Target(super.getNode(Mth.floor(p_224768_1_ - (double)(this.mob.getBbWidth() / 2.0F)), Mth.floor(p_224768_3_ + 0.5D), Mth.floor(p_224768_5_ - (double)(this.mob.getBbWidth() / 2.0F))));
+    @Override
+    public TargetPathNode getNode(double x, double y, double z) {
+        return new TargetPathNode(super.getNode(MathHelper.floor(x - (double)(this.entity.getWidth() / 2.0F)), MathHelper.floor(y + 0.5D), MathHelper.floor(z - (double)(this.entity.getWidth() / 2.0F))));
     }
 
-    public int getNeighbors(Node[] p_222859_1_, Node p_222859_2_) {
+    @Override
+    public int getSuccessors(PathNode[] successors, PathNode node) {
         int i = 0;
 
-        for(Direction direction : Direction.values()) {
-            Node pathpoint = this.getWaterNode(p_222859_2_.x + direction.getStepX(), p_222859_2_.y + direction.getStepY(), p_222859_2_.z + direction.getStepZ());
-            if (pathpoint != null && !pathpoint.closed) {
-                p_222859_1_[i++] = pathpoint;
+        for(var direction : Direction.values()) {
+            var pathpoint = this.getWaterNode(node.x + direction.getOffsetX(), node.y + direction.getOffsetY(), node.z + direction.getOffsetZ());
+            if (pathpoint != null && !pathpoint.visited) {
+                successors[i++] = pathpoint;
             }
         }
 
         return i;
     }
 
-    public BlockPathTypes getBlockPathType(BlockGetter blockaccessIn, int x, int y, int z, Mob entitylivingIn) {
-        return this.getBlockPathType(blockaccessIn, x, y, z);
+    @Override
+    public PathNodeType getNodeType(BlockView blockaccessIn, int x, int y, int z, MobEntity entitylivingIn) {
+        return this.getDefaultNodeType(blockaccessIn, x, y, z);
     }
 
-    public BlockPathTypes getBlockPathType(BlockGetter blockaccessIn, int x, int y, int z) {
-        BlockPos blockpos = new BlockPos(x, y, z);
-        FluidState fluidstate = blockaccessIn.getFluidState(blockpos);
-        BlockState blockstate = blockaccessIn.getBlockState(blockpos);
-        if (fluidstate.isEmpty() && blockstate.isPathfindable(blockaccessIn, blockpos.below(), PathComputationType.WATER) && blockstate.isAir()) {
-            return BlockPathTypes.BREACH;
+    @Override
+    public PathNodeType getDefaultNodeType(BlockView blockaccessIn, int x, int y, int z) {
+        var blockpos = new BlockPos(x, y, z);
+        var fluidstate = blockaccessIn.getFluidState(blockpos);
+        var blockstate = blockaccessIn.getBlockState(blockpos);
+        if (fluidstate.isEmpty() && blockstate.canPathfindThrough(blockaccessIn, blockpos.down(), NavigationType.WATER) && blockstate.isAir()) {
+            return PathNodeType.BREACH;
         } else {
-            return fluidstate.is(FluidTags.LAVA) || fluidstate.is(FluidTags.WATER) && blockstate.isPathfindable(blockaccessIn, blockpos, PathComputationType.WATER) ? BlockPathTypes.WATER : BlockPathTypes.BLOCKED;
+            return fluidstate.isIn(FluidTags.LAVA) || fluidstate.isIn(FluidTags.WATER) && blockstate.canPathfindThrough(blockaccessIn, blockpos, NavigationType.WATER) ? PathNodeType.WATER : PathNodeType.BLOCKED;
         }
     }
 
     @Nullable
-    private Node getWaterNode(int p_186328_1_, int p_186328_2_, int p_186328_3_) {
-        BlockPathTypes pathnodetype = this.isFree(p_186328_1_, p_186328_2_, p_186328_3_);
-        return pathnodetype != BlockPathTypes.BREACH && pathnodetype != BlockPathTypes.WATER && pathnodetype != BlockPathTypes.LAVA ? null : this.getNode(p_186328_1_, p_186328_2_, p_186328_3_);
+    private PathNode getWaterNode(int p_186328_1_, int p_186328_2_, int p_186328_3_) {
+        var pathnodetype = this.isFree(p_186328_1_, p_186328_2_, p_186328_3_);
+        return pathnodetype != PathNodeType.BREACH && pathnodetype != PathNodeType.WATER && pathnodetype != PathNodeType.LAVA ? null : this.getNode(p_186328_1_, p_186328_2_, p_186328_3_);
     }
 
     /**
      * Returns a mapped point or creates and adds one
      */
     @Nullable
-    protected Node getNode(int x, int y, int z) {
-        Node pathpoint = null;
-        BlockPathTypes pathnodetype = this.getBlockPathType(this.mob.level(), x, y, z);
-        float f = this.mob.getPathfindingMalus(pathnodetype);
+    @Override
+    protected PathNode getNode(int x, int y, int z) {
+        PathNode pathpoint = null;
+        var pathnodetype = this.getDefaultNodeType(this.entity.getWorld(), x, y, z);
+        float f = this.entity.getPathfindingPenalty(pathnodetype);
         if (f >= 0.0F) {
             pathpoint = super.getNode(x, y, z);
             pathpoint.type = pathnodetype;
-            pathpoint.costMalus = Math.max(pathpoint.costMalus, f);
-            if (this.level.getFluidState(new BlockPos(x, y, z)).isEmpty()) {
-                pathpoint.costMalus += 8.0F;
+            pathpoint.penalty = Math.max(pathpoint.penalty, f);
+            if (this.cachedWorld.getFluidState(new BlockPos(x, y, z)).isEmpty()) {
+                pathpoint.penalty += 8.0F;
             }
         }
 
-        return pathnodetype == BlockPathTypes.OPEN ? pathpoint : pathpoint;
+        return pathpoint;
     }
 
-    private BlockPathTypes isFree(int p_186327_1_, int p_186327_2_, int p_186327_3_) {
-        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
+    private PathNodeType isFree(int p_186327_1_, int p_186327_2_, int p_186327_3_) {
+        var blockpos$mutable = new BlockPos.Mutable();
 
-        for(int i = p_186327_1_; i < p_186327_1_ + this.entityWidth; ++i) {
-            for(int j = p_186327_2_; j < p_186327_2_ + this.entityHeight; ++j) {
-                for(int k = p_186327_3_; k < p_186327_3_ + this.entityDepth; ++k) {
-                    FluidState fluidstate = this.level.getFluidState(blockpos$mutable.set(i, j, k));
-                    BlockState blockstate = this.level.getBlockState(blockpos$mutable.set(i, j, k));
-                    if (fluidstate.isEmpty() && blockstate.isPathfindable(this.level, blockpos$mutable.below(), PathComputationType.WATER) && blockstate.isAir()) {
-                        return BlockPathTypes.BREACH;
+        for(int i = p_186327_1_; i < p_186327_1_ + this.entityBlockXSize; ++i) {
+            for(int j = p_186327_2_; j < p_186327_2_ + this.entityBlockYSize; ++j) {
+                for(int k = p_186327_3_; k < p_186327_3_ + this.entityBlockZSize; ++k) {
+                    var fluidstate = this.cachedWorld.getFluidState(blockpos$mutable.set(i, j, k));
+                    var blockstate = this.cachedWorld.getBlockState(blockpos$mutable.set(i, j, k));
+                    if (fluidstate.isEmpty() && blockstate.canPathfindThrough(this.cachedWorld, blockpos$mutable.down(), NavigationType.WATER) && blockstate.isAir()) {
+                        return PathNodeType.BREACH;
                     }
 
-                    if (!fluidstate.is(FluidTags.WATER) && !fluidstate.is(FluidTags.LAVA)) {
-                        return BlockPathTypes.BLOCKED;
+                    if (!fluidstate.isIn(FluidTags.WATER) && !fluidstate.isIn(FluidTags.LAVA)) {
+                        return PathNodeType.BLOCKED;
                     }
                 }
             }
         }
 
-        BlockState blockstate1 = this.level.getBlockState(blockpos$mutable);
-        return blockstate1.getFluidState().is(FluidTags.LAVA) || blockstate1.isPathfindable(this.level, blockpos$mutable, PathComputationType.WATER) ? BlockPathTypes.WATER : BlockPathTypes.BLOCKED;
+        var blockstate1 = this.cachedWorld.getBlockState(blockpos$mutable);
+        return blockstate1.getFluidState().isIn(FluidTags.LAVA) || blockstate1.canPathfindThrough(this.cachedWorld, blockpos$mutable, NavigationType.WATER) ? PathNodeType.WATER : PathNodeType.BLOCKED;
     }
 }

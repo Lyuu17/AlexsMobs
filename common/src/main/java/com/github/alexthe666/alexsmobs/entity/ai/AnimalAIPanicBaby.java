@@ -1,18 +1,19 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
-import net.minecraft.world.entity.ai.goal.PanicGoal;
-import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.entity.ai.goal.EscapeDangerGoal;
+import net.minecraft.entity.passive.AnimalEntity;
 
-public class AnimalAIPanicBaby extends PanicGoal {
+public class AnimalAIPanicBaby extends EscapeDangerGoal {
 
-    private final Animal animal;
+    private final AnimalEntity animal;
 
-    public AnimalAIPanicBaby(Animal creatureIn, double speed) {
+    public AnimalAIPanicBaby(AnimalEntity creatureIn, double speed) {
         super(creatureIn, speed);
         this.animal = creatureIn;
     }
 
-    public boolean canUse() {
-        return animal.isBaby() && super.canUse();
+    @Override
+    public boolean canStart() {
+        return animal.isBaby() && super.canStart();
     }
 }

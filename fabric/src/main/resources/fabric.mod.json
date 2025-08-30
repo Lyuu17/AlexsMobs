@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "alexsmobs",
+  "version": "${version}",
+  "name": "Alex's Mobs",
+  "description": "",
+  "authors": [
+    "Alexthe666 (Origin Author)",
+    "lucx_r17"
+  ],
+  "contact": {},
+  "license": "LGPL-3.0",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.github.alexthe666.alexsmobs.fabric.AlexsMobsFabric"
+    ],
+    "client": [
+      "com.github.alexthe666.alexsmobs.fabric.AlexsMobsFabricClient"
+    ]
+  },
+  "custom": {},
+  "mixins": [
+    "alexsmobs.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "1.20.1",
+    "jupiter": ">=2",
+    "uranus": ">=2"
+  }
+}

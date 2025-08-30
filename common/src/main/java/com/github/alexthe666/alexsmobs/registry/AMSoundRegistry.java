@@ -3,13 +3,13 @@ package com.github.alexthe666.alexsmobs.registry;
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
 
 public class AMSoundRegistry {
 
-    public static final DeferredRegister<SoundEvent> DEF_REG = DeferredRegister.create(AlexsMobs.MOD_ID, Registries.SOUND_EVENT);
+    public static final DeferredRegister<SoundEvent> DEF_REG = DeferredRegister.create(AlexsMobs.MOD_ID, RegistryKeys.SOUND_EVENT);
 
     public static final RegistrySupplier<SoundEvent> GRIZZLY_BEAR_IDLE = createSoundEvent("grizzly_bear_idle");
     public static final RegistrySupplier<SoundEvent> GRIZZLY_BEAR_HURT = createSoundEvent("grizzly_bear_hurt");
@@ -229,6 +229,6 @@ public class AMSoundRegistry {
     public static final RegistrySupplier<SoundEvent> END_PIRATE_DOOR = createSoundEvent("end_pirate_door");
     
     private static RegistrySupplier<SoundEvent> createSoundEvent(final String soundName) {
-        return DEF_REG.register(soundName, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(AlexsMobs.MOD_ID, soundName)));
+        return DEF_REG.register(soundName, () -> SoundEvent.of(new Identifier(AlexsMobs.MOD_ID, soundName)));
     }
 }

@@ -1,38 +1,39 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.passive.AnimalEntity;
 
-import java.util.Iterator;
 import java.util.List;
 
-public class AnimalAIFollowParentRanged  extends Goal {
-    private final Animal childAnimal;
-    private Animal parentAnimal;
+public class AnimalAIFollowParentRanged extends Goal {
+    private final AnimalEntity childAnimal;
+    private AnimalEntity parentAnimal;
     private final double moveSpeed;
     private int delayCounter;
     private float range = 8F;
     private float minDist = 3F;
-    public AnimalAIFollowParentRanged(Animal p_i1626_1_, double p_i1626_2_, float range, float minDist) {
-        this.childAnimal = p_i1626_1_;
+
+    public AnimalAIFollowParentRanged(AnimalEntity animal, double p_i1626_2_, float range, float minDist) {
+        this.childAnimal = animal;
         this.moveSpeed = p_i1626_2_;
         this.range = range;
         this.minDist = minDist;
     }
 
-    public boolean canUse() {
-        if (this.childAnimal.getAge() >= 0) {
+    @Override
+    public boolean canStart() {
+        if (this.childAnimal.getBreedingAge() >= 0) {
             return false;
         } else {
-            List<? extends Animal> lvt_1_1_ = this.childAnimal.level().getEntitiesOfClass(this.childAnimal.getClass(), this.childAnimal.getBoundingBox().inflate(range, range * 0.5D, range));
-            Animal lvt_2_1_ = null;
+            List<? extends AnimalEntity> lvt_1_1_ = this.childAnimal.getWorld().getNonSpectatingEntities(this.childAnimal.getClass(), this.childAnimal.getBoundingBox().expand(range, range * 0.5D, range));
+            AnimalEntity lvt_2_1_ = null;
             double lvt_3_1_ = 1.7976931348623157E308D;
-            Iterator var5 = lvt_1_1_.iterator();
+            var var5 = lvt_1_1_.iterator();
 
             while(var5.hasNext()) {
-                Animal lvt_6_1_ = (Animal)var5.next();
-                if (lvt_6_1_.getAge() >= 0) {
-                    double lvt_7_1_ = this.childAnimal.distanceToSqr(lvt_6_1_);
+                var lvt_6_1_ = (AnimalEntity)var5.next();
+                if (lvt_6_1_.getBreedingAge() >= 0) {
+                    double lvt_7_1_ = this.childAnimal.squaredDistanceTo(lvt_6_1_);
                     if (lvt_7_1_ <= lvt_3_1_) {
                         lvt_3_1_ = lvt_7_1_;
                         lvt_2_1_ = lvt_6_1_;
@@ -51,29 +52,33 @@ public class AnimalAIFollowParentRanged  extends Goal {
         }
     }
 
-    public boolean canContinueToUse() {
-        if (this.childAnimal.getAge() >= 0) {
+    @Override
+    public boolean shouldContinue() {
+        if (this.childAnimal.getBreedingAge() >= 0) {
             return false;
         } else if (!this.parentAnimal.isAlive()) {
             return false;
         } else {
-            double lvt_1_1_ = this.childAnimal.distanceToSqr(this.parentAnimal);
+            double lvt_1_1_ = this.childAnimal.squaredDistanceTo(this.parentAnimal);
             return lvt_1_1_ >= minDist * minDist && lvt_1_1_ <= range * range;
         }
     }
 
+    @Override
     public void start() {
         this.delayCounter = 0;
     }
 
+    @Override
     public void stop() {
         this.parentAnimal = null;
     }
 
+    @Override
     public void tick() {
         if (--this.delayCounter <= 0) {
             this.delayCounter = 10;
-            this.childAnimal.getNavigation().moveTo(this.parentAnimal, this.moveSpeed);
+            this.childAnimal.getNavigation().startMovingTo(this.parentAnimal, this.moveSpeed);
         }
     }
 }

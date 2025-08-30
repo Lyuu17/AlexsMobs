@@ -2,33 +2,31 @@ package com.github.alexthe666.alexsmobs.world;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
-import net.minecraft.world.level.levelgen.NoiseSettings;
-import net.minecraft.world.level.levelgen.RandomState;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.HeightLimitView;
+import net.minecraft.world.PersistentState;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+import net.minecraft.world.gen.noise.NoiseConfig;
 import org.jetbrains.annotations.NotNull;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class AMWorldData extends SavedData {
+public class AMWorldData extends PersistentState {
 
     private static final String IDENTIFIER = "alexsmobs_world_data";
-    private ServerLevel level;
+    private ServerWorld level;
     private int tickCounter;
     private int beachedCachalotSpawnDelay;
     private int beachedCachalotSpawnChance;
@@ -38,23 +36,23 @@ public class AMWorldData extends SavedData {
     private int pupfishSeedAddition = 0;
     private long startPupfishSearchTimestamp = -1;
     private boolean noPupfishChunk;
-    private static final Map<Level, AMWorldData> dataMap = new HashMap<>();
-    private static final Predicate<BlockState> IS_WATER = (state -> state.is(Blocks.WATER));
+    private static final Map<World, AMWorldData> dataMap = new HashMap<>();
+    private static final Predicate<BlockState> IS_WATER = (state -> state.isOf(Blocks.WATER));
 
     public AMWorldData() {
         super();
     }
 
-    public static AMWorldData get(Level world) {
-        if (world instanceof ServerLevel) {
-            ServerLevel overworld = world.getServer().getLevel(Level.OVERWORLD);
-            AMWorldData fromMap = dataMap.get(overworld);
+    public static AMWorldData get(World world) {
+        if (world instanceof ServerWorld) {
+            var overworld = world.getServer().getWorld(World.OVERWORLD);
+            var fromMap = dataMap.get(overworld);
             if(fromMap == null){
-                DimensionDataStorage storage = overworld.getDataStorage();
-                AMWorldData data = storage.computeIfAbsent(AMWorldData::load, AMWorldData::new, IDENTIFIER);
+                var storage = overworld.getPersistentStateManager();
+                var data = storage.getOrCreate(AMWorldData::load, AMWorldData::new, IDENTIFIER);
                 if (data != null) {
-                    data.level =  overworld;
-                    data.setDirty();
+                    data.level = overworld;
+                    data.markDirty();
                 }
                 dataMap.put(world, data);
                 return data;
@@ -64,8 +62,8 @@ public class AMWorldData extends SavedData {
         return null;
     }
 
-    public static AMWorldData load(CompoundTag nbt) {
-        AMWorldData data = new AMWorldData();
+    public static AMWorldData load(NbtCompound nbt) {
+        var data = new AMWorldData();
         if (nbt.contains("BeachedCachalotSpawnDelay", 99)) {
             data.beachedCachalotSpawnDelay = nbt.getInt("BeachedCachalotSpawnDelay");
         }
@@ -104,16 +102,13 @@ public class AMWorldData extends SavedData {
         this.beachedCachalotID = id;
     }
 
-    public void debug() {
-    }
-
     public void tick() {
         ++this.tickCounter;
     }
 
     @NotNull
     @Override
-    public CompoundTag save(CompoundTag compound) {
+    public NbtCompound writeNbt(NbtCompound compound) {
         compound.putInt("beachedCachalotSpawnDelay", this.beachedCachalotSpawnDelay);
         compound.putInt("beachedCachalotSpawnChance", this.beachedCachalotSpawnChance);
         if (this.beachedCachalotID != null) {
@@ -134,11 +129,9 @@ public class AMWorldData extends SavedData {
         return pupfishChunk;
     }
 
-
-
     public boolean isInPupfishChunk(BlockPos pos) {
         if(pupfishChunk != null){
-            return pos.getX() >= pupfishChunk.getMinBlockX() && pos.getX() <= pupfishChunk.getMaxBlockX() && pos.getZ() >= pupfishChunk.getMinBlockZ() && pos.getZ() <= pupfishChunk.getMaxBlockZ();
+            return pos.getX() >= pupfishChunk.getStartX() && pos.getX() <= pupfishChunk.getEndX() && pos.getZ() >= pupfishChunk.getStartZ() && pos.getZ() <= pupfishChunk.getEndZ();
         }
         return false;
     }
@@ -162,27 +155,27 @@ public class AMWorldData extends SavedData {
     }
 
     private void searchForPupfishChunk() {
-        if (level != null && level.getChunkSource().getGenerator() instanceof NoiseBasedChunkGenerator chunkGenerator) {
-            Random random = new Random(level.getSeed() + pupfishSeedAddition);
+        if (level != null && level.getChunkManager().getChunkGenerator() instanceof NoiseChunkGenerator chunkGenerator) {
+            var random = new Random(level.getSeed() + pupfishSeedAddition);
             int randomXCoord = random.nextInt(AMConfig.pupfishChunkSpawnDistance * 2) - AMConfig.pupfishChunkSpawnDistance;
             int randomZCoord = random.nextInt(AMConfig.pupfishChunkSpawnDistance * 2) - AMConfig.pupfishChunkSpawnDistance;
-            ChunkPos checkPos = new ChunkPos(randomXCoord >> 4, randomZCoord >> 4);
-            BlockPos center = new BlockPos(checkPos.getMiddleBlockX(), chunkGenerator.getSeaLevel(), checkPos.getMiddleBlockZ());
-            int maxWater = getWaterHeight(chunkGenerator, level.getChunkSource().randomState(), center.getX(), center.getZ(), level);
+            var checkPos = new ChunkPos(randomXCoord >> 4, randomZCoord >> 4);
+            var center = new BlockPos(checkPos.getCenterX(), chunkGenerator.getSeaLevel(), checkPos.getCenterZ());
+            int maxWater = getWaterHeight(chunkGenerator, level.getChunkManager().getNoiseConfig(), center.getX(), center.getZ(), level);
             if(maxWater > 31 && maxWater < 63){
                 pupfishChunk = checkPos;
-                AlexsMobs.LOGGER.info("Found Pupfish chunk at {} ~ {} after {} tries", pupfishChunk.getMaxBlockX(), pupfishChunk.getMinBlockZ(), pupfishSeedAddition);
+                AlexsMobs.LOGGER.info("Found Pupfish chunk at {} ~ {} after {} tries", pupfishChunk.getEndX(), pupfishChunk.getStartZ(), pupfishSeedAddition);
             }
         }
         pupfishSeedAddition++;
     }
 
-    public int getWaterHeight(NoiseBasedChunkGenerator generator, RandomState rand, int x, int z, LevelHeightAccessor level) {
-        NoiseSettings noisesettings = generator.settings.value().noiseSettings();
-        int i = Math.max(noisesettings.minY(), level.getMinBuildHeight());
-        int j = Math.min(noisesettings.minY() + noisesettings.height(), level.getMaxBuildHeight());
-        int k = Mth.floorDiv(i, noisesettings.getCellHeight());
-        int l = Mth.floorDiv(j - i, noisesettings.getCellHeight());
-        return generator.iterateNoiseColumn(level, rand, x, z, null, IS_WATER).orElse(level.getMinBuildHeight());
+    public int getWaterHeight(NoiseChunkGenerator generator, NoiseConfig rand, int x, int z, HeightLimitView level) {
+        var noiseSettings = generator.getSettings().value().generationShapeConfig();
+        int i = Math.max(noiseSettings.minimumY(), level.getBottomY());
+        int j = Math.min(noiseSettings.minimumY() + noiseSettings.height(), level.getTopY());
+        int k = MathHelper.floorDiv(i, noiseSettings.verticalCellBlockCount());
+        int l = MathHelper.floorDiv(j - i, noiseSettings.verticalCellBlockCount());
+        return generator.sampleHeightmap(level, rand, x, z, null, IS_WATER).orElse(level.getBottomY());
     }
 }

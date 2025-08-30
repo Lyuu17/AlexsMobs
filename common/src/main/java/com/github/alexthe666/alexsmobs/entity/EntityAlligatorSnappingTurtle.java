@@ -6,55 +6,50 @@ import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMItemRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMTagRegistry;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.BreedGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.PathNodeType;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.PassiveEntity;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.*;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public abstract class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquatic, Shearable {
+public abstract class EntityAlligatorSnappingTurtle extends TameableEntity implements ISemiAquatic, Shearable {
 
-    public static final Predicate<LivingEntity> TARGET_PRED = (animal) -> !(animal instanceof EntityAlligatorSnappingTurtle) && !(animal instanceof ArmorStand) && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(animal) && animal.isAlive();
-    private static final EntityDataAccessor<Byte> CLIMBING = SynchedEntityData.defineId(EntityAlligatorSnappingTurtle.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<Integer> MOSS = SynchedEntityData.defineId(EntityAlligatorSnappingTurtle.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Boolean> WAITING = SynchedEntityData.defineId(EntityAlligatorSnappingTurtle.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> ATTACK_TARGET_FLAG = SynchedEntityData.defineId(EntityAlligatorSnappingTurtle.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> LUNGE_FLAG = SynchedEntityData.defineId(EntityAlligatorSnappingTurtle.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Float> TURTLE_SCALE = SynchedEntityData.defineId(EntityAlligatorSnappingTurtle.class, EntityDataSerializers.FLOAT);
+    public static final Predicate<LivingEntity> TARGET_PRED = (animal) -> !(animal instanceof EntityAlligatorSnappingTurtle) && !(animal instanceof ArmorStandEntity) && EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(animal) && animal.isAlive();
+    private static final TrackedData<Byte> CLIMBING = DataTracker.registerData(EntityAlligatorSnappingTurtle.class, TrackedDataHandlerRegistry.BYTE);
+    private static final TrackedData<Integer> MOSS = DataTracker.registerData(EntityAlligatorSnappingTurtle.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final TrackedData<Boolean> WAITING = DataTracker.registerData(EntityAlligatorSnappingTurtle.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> ATTACK_TARGET_FLAG = DataTracker.registerData(EntityAlligatorSnappingTurtle.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> LUNGE_FLAG = DataTracker.registerData(EntityAlligatorSnappingTurtle.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Float> TURTLE_SCALE = DataTracker.registerData(EntityAlligatorSnappingTurtle.class, TrackedDataHandlerRegistry.FLOAT);
     public float openMouthProgress;
     public float prevOpenMouthProgress;
     public float attackProgress;
@@ -65,11 +60,16 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
     private int timeUntilWait = 0;
     private int mossTime = 0;
 
-    protected EntityAlligatorSnappingTurtle(EntityType<? extends Animal> type, Level worldIn) {
+    protected EntityAlligatorSnappingTurtle(EntityType<? extends EntityAlligatorSnappingTurtle> type, World worldIn) {
         super(type, worldIn);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
-        this.setMaxUpStep(1);
+        this.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
+        this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 0.0F);
+        this.setStepHeight(1);
+    }
+
+    @Override
+    public EntityView method_48926() {
+        return this.getWorld();
     }
 
     @Override
@@ -87,76 +87,76 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
         return AMSoundRegistry.ALLIGATOR_SNAPPING_TURTLE_HURT.get();
     }
 
-    public static boolean canTurtleSpawn(EntityType<?> type, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
-        boolean spawnBlock = worldIn.getBlockState(pos.below()).is(AMTagRegistry.ALLIGATOR_SNAPPING_TURTLE_SPAWNS);
+    public static boolean canTurtleSpawn(EntityType<?> type, WorldAccess worldIn, SpawnReason reason, BlockPos pos, Random randomIn) {
+        boolean spawnBlock = worldIn.getBlockState(pos.down()).isIn(AMTagRegistry.ALLIGATOR_SNAPPING_TURTLE_SPAWNS);
         return spawnBlock && pos.getY() < worldIn.getSeaLevel() + 4;
     }
 
     @Override
-    public boolean checkSpawnRules(@NotNull LevelAccessor worldIn, @NotNull MobSpawnType spawnReasonIn) {
+    public boolean canSpawn(WorldAccess worldIn, SpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.alligatorSnappingTurtleSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static AttributeSupplier.Builder bakeAttributes() {
-        return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 18.0D)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 0.7D)
-                .add(Attributes.ARMOR, 8D)
-                .add(Attributes.FOLLOW_RANGE, 16.0D)
-                .add(Attributes.ATTACK_DAMAGE, 4.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.2F);
+    public static DefaultAttributeContainer.Builder createAttributes() {
+        return MobEntity.createLivingAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 18.0D)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.7D)
+                .add(EntityAttributes.GENERIC_ARMOR, 8D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2F);
     }
 
     @Override
-    public float getScale() {
+    public float getScaleFactor() {
         return this.isBaby() ? 0.3F : 1.0F;
     }
 
     @Override
-    protected void registerGoals() {
-        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.3D, false));
-        this.goalSelector.addGoal(2, new AnimalAIFindWater(this));
-        this.goalSelector.addGoal(2, new AnimalAILeaveWater(this));
-        this.goalSelector.addGoal(3, new BottomFeederAIWander(this, 1.0D, 120, 150, 10));
-        this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
-        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this) {
-            public boolean canContinueToUse() {
-                return chaseTime >= 0 && super.canContinueToUse();
+    protected void initGoals() {
+        this.goalSelector.add(1, new MeleeAttackGoal(this, 1.3D, false));
+        this.goalSelector.add(2, new AnimalAIFindWater(this));
+        this.goalSelector.add(2, new AnimalAILeaveWater(this));
+        this.goalSelector.add(3, new BottomFeederAIWander(this, 1.0D, 120, 150, 10));
+        this.goalSelector.add(3, new AnimalMateGoal(this, 1.0D));
+        this.goalSelector.add(5, new LookAroundGoal(this));
+        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 6.0F));
+        this.targetSelector.add(1, (new RevengeGoal(this) {
+            public boolean canStart() {
+                return chaseTime >= 0 && super.canStart();
             }
         }));
-        this.targetSelector.addGoal(2, new EntityAINearestTarget3D(this, LivingEntity.class, 2, false, true, TARGET_PRED) {
-            protected @NotNull AABB getTargetSearchArea(double targetDistance) {
-                return this.mob.getBoundingBox().inflate(0.5D, 2D, 0.5D);
+        this.targetSelector.add(2, new EntityAINearestTarget3D<>(this, LivingEntity.class, 2, false, true, TARGET_PRED) {
+            protected @NotNull Box getSearchBox(double targetDistance) {
+                return this.mob.getBoundingBox().expand(0.5D, 2D, 0.5D);
             }
         });
     }
 
     @Override
-    public boolean isFood(ItemStack stack) {
-        return stack.is(AMTagRegistry.ALLIGATOR_SNAPPING_TURTLE_BREEDABLES);
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.isIn(AMTagRegistry.ALLIGATOR_SNAPPING_TURTLE_BREEDABLES);
     }
 
     @Override
-    public boolean onClimbable() {
+    public boolean isClimbing() {
         return this.isBesideClimbableBlock();
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean tryAttack(Entity entityIn) {
         return true;
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CLIMBING, (byte) 0);
-        this.entityData.define(MOSS, 0);
-        this.entityData.define(TURTLE_SCALE, 1F);
-        this.entityData.define(WAITING, false);
-        this.entityData.define(ATTACK_TARGET_FLAG, false);
-        this.entityData.define(LUNGE_FLAG, false);
+    protected void initDataTracker() {
+        super.initDataTracker();
+        this.dataTracker.startTracking(CLIMBING, (byte) 0);
+        this.dataTracker.startTracking(MOSS, 0);
+        this.dataTracker.startTracking(TURTLE_SCALE, 1F);
+        this.dataTracker.startTracking(WAITING, false);
+        this.dataTracker.startTracking(ATTACK_TARGET_FLAG, false);
+        this.dataTracker.startTracking(LUNGE_FLAG, false);
     }
 
     @Override
@@ -164,8 +164,8 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
         super.tick();
         prevOpenMouthProgress = openMouthProgress;
         prevAttackProgress = attackProgress;
-        final boolean attack = this.entityData.get(LUNGE_FLAG);
-        final boolean open = this.isWaiting() || this.entityData.get(ATTACK_TARGET_FLAG) && !attack;
+        final boolean attack = this.dataTracker.get(LUNGE_FLAG);
+        final boolean open = this.isWaiting() || this.dataTracker.get(ATTACK_TARGET_FLAG) && !attack;
 
         if (attack) {
             if (attackProgress < 5F)
@@ -183,9 +183,9 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
                 openMouthProgress--;
         }
 
-        if (this.attackProgress == 4 && this.getTarget() != null && this.isAlive() && this.hasLineOfSight(this.getTarget()) && this.distanceTo(this.getTarget()) < 2.3F) {
-            final float dmg = this.isBaby() ? 1F : (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue();
-            this.getTarget().hurt(this.damageSources().mobAttack(this), dmg);
+        if (this.attackProgress == 4 && this.getTarget() != null && this.isAlive() && this.canSee(this.getTarget()) && this.distanceTo(this.getTarget()) < 2.3F) {
+            final float dmg = this.isBaby() ? 1F : (float) this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).getBaseValue();
+            this.getTarget().damage(this.getDamageSources().mobAttack(this), dmg);
         }
 
         if (this.attackProgress > 4)
@@ -197,8 +197,8 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
         if (chaseTime < 0)
             chaseTime++;
 
-        if (!this.level().isClientSide) {
-            this.setBesideClimbableBlock(this.horizontalCollision && this.isInWater());
+        if (!this.getWorld().isClient()) {
+            this.setBesideClimbableBlock(this.horizontalCollision && this.isTouchingWater());
             if (this.isWaiting()) {
                 waitTime++;
                 timeUntilWait = 1500;
@@ -209,38 +209,37 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
                 timeUntilWait--;
                 waitTime = 0;
             }
-            if ((this.getTarget() == null || !this.getTarget().isAlive()) && timeUntilWait <= 0 && this.isInWater()) {
+            if ((this.getTarget() == null || !this.getTarget().isAlive()) && timeUntilWait <= 0 && this.isTouchingWater()) {
                 this.setWaiting(true);
             }
             if (this.getTarget() != null && biteTick == 0) {
                 this.setWaiting(false);
                 chaseTime++;
-                this.entityData.set(ATTACK_TARGET_FLAG, true);
-                this.lookAt(this.getTarget(), 360, 40);
-                this.yBodyRot = this.getYRot();
-                if (openMouthProgress > 4 && this.hasLineOfSight(this.getTarget()) && this.distanceTo(this.getTarget()) < 2.3F) {
-                    this.entityData.set(LUNGE_FLAG, true);
+                this.dataTracker.set(ATTACK_TARGET_FLAG, true);
+                this.lookAtEntity(this.getTarget(), 360, 40);
+                this.bodyYaw = this.getYaw();
+                if (openMouthProgress > 4 && this.canSee(this.getTarget()) && this.distanceTo(this.getTarget()) < 2.3F) {
+                    this.dataTracker.set(LUNGE_FLAG, true);
                 }
-                if (chaseTime > 40 && this.distanceTo(this.getTarget()) > (this.getTarget() instanceof Player ? 5 : 10)) {
+                if (chaseTime > 40 && this.distanceTo(this.getTarget()) > (this.getTarget() instanceof PlayerEntity ? 5 : 10)) {
                     chaseTime = -50;
                     this.setTarget(null);
-                    this.setLastHurtByMob(null);
-                    this.setLastHurtMob(null);
-                    this.lastHurtByPlayer = null;
+                    this.setAttacker(null);
+                    this.onAttacking(null);
+                    this.attackingPlayer = null;
                 }
             } else {
-                this.entityData.set(ATTACK_TARGET_FLAG, false);
-                this.entityData.set(LUNGE_FLAG, false);
+                this.dataTracker.set(ATTACK_TARGET_FLAG, false);
+                this.dataTracker.set(LUNGE_FLAG, false);
             }
             mossTime++;
-            if (this.isInWater() && mossTime > 12000) {
+            if (this.isTouchingWater() && mossTime > 12000) {
                 mossTime = 0;
                 this.setMoss(Math.min(10, this.getMoss() + 1));
             }
         }
     }
 
-    @Nullable
     @Override
     public LivingEntity getTarget() {
         return this.chaseTime < 0 ? null : super.getTarget();
@@ -255,66 +254,64 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
         }
     }
 
-    @Nullable
     @Override
-    public LivingEntity getLastHurtByMob() {
-        return this.chaseTime < 0 ? null : super.getLastHurtByMob();
+    public LivingEntity getAttacker() {
+        return this.chaseTime < 0 ? null : super.getAttacker();
     }
 
     @Override
-    public void setLastHurtByMob(@Nullable LivingEntity entitylivingbaseIn) {
+    public void setAttacker(LivingEntity entitylivingbaseIn) {
         if (this.chaseTime >= 0) {
-            super.setLastHurtByMob(entitylivingbaseIn);
+            super.setAttacker(entitylivingbaseIn);
         } else {
-            super.setLastHurtByMob(null);
+            super.setAttacker(null);
         }
     }
 
-    @NotNull
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public EntityData initialize(ServerWorldAccess worldIn, LocalDifficulty difficultyIn, SpawnReason reason, EntityData spawnDataIn, NbtCompound dataTag) {
         this.setMoss(random.nextInt(6));
         this.setTurtleScale(0.8F + random.nextFloat() * 0.2F);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.initialize(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     public float getTurtleScale() {
-        return this.entityData.get(TURTLE_SCALE);
+        return this.dataTracker.get(TURTLE_SCALE);
     }
 
     public void setTurtleScale(float scale) {
-        this.entityData.set(TURTLE_SCALE, scale);
+        this.dataTracker.set(TURTLE_SCALE, scale);
     }
 
     @NotNull
     @Override
-    protected PathNavigation createNavigation(@NotNull Level worldIn) {
+    protected EntityNavigation createNavigation(@NotNull World worldIn) {
         return new SemiAquaticPathNavigator(EntityAlligatorSnappingTurtle.this, worldIn) {
             public boolean isStableDestination(BlockPos pos) {
-                return this.level.getBlockState(pos).getFluidState().isEmpty();
+                return this.world.getBlockState(pos).getFluidState().isEmpty();
             }
         };
     }
 
     public boolean isWaiting() {
-        return this.entityData.get(WAITING);
+        return this.dataTracker.get(WAITING);
     }
 
     public void setWaiting(boolean sit) {
-        this.entityData.set(WAITING, sit);
+        this.dataTracker.set(WAITING, sit);
     }
 
     public int getMoss() {
-        return this.entityData.get(MOSS);
+        return this.dataTracker.get(MOSS);
     }
 
     public void setMoss(int moss) {
-        this.entityData.set(MOSS, moss);
+        this.dataTracker.set(MOSS, moss);
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    public void writeCustomDataToNbt(NbtCompound compound) {
+        super.writeCustomDataToNbt(compound);
         compound.putBoolean("Waiting", this.isWaiting());
         compound.putInt("MossLevel", this.getMoss());
         compound.putFloat("TurtleScale", this.getTurtleScale());
@@ -324,8 +321,8 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readCustomDataFromNbt(NbtCompound compound) {
+        super.readCustomDataFromNbt(compound);
         this.setWaiting(compound.getBoolean("Waiting"));
         this.setMoss(compound.getInt("MossLevel"));
         this.setTurtleScale(compound.getFloat("TurtleScale"));
@@ -355,48 +352,48 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
+    public boolean canBreatheInWater() {
         return true;
     }
 
     @Override
-    public float getWalkTargetValue(BlockPos pos, LevelReader worldIn) {
-        return worldIn.getFluidState(pos.below()).isEmpty() && worldIn.getFluidState(pos).is(FluidTags.WATER)
+    public float getPathfindingFavor(BlockPos pos, WorldView worldIn) {
+        return worldIn.getFluidState(pos.down()).isEmpty() && worldIn.getFluidState(pos).isIn(FluidTags.WATER)
                 ? 10.0F
-                : super.getWalkTargetValue(pos, worldIn);
+                : super.getPathfindingFavor(pos, worldIn);
     }
 
     public boolean isBesideClimbableBlock() {
-        return (this.entityData.get(CLIMBING) & 1) != 0;
+        return (this.dataTracker.get(CLIMBING) & 1) != 0;
     }
 
     public void setBesideClimbableBlock(boolean climbing) {
-        byte b0 = this.entityData.get(CLIMBING);
+        byte b0 = this.dataTracker.get(CLIMBING);
         if (climbing) {
             b0 = (byte) (b0 | 1);
         } else {
             b0 = (byte) (b0 & -2);
         }
 
-        this.entityData.set(CLIMBING, b0);
+        this.dataTracker.set(CLIMBING, b0);
     }
 
     @Override
-    public boolean checkSpawnObstruction(LevelReader worldIn) {
-        return worldIn.isUnobstructed(this);
+    public boolean canSpawn(WorldView worldIn) {
+        return worldIn.doesNotIntersectEntities(this);
     }
 
     @Override
-    public void travel(@NotNull Vec3 travelVector) {
-        if (this.isEffectiveAi() && this.isInWater()) {
-            this.moveRelative(this.getSpeed(), travelVector);
-            this.move(MoverType.SELF, this.getDeltaMovement());
+    public void travel(@NotNull Vec3d travelVector) {
+        if (this.canMoveVoluntarily() && this.isTouchingWater()) {
+            this.updateVelocity(this.getMovementSpeed(), travelVector);
+            this.move(MovementType.SELF, this.getVelocity());
             if (this.jumping) {
-                this.setDeltaMovement(this.getDeltaMovement().scale(1D));
-                this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.72D, 0.0D));
+                this.setVelocity(this.getVelocity().multiply(1D));
+                this.setVelocity(this.getVelocity().add(0.0D, 0.72D, 0.0D));
             } else {
-                this.setDeltaMovement(this.getDeltaMovement().scale(0.4D));
-                this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.08D, 0.0D));
+                this.setVelocity(this.getVelocity().multiply(0.4D));
+                this.setVelocity(this.getVelocity().add(0.0D, -0.08D, 0.0D));
             }
 
         } else {
@@ -405,19 +402,19 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
     }
 
     @Override
-    public boolean readyForShearing() {
+    public boolean isShearable() {
         return this.isAlive() && this.getMoss() > 0;
     }
 
     @Override
-    public void shear(@NotNull SoundSource category) {
-        this.level().playSound(null, this, SoundEvents.SHEEP_SHEAR, category, 1.0F, 1.0F);
-        this.gameEvent(GameEvent.ENTITY_INTERACT);
-        if (!this.level().isClientSide()) {
+    public void sheared(SoundCategory category) {
+        this.getWorld().playSoundFromEntity(null, this, SoundEvents.ENTITY_SHEEP_SHEAR, category, 1.0F, 1.0F);
+        this.emitGameEvent(GameEvent.ENTITY_INTERACT);
+        if (!this.getWorld().isClient()) {
             if (random.nextFloat() < this.getMoss() * 0.05F) {
-                this.spawnAtLocation(AMItemRegistry.SPIKED_SCUTE.get());
+                this.dropItem(AMItemRegistry.SPIKED_SCUTE.get());
             } else {
-                this.spawnAtLocation(Items.SEAGRASS);
+                this.dropItem(Items.SEAGRASS);
             }
             this.setMoss(0);
         }
@@ -425,7 +422,7 @@ public abstract class EntityAlligatorSnappingTurtle extends Animal implements IS
 
     @Nullable
     @Override
-    public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.ALLIGATOR_SNAPPING_TURTLE.get().create(p_241840_1_);
+    public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
+        return AMEntityRegistry.ALLIGATOR_SNAPPING_TURTLE.get().create(world);
     }
 }

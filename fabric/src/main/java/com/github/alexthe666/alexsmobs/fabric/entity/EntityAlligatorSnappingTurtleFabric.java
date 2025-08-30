@@ -1,13 +1,12 @@
 package com.github.alexthe666.alexsmobs.fabric.entity;
 
 import com.github.alexthe666.alexsmobs.entity.EntityAlligatorSnappingTurtle;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.level.Level;
+import net.minecraft.entity.EntityType;
+import net.minecraft.world.World;
 
 public class EntityAlligatorSnappingTurtleFabric extends EntityAlligatorSnappingTurtle {
 
-    public EntityAlligatorSnappingTurtleFabric(EntityType<? extends Animal> type, Level worldIn) {
+    public EntityAlligatorSnappingTurtleFabric(EntityType<EntityAlligatorSnappingTurtleFabric> type, World worldIn) {
         super(type, worldIn);
     }
 }
