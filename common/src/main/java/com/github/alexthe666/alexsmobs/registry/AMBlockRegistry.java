@@ -1,6 +1,7 @@
 package com.github.alexthe666.alexsmobs.registry;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
+import com.github.alexthe666.alexsmobs.block.BlockTerrapinEgg;
 import com.github.alexthe666.alexsmobs.block.BlockTriopsEggs;
 import com.github.alexthe666.alexsmobs.item.AMBlockItem;
 import com.github.alexthe666.alexsmobs.item.BlockItemAMRender;
@@ -33,7 +34,7 @@ public class AMBlockRegistry {
 //    public static final RegistrySupplier<Block> CAPSID = registerBlockAndItem("capsid", BlockCapsid::new);
 //    public static final RegistrySupplier<Block> VOID_WORM_BEAK = registerBlockAndItem("void_worm_beak", BlockVoidWormBeak::new);
 //    public static final RegistrySupplier<Block> VOID_WORM_EFFIGY = registerBlockAndItem("void_worm_effigy", BlockVoidWormEffigy::new);
-//    public static final RegistrySupplier<Block> TERRAPIN_EGG = registerBlockAndItem("terrapin_egg", BlockTerrapinEgg::new);
+    public static final RegistrySupplier<Block> TERRAPIN_EGG = registerBlockAndItem("terrapin_egg", BlockTerrapinEgg::new);
 //    public static final RegistrySupplier<Block> RAINBOW_GLASS = registerBlockAndItem("rainbow_glass", BlockRainbowGlass::new);
 //    public static final RegistrySupplier<Block> BISON_FUR_BLOCK = registerBlockAndItem("bison_fur_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BROWN).strength(0.6F, 1.0F).sound(SoundType.WOOL)));
 //    public static final RegistrySupplier<Block> BISON_CARPET = registerBlockAndItem("bison_carpet", BlockBisonCarpet::new);

@@ -4,3 +4,5 @@ accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft
 accessible method net/minecraft/entity/Entity handleFallDamage (FFLnet/minecraft/entity/damage/DamageSource;)Z
 accessible field net/minecraft/world/chunk/ChunkSection biomeContainer Lnet/minecraft/world/chunk/ReadableContainer;
 accessible method net/minecraft/recipe/Ingredient ofEntries (Ljava/util/stream/Stream;)Lnet/minecraft/recipe/Ingredient;
+accessible field net/minecraft/item/EntityBucketItem entityType Lnet/minecraft/entity/EntityType;
+accessible field net/minecraft/entity/LivingEntity jumping Z

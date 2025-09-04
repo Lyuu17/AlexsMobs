@@ -1,8 +1,13 @@
 package com.github.alexthe666.alexsmobs.item;
 
+import com.github.alexthe666.alexsmobs.entity.EntityLobster;
+import com.github.alexthe666.alexsmobs.entity.util.TerrapinTypes;
+import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Bucketable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.EntityBucketItem;
@@ -11,7 +16,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-// TODO
 public class ItemModFishBucket extends EntityBucketItem {
 
     public ItemModFishBucket(Supplier<? extends EntityType<?>> fishTypeIn, Fluid fluid, Item.Settings builder) {
@@ -28,30 +34,27 @@ public class ItemModFishBucket extends EntityBucketItem {
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-//        var fishType = getFishType();
-//        if (fishType == AMEntityRegistry.LOBSTER.get()) {
-//            NbtCompound compoundnbt = stack.getTag();
-//            if (compoundnbt != null && compoundnbt.contains("BucketVariantTag", 3)) {
-//                int i = compoundnbt.getInt("BucketVariantTag");
-//                String s = "entity.alexsmobs.lobster.variant_" + EntityLobster.getVariantName(i);
-//                tooltip.add((Component.translatable(s)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-//            }
-//        }
-//        if (fishType == AMEntityRegistry.TERRAPIN.get()) {
-//            NbtCompound compoundnbt = stack.getTag();
-//            if (compoundnbt != null && compoundnbt.contains("TerrapinData")) {
-//                int i = compoundnbt.getCompound("TerrapinData").getInt("TurtleType");
-//                tooltip.add((Component.translatable(TerrapinTypes.values()[MathHelper.clamp(i, 0, TerrapinTypes.values().length - 1)].getTranslationName())).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-//            }
-//        }
-//        if (fishType == AMEntityRegistry.COMB_JELLY.get()) {
-//            NbtCompound compoundnbt = stack.getTag();
-//            if (compoundnbt != null && compoundnbt.contains("BucketVariantTag", 3)) {
-//                int i = compoundnbt.getInt("BucketVariantTag");
-//                String s = "entity.alexsmobs.comb_jelly.variant_" + i;
-//                tooltip.add((Component.translatable(s)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-//            }
-//        }
+        var compoundnbt = stack.getNbt();
+        if (this.entityType == AMEntityRegistry.LOBSTER) {
+            if (compoundnbt != null && compoundnbt.contains("BucketVariantTag", 3)) {
+                int i = compoundnbt.getInt("BucketVariantTag");
+                String s = "entity.alexsmobs.lobster.variant_" + EntityLobster.getVariantName(i);
+                tooltip.add((Text.translatable(s)).formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
+            }
+        }
+        if (this.entityType == AMEntityRegistry.TERRAPIN.get()) {
+            if (compoundnbt != null && compoundnbt.contains("TerrapinData")) {
+                int i = compoundnbt.getCompound("TerrapinData").getInt("TurtleType");
+                tooltip.add((Text.translatable(TerrapinTypes.values()[MathHelper.clamp(i, 0, TerrapinTypes.values().length - 1)].getTranslationName())).formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
+            }
+        }
+        if (this.entityType == AMEntityRegistry.COMB_JELLY.get()) {
+            if (compoundnbt != null && compoundnbt.contains("BucketVariantTag", 3)) {
+                int i = compoundnbt.getInt("BucketVariantTag");
+                String s = "entity.alexsmobs.comb_jelly.variant_" + i;
+                tooltip.add((Text.translatable(s)).formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
+            }
+        }
     }
 
     @Override
@@ -63,13 +66,13 @@ public class ItemModFishBucket extends EntityBucketItem {
     }
 
     private void spawnFish(ServerWorld serverLevel, ItemStack stack, BlockPos pos) {
-//        var entity = getFishType().spawn(serverLevel, stack, (Player)null, pos, SpawnReason.BUCKET, true, false);
-//        if (entity instanceof Bucketable) {
-//            var bucketable = (Bucketable)entity;
-//            bucketable.copyDataFromNbt(stack.getOrCreateNbt());
-//            bucketable.setFromBucket(true);
-//        }
-//        addExtraAttributes(entity, stack);
+        var entity = this.entityType.spawn(serverLevel, stack.getNbt(), null, pos, SpawnReason.BUCKET, true, false);
+        if (entity instanceof Bucketable) {
+            var bucketable = (Bucketable)entity;
+            bucketable.copyDataFromNbt(stack.getOrCreateNbt());
+            bucketable.setFromBucket(true);
+        }
+        addExtraAttributes(entity, stack);
     }
 
     private void addExtraAttributes(Entity entity, ItemStack stack) {

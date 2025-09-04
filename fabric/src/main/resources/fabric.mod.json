@@ -5,7 +5,7 @@
   "name": "Alex's Mobs",
   "description": "",
   "authors": [
-    "Alexthe666 (Origin Author)",
+    "Alexthe666 (Original Author)",
     "lucx_r17"
   ],
   "contact": {},
@@ -20,6 +20,7 @@
       "com.github.alexthe666.alexsmobs.fabric.AlexsMobsFabricClient"
     ]
   },
+  "accessWidener": "alexsmobs.accesswidener",
   "custom": {},
   "mixins": [
     "alexsmobs.mixins.json"

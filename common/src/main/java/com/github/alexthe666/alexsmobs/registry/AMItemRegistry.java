@@ -59,7 +59,7 @@ public class AMItemRegistry {
 //    public static final RegistrySupplier<Item> SHARK_TOOTH_ARROW = DEF_REG.register("shark_tooth_arrow", () -> new ItemModArrow(new Item.Settings()));
 //    public static final RegistrySupplier<Item> LOBSTER_TAIL = DEF_REG.register("lobster_tail", () -> new Item(new Item.Settings().food(new FoodProperties.Builder().nutrition(2).saturationMod(0.4F).meat().build())));
 //    public static final RegistrySupplier<Item> COOKED_LOBSTER_TAIL = DEF_REG.register("cooked_lobster_tail", () -> new Item(new Item.Settings().food(new FoodProperties.Builder().nutrition(6).saturationMod(0.65F).meat().build())));
-//    public static final RegistrySupplier<Item> LOBSTER_BUCKET = DEF_REG.register("lobster_bucket", () -> new ItemModFishBucket(AMEntityRegistry.LOBSTER, Fluids.WATER, new Item.Settings()));
+    public static final RegistrySupplier<Item> LOBSTER_BUCKET = DEF_REG.register("lobster_bucket", () -> new ItemModFishBucket(AMEntityRegistry.LOBSTER, Fluids.WATER, new Item.Settings()));
 //    public static final RegistrySupplier<Item> KOMODO_SPIT = DEF_REG.register("komodo_spit", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> KOMODO_SPIT_BOTTLE = DEF_REG.register("komodo_spit_bottle", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> POISON_BOTTLE = DEF_REG.register("poison_bottle", () -> new Item(new Item.Settings()));
@@ -143,8 +143,8 @@ public class AMItemRegistry {
 //    public static final RegistrySupplier<Item> ROCKY_SHELL = DEF_REG.register("rocky_shell", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> ROCKY_CHESTPLATE = DEF_REG.register("rocky_chestplate", () -> new ItemModArmor(ROCKY_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE));
 //    public static final RegistrySupplier<Item> POTTED_FLUTTER = DEF_REG.register("potted_flutter", () -> new ItemFlutterPot(new Item.Settings()));
-//    public static final RegistrySupplier<Item> TERRAPIN_BUCKET = DEF_REG.register("terrapin_bucket", () -> new ItemModFishBucket(AMEntityRegistry.TERRAPIN, Fluids.WATER, new Item.Settings()));
-//    public static final RegistrySupplier<Item> COMB_JELLY_BUCKET = DEF_REG.register("comb_jelly_bucket", () -> new ItemModFishBucket(AMEntityRegistry.COMB_JELLY, Fluids.WATER, new Item.Settings()));
+    public static final RegistrySupplier<Item> TERRAPIN_BUCKET = DEF_REG.register("terrapin_bucket", () -> new ItemModFishBucket(AMEntityRegistry.TERRAPIN, Fluids.WATER, new Item.Settings()));
+    public static final RegistrySupplier<Item> COMB_JELLY_BUCKET = DEF_REG.register("comb_jelly_bucket", () -> new ItemModFishBucket(AMEntityRegistry.COMB_JELLY, Fluids.WATER, new Item.Settings()));
 //    public static final RegistrySupplier<Item> RAINBOW_JELLY = DEF_REG.register("rainbow_jelly", () -> new ItemRainbowJelly(new Item.Settings().food(new FoodProperties.Builder().nutrition(1).saturationMod(0.2F).build())));
 //    public static final RegistrySupplier<Item> COSMIC_COD_BUCKET = DEF_REG.register("cosmic_cod_bucket", () -> new ItemCosmicCodBucket(new Item.Settings()));
     public static final RegistrySupplier<Item> MUNGAL_SPORES = DEF_REG.register("mungal_spores", () -> new Item(new Item.Settings()));

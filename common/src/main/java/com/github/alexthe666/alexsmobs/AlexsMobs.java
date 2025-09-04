@@ -39,6 +39,7 @@ public class AlexsMobs {
         AMSoundRegistry.DEF_REG.register();
         AMPacketRegistry.register();
         AMParticleRegistry.DEF_REG.register();
+        AMTileEntityRegistry.DEF_REG.register();
 
 //        IEventBus modBusEvent = FMLJavaModLoadingContext.get().getModEventBus();
 //        modBusEvent.addListener(this::setup);
