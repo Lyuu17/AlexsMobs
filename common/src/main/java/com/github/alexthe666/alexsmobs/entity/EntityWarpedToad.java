@@ -425,10 +425,9 @@ public class EntityWarpedToad extends TameableEntity implements ITargetsDroppedI
                 this.bodyYaw = this.getYaw();
                 this.headYaw = this.getYaw();
             } else {
-                //TODO
-//                if (entityIn instanceof EntityCrimsonMosquito) {
-//                    ((EntityCrimsonMosquito) entityIn).setShrink(true);
-//                }
+                if (entityIn instanceof EntityCrimsonMosquito) {
+                    ((EntityCrimsonMosquito) entityIn).setShrink(true);
+                }
                 this.setPitch(0);
                 final float radius = attackProgress * 0.2F * 1.2F * (getTongueLength() - getTongueLength() * 0.4F);
                 final float angle = (Maths.STARTING_ANGLE * this.bodyYaw);
@@ -439,10 +438,9 @@ public class EntityWarpedToad extends TameableEntity implements ITargetsDroppedI
                 this.getTarget().setVelocity(minus);
                 if (attackProgress == 0.5F) {
                     float damage = (float) this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).getValue();
-                    //TODO
-//                    if (entityIn instanceof EntityCrimsonMosquito) {
-//                        damage = Float.MAX_VALUE;
-//                    }
+                    if (entityIn instanceof EntityCrimsonMosquito) {
+                        damage = Float.MAX_VALUE;
+                    }
                     entityIn.damage(this.getDamageSources().mobAttack(this), damage);
                 }
             }

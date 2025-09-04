@@ -48,7 +48,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
-public class EntityGiantSquid extends WaterCreatureEntity {
+public class EntityGiantSquid extends WaterCreatureEntity implements IMultipartEntity {
 
     private static final TrackedData<Float> SQUID_PITCH = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.FLOAT);
     private static final TrackedData<Float> DEPRESSURIZATION = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.FLOAT);
@@ -515,11 +515,6 @@ public class EntityGiantSquid extends WaterCreatureEntity {
     }
 
     //FIXME forge
-//    @Override
-//    public boolean isMultipartEntity() {
-//        return true;
-//    }
-//
 //    @Override
 //    public net.minecraftforge.entity.PartEntity<?>[] getParts() {
 //        return this.allParts;

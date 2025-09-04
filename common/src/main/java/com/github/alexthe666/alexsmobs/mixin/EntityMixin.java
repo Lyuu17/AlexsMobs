@@ -1,7 +1,6 @@
 package com.github.alexthe666.alexsmobs.mixin;
 
-import com.github.alexthe666.alexsmobs.entity.EntityGiantSquid;
-import com.github.alexthe666.alexsmobs.entity.EntityWarpedToad;
+import com.github.alexthe666.alexsmobs.entity.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.util.math.Vec3d;
@@ -28,8 +27,24 @@ public abstract class EntityMixin {
             CallbackInfoReturnable<Boolean> cir
     ) {
         var self = (Entity)(Object)this;
+        if (self instanceof EntityBunfungus) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityCrimsonMosquito) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityLaviathan) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityWarpedMosco) {
+            cir.cancel();
+        }
+
         if (self instanceof EntityWarpedToad) {
-            cir.setReturnValue(false);
+            cir.cancel();
         }
     }
 

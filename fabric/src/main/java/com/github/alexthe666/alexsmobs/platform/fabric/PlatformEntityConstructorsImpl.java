@@ -1,6 +1,7 @@
 package com.github.alexthe666.alexsmobs.platform.fabric;
 
 import com.github.alexthe666.alexsmobs.fabric.entity.EntityAlligatorSnappingTurtleFabric;
+import com.github.alexthe666.alexsmobs.fabric.entity.EntityMungusFabric;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 
@@ -18,7 +19,7 @@ public class PlatformEntityConstructorsImpl {
 //        return EntityType.Builder.of(EntityCockroachFabric::new, category);
 //    }
 //
-//    public static EntityType.Builder<EntityMungusFabric> createMungusEntityBuilder(MobCategory category) {
-//        return EntityType.Builder.of(EntityMungusFabric::new, category);
-//    }
+    public static EntityType.Builder<EntityMungusFabric> createMungusEntityBuilder(SpawnGroup category) {
+        return EntityType.Builder.create(EntityMungusFabric::new, category);
+    }
 }

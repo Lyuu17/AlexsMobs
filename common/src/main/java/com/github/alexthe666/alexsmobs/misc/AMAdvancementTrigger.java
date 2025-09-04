@@ -8,6 +8,7 @@ import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateSerializer;
 import net.minecraft.predicate.entity.LootContextPredicate;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 public class AMAdvancementTrigger extends AbstractCriterion<AMAdvancementTrigger.Instance> {
@@ -15,6 +16,10 @@ public class AMAdvancementTrigger extends AbstractCriterion<AMAdvancementTrigger
 
     public AMAdvancementTrigger(Identifier resourceLocation) {
         this.id = resourceLocation;
+    }
+
+    public void trigger(ServerPlayerEntity serverPlayerEntity) {
+        this.trigger(serverPlayerEntity, (p_226308_1_) -> true);
     }
 
     @Override

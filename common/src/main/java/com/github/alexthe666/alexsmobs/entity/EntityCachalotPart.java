@@ -1,5 +1,8 @@
 package com.github.alexthe666.alexsmobs.entity;
 
+import com.github.alexthe666.alexsmobs.AlexsMobs;
+import com.github.alexthe666.alexsmobs.packet.HurtMultipartPacket;
+import com.github.alexthe666.alexsmobs.packet.InteractMultipartPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -40,13 +43,13 @@ public class EntityCachalotPart extends PartEntity<EntityCachalotWhale> {
 
     @Override
     public ActionResult interact(PlayerEntity player, Hand hand) {
-        if(this.getWorld().isClient && this.getParent() != null){
-            //FIXME
-//            AlexsMobs.sendMSGToServer(new MessageInteractMultipart(this.getParent().getId(), hand == Hand.OFF_HAND));
+        if (this.getWorld().isClient && this.getParent() != null){
+            AlexsMobs.sendMSGToServer(new InteractMultipartPacket(this.getParent().getId(), hand == Hand.OFF_HAND));
         }
         return this.getParent() == null ? ActionResult.PASS : this.getParent().interact(player, hand);
     }
 
+    @Deprecated
     protected void collideWithEntity(Entity entityIn) {
         entityIn.pushAwayFrom(this);
     }
@@ -68,8 +71,7 @@ public class EntityCachalotPart extends PartEntity<EntityCachalotWhale> {
         if(this.getWorld().isClient && this.getParent() != null && !this.getParent().isInvulnerableTo(source)){
             var key = this.getWorld().getRegistryManager().getOptional(RegistryKeys.DAMAGE_TYPE).get().getKey(source.getType());
             if(key != null){
-                //FIXME
-//                AlexsMobs.sendMSGToServer(new MessageHurtMultipart(this.getId(), this.getParent().getId(), amount, key.toString()));
+                AlexsMobs.sendMSGToServer(new HurtMultipartPacket(this.getId(), this.getParent().getId(), amount, key.toString()));
             }
         }
         return !this.isInvulnerableTo(source) && this.getParent().attackEntityPartFrom(this, source, amount);

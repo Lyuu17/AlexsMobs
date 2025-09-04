@@ -3,6 +3,7 @@
 package com.github.alexthe666.alexsmobs.platform;
 
 import com.github.alexthe666.alexsmobs.entity.EntityAlligatorSnappingTurtle;
+import com.github.alexthe666.alexsmobs.entity.EntityMungus;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -24,8 +25,8 @@ public class PlatformEntityConstructors {
 //        throw new AssertionError("Platform-specific code did not load");
 //    }
 //
-//    @ExpectPlatform
-//    public static <T extends Entity> EntityType.Builder<T> createMungusEntityBuilder(MobCategory category) {
-//        throw new AssertionError("Platform-specific code did not load");
-//    }
+    @ExpectPlatform
+    public static <T extends EntityMungus> EntityType.Builder<T> createMungusEntityBuilder(SpawnGroup category) {
+        throw new AssertionError("Platform-specific code did not load");
+    }
 }

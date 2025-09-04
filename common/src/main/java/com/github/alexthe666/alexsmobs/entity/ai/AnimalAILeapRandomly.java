@@ -1,5 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
+import com.github.alexthe666.alexsmobs.entity.EntityBunfungus;
 import net.minecraft.entity.ai.FuzzyTargeting;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.mob.PathAwareEntity;
@@ -60,10 +61,9 @@ public class AnimalAILeapRandomly extends Goal {
             if (vector3d1.lengthSquared() > 1.0E-7D) {
                 vector3d1 = vector3d1.normalize().multiply(0.9D).add(vector3d.multiply(0.8D));
             }
-            //TODO
-//            if(this.mob instanceof EntityBunfungus){
-//                ((EntityBunfungus) this.mob).onJump();
-//            }
+            if(this.mob instanceof EntityBunfungus){
+                ((EntityBunfungus) this.mob).onJump();
+            }
             this.mob.setVelocity(vector3d1.x, 0.6F, vector3d1.z);
             mob.setYaw(-((float) MathHelper.atan2(vector3d1.x, vector3d1.z)) * MathHelper.DEGREES_PER_RADIAN);
             mob.bodyYaw = mob.getYaw();

@@ -1,7 +1,9 @@
 package com.github.alexthe666.alexsmobs.entity;
 
+import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.entity.util.AnacondaPartIndex;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
+import com.github.alexthe666.alexsmobs.packet.HurtMultipartPacket;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.entity.*;
@@ -108,8 +110,7 @@ public class EntityAnacondaPart extends LivingEntity implements IHurtableMultipa
                 if (parent != null) {
                     if (parent instanceof final LivingEntity livingEntityParent) {
                         if (livingEntityParent.hurtTime > 0 || livingEntityParent.deathTime > 0) {
-                            //FIXME
-//                            AlexsMobs.sendMSGToAll(new MessageHurtMultipart(this.getId(), parent.getId(), 0));
+                            AlexsMobs.sendMSGToAll(new HurtMultipartPacket(this.getId(), parent.getId(), 0));
                             this.hurtTime = livingEntityParent.hurtTime;
                             this.deathTime = livingEntityParent.deathTime;
                         }

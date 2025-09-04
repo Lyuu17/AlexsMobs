@@ -1,6 +1,7 @@
 package com.github.alexthe666.alexsmobs.registry;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
+import com.github.alexthe666.alexsmobs.block.BlockTriopsEggs;
 import com.github.alexthe666.alexsmobs.item.AMBlockItem;
 import com.github.alexthe666.alexsmobs.item.BlockItemAMRender;
 import dev.architectury.registry.registries.DeferredRegister;
@@ -45,7 +46,7 @@ public class AMBlockRegistry {
 //    public static final RegistrySupplier<Block> BANANA_SLUG_SLIME_BLOCK = registerBlockAndItem("banana_slug_slime_block", BlockBananaSlugSlime::new);
 //    public static final RegistrySupplier<Block> CRYSTALIZED_BANANA_SLUG_MUCUS = registerBlockAndItem("crystalized_banana_slug_mucus", BlockCrystalizedMucus::new);
 //    public static final RegistrySupplier<Block> CAIMAN_EGG = registerBlockAndItem("caiman_egg", () -> new BlockReptileEgg<>(AMEntityRegistry.CAIMAN));
-//    public static final RegistrySupplier<Block> TRIOPS_EGGS = registerBlockAndItem("triops_eggs", BlockTriopsEggs::new);
+    public static final RegistrySupplier<Block> TRIOPS_EGGS = registerBlockAndItem("triops_eggs", BlockTriopsEggs::new);
 //    /*
 //        public static final RegistrySupplier<Block> PURPUR_PLANKS = registerBlockAndItem("purpur_planks", () -> new Block(PURPUR_PLANKS_PROPERTIES));;
 //    public static final RegistrySupplier<Block> PURPUR_PLANKS_STAIRS = registerBlockAndItem("purpur_planks_stairs", () -> new StairBlock(PURPUR_PLANKS.get().defaultBlockState(), PURPUR_PLANKS_PROPERTIES));;

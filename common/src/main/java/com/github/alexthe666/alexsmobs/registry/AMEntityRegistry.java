@@ -8,6 +8,7 @@ import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.entity.*;
+import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.random.Random;
@@ -29,13 +30,24 @@ public class AMEntityRegistry {
 //    public static final RegistrySupplier<EntityType<EntityOrca>> ORCA = DEF_REG.register("orca", () -> registerEntity(EntityType.Builder.of(EntityOrca::new, MobCategory.WATER_CREATURE).sized(3.75F, 1.75F).setTrackingRange(10), "orca"));
 //    public static final RegistrySupplier<EntityType<EntitySunbird>> SUNBIRD = DEF_REG.register("sunbird", () -> registerEntity(EntityType.Builder.of(EntitySunbird::new, MobCategory.CREATURE).sized(2.75F, 1.5F).fireImmune().setTrackingRange(12).setShouldReceiveVelocityUpdates(true).setUpdateInterval(1), "sunbird"));
 //    public static final RegistrySupplier<EntityType<EntityGorilla>> GORILLA = DEF_REG.register("gorilla", () -> registerEntity(EntityType.Builder.of(EntityGorilla::new, MobCategory.CREATURE).sized(1.15F, 1.35F).setTrackingRange(10), "gorilla"));
-//    public static final RegistrySupplier<EntityType<EntityCrimsonMosquito>> CRIMSON_MOSQUITO = DEF_REG.register("crimson_mosquito", () -> registerEntity(EntityType.Builder.of(EntityCrimsonMosquito::new, MobCategory.MONSTER).sized(1.25F, 1.15F).fireImmune().setTrackingRange(8), "crimson_mosquito"));
-//    public static final RegistrySupplier<EntityType<EntityMosquitoSpit>> MOSQUITO_SPIT = DEF_REG.register("mosquito_spit", () -> registerEntity(EntityType.Builder.of(EntityMosquitoSpit::new, MobCategory.MISC).sized(0.5F, 0.5F).setCustomClientFactory(EntityMosquitoSpit::new).fireImmune(), "mosquito_spit"));
+    public static final RegistrySupplier<EntityType<EntityCrimsonMosquito>> CRIMSON_MOSQUITO = registerEntity("crimson_mosquito",
+        EntityType.Builder.create(EntityCrimsonMosquito::new, SpawnGroup.MONSTER)
+                .setDimensions(1.25F, 1.15F)
+                .makeFireImmune()
+                .maxTrackingRange(8));
+    public static final RegistrySupplier<EntityType<EntityMosquitoSpit>> MOSQUITO_SPIT = registerEntity("mosquito_spit",
+            EntityType.Builder.<EntityMosquitoSpit>create(EntityMosquitoSpit::new, SpawnGroup.MISC)
+                    .setDimensions(0.5F, 0.5F)
+//                    .setCustomClientFactory(EntityMosquitoSpit::new)
+                    .makeFireImmune());
 //    public static final RegistrySupplier<EntityType<EntityRattlesnake>> RATTLESNAKE = DEF_REG.register("rattlesnake", () -> registerEntity(EntityType.Builder.of(EntityRattlesnake::new, MobCategory.CREATURE).sized(0.95F, 0.35F).setTrackingRange(10), "rattlesnake"));
 //    public static final RegistrySupplier<EntityType<EntityEndergrade>> ENDERGRADE = DEF_REG.register("endergrade", () -> registerEntity(EntityType.Builder.of(EntityEndergrade::new, MobCategory.CREATURE).sized(0.95F, 0.85F).setTrackingRange(10), "endergrade"));
 //    public static final RegistrySupplier<EntityType<EntityHammerheadShark>> HAMMERHEAD_SHARK = DEF_REG.register("hammerhead_shark", () -> registerEntity(EntityType.Builder.of(EntityHammerheadShark::new, MobCategory.WATER_CREATURE).sized(2.4F, 1.25F).setTrackingRange(10), "hammerhead_shark"));
 //    public static final RegistrySupplier<EntityType<EntitySharkToothArrow>> SHARK_TOOTH_ARROW = DEF_REG.register("shark_tooth_arrow", () -> registerEntity(EntityType.Builder.of(EntitySharkToothArrow::new, MobCategory.MISC).sized(0.5F, 0.5F).setCustomClientFactory(EntitySharkToothArrow::new), "shark_tooth_arrow"));
-//    public static final RegistrySupplier<EntityType<EntityLobster>> LOBSTER = DEF_REG.register("lobster", () -> registerEntity(EntityType.Builder.of(EntityLobster::new, MobCategory.WATER_AMBIENT).sized(0.7F, 0.4F).setTrackingRange(5), "lobster"));
+//    public static final RegistrySupplier<EntityType<EntityLobster>> LOBSTER = registerEntity("lobster",
+//        EntityType.Builder.create(EntityLobster::new, SpawnGroup.WATER_AMBIENT)
+//                .setDimensions(0.7F, 0.4F)
+//                .maxTrackingRange(5), "lobster");
 //    public static final RegistrySupplier<EntityType<EntityKomodoDragon>> KOMODO_DRAGON = DEF_REG.register("komodo_dragon", () -> registerEntity(EntityType.Builder.of(EntityKomodoDragon::new, MobCategory.CREATURE).sized(1.9F, 0.9F).setTrackingRange(10), "komodo_dragon"));
 //    public static final RegistrySupplier<EntityType<EntityCapuchinMonkey>> CAPUCHIN_MONKEY = DEF_REG.register("capuchin_monkey", () -> registerEntity(EntityType.Builder.of(EntityCapuchinMonkey::new, MobCategory.CREATURE).sized(0.65F, 0.75F).setTrackingRange(10), "capuchin_monkey"));
 //    public static final RegistrySupplier<EntityType<EntityTossedItem>> TOSSED_ITEM = DEF_REG.register("tossed_item", () -> registerEntity(EntityType.Builder.of(EntityTossedItem::new, MobCategory.MISC).sized(0.5F, 0.5F).setCustomClientFactory(EntityTossedItem::new).fireImmune(), "tossed_item"));
@@ -48,8 +60,8 @@ public class AMEntityRegistry {
                     .makeFireImmune()
                     //.setShouldReceiveVelocityUpdates(true)
                     .trackingTickInterval(1)
-                    .maxTrackingRange(10)
-    );
+                    .maxTrackingRange(10));
+
 //    public static final RegistrySupplier<EntityType<EntityMoose>> MOOSE = DEF_REG.register("moose", () -> registerEntity(EntityType.Builder.of(EntityMoose::new, MobCategory.CREATURE).sized(1.7F, 2.4F).setTrackingRange(10), "moose"));
 //    public static final RegistrySupplier<EntityType<EntityMimicube>> MIMICUBE = DEF_REG.register("mimicube", () -> registerEntity(EntityType.Builder.of(EntityMimicube::new, MobCategory.MONSTER).sized(0.9F, 0.9F).setTrackingRange(8), "mimicube"));
 //    public static final RegistrySupplier<EntityType<EntityRaccoon>> RACCOON = DEF_REG.register("raccoon", () -> registerEntity(EntityType.Builder.of(EntityRaccoon::new, MobCategory.CREATURE).sized(0.8F, 0.9F).setTrackingRange(10), "raccoon"));
@@ -66,15 +78,28 @@ public class AMEntityRegistry {
     public static final RegistrySupplier<EntityType<EntityAlligatorSnappingTurtle>> ALLIGATOR_SNAPPING_TURTLE = registerEntity("alligator_snapping_turtle",
             PlatformEntityConstructors.createAlligatorSnappingTurtleEntityBuilder(SpawnGroup.CREATURE)
                     .setDimensions(1.25F, 0.65F)
-                    .maxTrackingRange(10)
-    );
-//    public static final RegistrySupplier<EntityType<? extends Entity>> MUNGUS = DEF_REG.register("mungus", () -> registerEntity(PlatformEntityConstructors.createMungusEntityBuilder(MobCategory.CREATURE).sized(0.75F, 1.45F).setTrackingRange(10), "mungus"));
+                    .maxTrackingRange(10));
+
+    public static final RegistrySupplier<EntityType<EntityMungus>> MUNGUS = registerEntity("mungus",
+            PlatformEntityConstructors.createMungusEntityBuilder(SpawnGroup.CREATURE)
+                    .setDimensions(0.75F, 1.45F)
+                    .maxTrackingRange(10));
+
 //    public static final RegistrySupplier<EntityType<EntityMantisShrimp>> MANTIS_SHRIMP = DEF_REG.register("mantis_shrimp", () -> registerEntity(EntityType.Builder.of(EntityMantisShrimp::new, MobCategory.WATER_CREATURE).sized(1.25F, 1.2F).setTrackingRange(10), "mantis_shrimp"));
 //    public static final RegistrySupplier<EntityType<EntityGuster>> GUSTER = DEF_REG.register("guster", () -> registerEntity(EntityType.Builder.of(EntityGuster::new, MobCategory.MONSTER).sized(1.42F, 2.35F).fireImmune().setTrackingRange(8), "guster"));
 //    public static final RegistrySupplier<EntityType<EntitySandShot>> SAND_SHOT = DEF_REG.register("sand_shot", () -> registerEntity(EntityType.Builder.of(EntitySandShot::new, MobCategory.MISC).sized(0.95F, 0.65F).setCustomClientFactory(EntitySandShot::new).fireImmune(), "sand_shot"));
 //    public static final RegistrySupplier<EntityType<EntityGust>> GUST = DEF_REG.register("gust", () -> registerEntity(EntityType.Builder.of(EntityGust::new, MobCategory.MISC).sized(0.8F, 0.8F).setCustomClientFactory(EntityGust::new).fireImmune(), "gust"));
-//    public static final RegistrySupplier<EntityType<EntityWarpedMosco>> WARPED_MOSCO = DEF_REG.register("warped_mosco", () -> registerEntity(EntityType.Builder.of(EntityWarpedMosco::new, MobCategory.MONSTER).sized(1.99F, 3.25F).fireImmune().setTrackingRange(10), "warped_mosco"));
-//    public static final RegistrySupplier<EntityType<EntityHemolymph>> HEMOLYMPH = DEF_REG.register("hemolymph", () -> registerEntity(EntityType.Builder.of(EntityHemolymph::new, MobCategory.MISC).sized(0.5F, 0.5F).setCustomClientFactory(EntityHemolymph::new).fireImmune(), "hemolymph"));
+    public static final RegistrySupplier<EntityType<EntityWarpedMosco>> WARPED_MOSCO = registerEntity("warped_mosco",
+        EntityType.Builder.create(EntityWarpedMosco::new, SpawnGroup.MONSTER)
+                .setDimensions(1.99F, 3.25F)
+                .makeFireImmune()
+                .maxTrackingRange(10));
+
+    public static final RegistrySupplier<EntityType<EntityHemolymph>> HEMOLYMPH = registerEntity("hemolymph",
+        EntityType.Builder.<EntityHemolymph>create(EntityHemolymph::new, SpawnGroup.MISC)
+                .setDimensions(0.5F, 0.5F)
+//                .setCustomClientFactory(EntityHemolymph::new)
+                .makeFireImmune());
 //    public static final RegistrySupplier<EntityType<EntityStraddler>> STRADDLER = DEF_REG.register("straddler", () -> registerEntity(EntityType.Builder.of(EntityStraddler::new, MobCategory.MONSTER).sized(1.65F, 3F).fireImmune().setTrackingRange(8), "straddler"));
 //    public static final RegistrySupplier<EntityType<EntityStradpole>> STRADPOLE = DEF_REG.register("stradpole", () -> registerEntity(EntityType.Builder.of(EntityStradpole::new, MobCategory.WATER_AMBIENT).sized(0.5F, 0.5F).fireImmune().setTrackingRange(4), "stradpole"));
 //    public static final RegistrySupplier<EntityType<EntityStraddleboard>> STRADDLEBOARD = DEF_REG.register("straddleboard", () -> registerEntity(EntityType.Builder.of(EntityStraddleboard::new, MobCategory.MISC).sized(1.5F, 0.35F).setCustomClientFactory(EntityStraddleboard::new).fireImmune().setUpdateInterval(1).clientTrackingRange(10).setShouldReceiveVelocityUpdates(true), "straddleboard"));
@@ -86,14 +111,13 @@ public class AMEntityRegistry {
 //    public static final RegistrySupplier<EntityType<EntityKangaroo>> KANGAROO = DEF_REG.register("kangaroo", () -> registerEntity(EntityType.Builder.of(EntityKangaroo::new, MobCategory.CREATURE).sized(1.65F, 1.5F).setTrackingRange(10), "kangaroo"));
     public static final RegistrySupplier<EntityType<EntityCachalotWhale>> CACHALOT_WHALE = registerEntity("cachalot_whale",
         EntityType.Builder.create(EntityCachalotWhale::new, SpawnGroup.WATER_CREATURE)
-                .setDimensions(9F, 4.0F)
-    );
+                .setDimensions(9F, 4.0F));
 
     public static final RegistrySupplier<EntityType<EntityCachalotEcho>> CACHALOT_ECHO = registerEntity("cachalot_echo",
             EntityType.Builder.<EntityCachalotEcho>create(EntityCachalotEcho::new, SpawnGroup.MISC)
                     .setDimensions(2F, 2F)
-                    .makeFireImmune()
-    );
+                    .makeFireImmune());
+
     //    public static final RegistrySupplier<EntityType<EntityLeafcutterAnt>> LEAFCUTTER_ANT = DEF_REG.register("leafcutter_ant", () -> registerEntity(EntityType.Builder.of(EntityLeafcutterAnt::new, MobCategory.CREATURE).sized(0.8F, 0.5F).setTrackingRange(5), "leafcutter_ant"));
 //    public static final RegistrySupplier<EntityType<EntityEnderiophage>> ENDERIOPHAGE = DEF_REG.register("enderiophage", () -> registerEntity(EntityType.Builder.of(EntityEnderiophage::new, MobCategory.CREATURE).sized(0.85F, 1.95F).setUpdateInterval(1).setTrackingRange(8), "enderiophage"));
 //    public static final RegistrySupplier<EntityType<EntityEnderiophageRocket>> ENDERIOPHAGE_ROCKET = DEF_REG.register("enderiophage_rocket", () -> registerEntity(EntityType.Builder.of(EntityEnderiophageRocket::new, MobCategory.MISC).sized(0.5F, 0.5F).setCustomClientFactory(EntityEnderiophageRocket::new).fireImmune(), "enderiophage_rocket"));
@@ -110,7 +134,13 @@ public class AMEntityRegistry {
 //    public static final RegistrySupplier<EntityType<EntityFroststalker>> FROSTSTALKER = DEF_REG.register("froststalker", () -> registerEntity(EntityType.Builder.of(EntityFroststalker::new, MobCategory.CREATURE).sized(0.95F, 1.15F).immuneTo(Blocks.POWDER_SNOW), "froststalker"));
 //    public static final RegistrySupplier<EntityType<EntityIceShard>> ICE_SHARD = DEF_REG.register("ice_shard", () -> registerEntity(EntityType.Builder.of(EntityIceShard::new, MobCategory.MISC).sized(0.45F, 0.45F).setCustomClientFactory(EntityIceShard::new).fireImmune(), "ice_shard"));
 //    public static final RegistrySupplier<EntityType<EntityTusklin>> TUSKLIN = DEF_REG.register("tusklin", () -> registerEntity(EntityType.Builder.of(EntityTusklin::new, MobCategory.CREATURE).sized(2.2F, 1.9F).immuneTo(Blocks.POWDER_SNOW).setTrackingRange(10), "tusklin"));
-//    public static final RegistrySupplier<EntityType<EntityLaviathan>> LAVIATHAN = DEF_REG.register("laviathan", () -> registerEntity(EntityType.Builder.of(EntityLaviathan::new, MobCategory.CREATURE).sized(3.3F, 2.4F).fireImmune().setShouldReceiveVelocityUpdates(true).setUpdateInterval(1).setTrackingRange(10), "laviathan"));
+    public static final RegistrySupplier<EntityType<EntityLaviathan>> LAVIATHAN = registerEntity("laviathan",
+            EntityType.Builder.create(EntityLaviathan::new, SpawnGroup.CREATURE)
+                    .setDimensions(3.3F, 2.4F)
+                    .makeFireImmune()
+//                    .setShouldReceiveVelocityUpdates(true)
+//                    .setUpdateInterval(1)
+                    .maxTrackingRange(10));
 //    public static final RegistrySupplier<EntityType<EntityCosmaw>> COSMAW = DEF_REG.register("cosmaw", () -> registerEntity(EntityType.Builder.of(EntityCosmaw::new, MobCategory.CREATURE).sized(1.95F, 1.8F).setTrackingRange(10), "cosmaw"));
 //    public static final RegistrySupplier<EntityType<EntityToucan>> TOUCAN = DEF_REG.register("toucan", () -> registerEntity(EntityType.Builder.of(EntityToucan::new, MobCategory.CREATURE).sized(0.45F, 0.45F).setTrackingRange(10), "toucan"));
 //    public static final RegistrySupplier<EntityType<EntityManedWolf>> MANED_WOLF = DEF_REG.register("maned_wolf", () -> registerEntity(EntityType.Builder.of(EntityManedWolf::new, MobCategory.CREATURE).sized(0.9F, 1.26F).setTrackingRange(10), "maned_wolf"));
@@ -137,13 +167,16 @@ public class AMEntityRegistry {
 //    public static final RegistrySupplier<EntityType<EntityTerrapin>> TERRAPIN = DEF_REG.register("terrapin", () -> registerEntity(EntityType.Builder.of(EntityTerrapin::new, MobCategory.WATER_AMBIENT).sized(0.75F, 0.45F).setTrackingRange(5), "terrapin"));
 //    public static final RegistrySupplier<EntityType<EntityCombJelly>> COMB_JELLY = DEF_REG.register("comb_jelly", () -> registerEntity(EntityType.Builder.of(EntityCombJelly::new, MobCategory.WATER_AMBIENT).sized(0.65F, 0.8F).setTrackingRange(5), "comb_jelly"));
 //    public static final RegistrySupplier<EntityType<EntityCosmicCod>> COSMIC_COD = DEF_REG.register("cosmic_cod", () -> registerEntity(EntityType.Builder.of(EntityCosmicCod::new, MobCategory.AMBIENT).sized(0.85F, 0.4F).setTrackingRange(5), "cosmic_cod"));
-//    public static final RegistrySupplier<EntityType<EntityBunfungus>> BUNFUNGUS = DEF_REG.register("bunfungus", () -> registerEntity(EntityType.Builder.of(EntityBunfungus::new, MobCategory.CREATURE).sized(1.85F, 2.1F).setTrackingRange(10), "bunfungus"));
+    public static final RegistrySupplier<EntityType<EntityBunfungus>> BUNFUNGUS = registerEntity("bunfungus",
+            EntityType.Builder.create(EntityBunfungus::new, SpawnGroup.CREATURE)
+                    .setDimensions(1.85F, 2.1F)
+                    .maxTrackingRange(10));
 //    public static final RegistrySupplier<EntityType<? extends Entity>> BISON = DEF_REG.register("bison", () -> registerEntity(PlatformEntityConstructors.createBisonEntityBuilder(MobCategory.CREATURE).sized(2.4F, 2.1F).setTrackingRange(10), "bison"));
     public static final RegistrySupplier<EntityType<EntityGiantSquid>> GIANT_SQUID = registerEntity("giant_squid",
             EntityType.Builder.create(EntityGiantSquid::new, SpawnGroup.WATER_CREATURE)
                     .setDimensions(0.9F, 1.2F)
-                    .maxTrackingRange(10)
-    );
+                    .maxTrackingRange(10));
+
     //    public static final RegistrySupplier<EntityType<EntitySquidGrapple>> SQUID_GRAPPLE = DEF_REG.register("squid_grapple", () -> registerEntity(EntityType.Builder.of(EntitySquidGrapple::new, MobCategory.MISC).sized(0.5F, 0.5F).setCustomClientFactory(EntitySquidGrapple::new).fireImmune(), "squid_grapple"));
 //    public static final RegistrySupplier<EntityType<EntitySeaBear>> SEA_BEAR = DEF_REG.register("sea_bear", () -> registerEntity(EntityType.Builder.of(EntitySeaBear::new, MobCategory.WATER_CREATURE).sized(2.4F, 1.99F).setTrackingRange(10), "sea_bear"));
 //    public static final RegistrySupplier<EntityType<EntityDevilsHolePupfish>> DEVILS_HOLE_PUPFISH = DEF_REG.register("devils_hole_pupfish", () -> registerEntity(EntityType.Builder.of(EntityDevilsHolePupfish::new, MobCategory.WATER_AMBIENT).sized(0.6F, 0.4F).setTrackingRange(4), "devils_hole_pupfish"));
@@ -167,7 +200,10 @@ public class AMEntityRegistry {
 //    public static final RegistrySupplier<EntityType<EntityBananaSlug>> BANANA_SLUG = DEF_REG.register("banana_slug", () -> registerEntity(EntityType.Builder.of(EntityBananaSlug::new, MobCategory.CREATURE).sized(0.8F, 0.4F).setTrackingRange(10), "banana_slug"));
 //    public static final RegistrySupplier<EntityType<EntityBlueJay>> BLUE_JAY = DEF_REG.register("blue_jay", () -> registerEntity(EntityType.Builder.of(EntityBlueJay::new, MobCategory.CREATURE).sized(0.5F, 0.6F).setTrackingRange(10), "blue_jay"));
 //    public static final RegistrySupplier<EntityType<EntityCaiman>> CAIMAN = DEF_REG.register("caiman", () -> registerEntity(EntityType.Builder.of(EntityCaiman::new, MobCategory.CREATURE).sized(1.3F, 0.6F).setTrackingRange(10), "caiman"));
-//    public static final RegistrySupplier<EntityType<EntityTriops>> TRIOPS = DEF_REG.register("triops", () -> registerEntity(EntityType.Builder.of(EntityTriops::new, MobCategory.WATER_AMBIENT).sized(0.7F, 0.25F).setTrackingRange(5), "triops"));
+    public static final RegistrySupplier<EntityType<EntityTriops>> TRIOPS = registerEntity("triops",
+            EntityType.Builder.create(EntityTriops::new, SpawnGroup.WATER_AMBIENT)
+                    .setDimensions(0.7F, 0.25F)
+                    .maxTrackingRange(5));
 
     private static <T extends Entity> RegistrySupplier<EntityType<T>> registerEntity(String name, EntityType.Builder<T> builder) {
         return DEF_REG.register(name, () -> builder.build(name));
@@ -185,7 +221,7 @@ public class AMEntityRegistry {
 //        SpawnPlacements.register(ORCA.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityOrca::canOrcaSpawn);
 //        SpawnPlacements.register(SUNBIRD.get(), SpawnPlacements.Type.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntitySunbird::canSunbirdSpawn);
 //        SpawnPlacements.register(GORILLA.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, EntityGorilla::canGorillaSpawn);
-//        SpawnPlacements.register(CRIMSON_MOSQUITO.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityCrimsonMosquito::canMosquitoSpawn);
+        SpawnRestriction.register(CRIMSON_MOSQUITO.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EntityCrimsonMosquito::canMosquitoSpawn);
 //        SpawnPlacements.register(RATTLESNAKE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityRattlesnake::canRattlesnakeSpawn);
 //        SpawnPlacements.register(ENDERGRADE.get(), SpawnPlacements.Type.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityEndergrade::canEndergradeSpawn);
 //        SpawnPlacements.register(HAMMERHEAD_SHARK.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityHammerheadShark::canHammerheadSharkSpawn);
@@ -206,7 +242,7 @@ public class AMEntityRegistry {
 //        SpawnPlacements.register(SNOW_LEOPARD.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntitySnowLeopard::canSnowLeopardSpawn);
 //        SpawnPlacements.register(CROW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, EntityCrow::canCrowSpawn);
         SpawnRestriction.register(ALLIGATOR_SNAPPING_TURTLE.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EntityAlligatorSnappingTurtle::canTurtleSpawn);
-//        SpawnPlacements.register(MUNGUS.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityMungus::canMungusSpawn);
+        SpawnRestriction.register(MUNGUS.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EntityMungus::canMungusSpawn);
 //        SpawnPlacements.register(MANTIS_SHRIMP.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityMantisShrimp::canMantisShrimpSpawn);
 //        SpawnPlacements.register(GUSTER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityGuster::canGusterSpawn);
 //        SpawnPlacements.register(WARPED_MOSCO.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkAnyLightMonsterSpawnRules);
@@ -229,7 +265,7 @@ public class AMEntityRegistry {
 //        SpawnPlacements.register(SEAGULL.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntitySeagull::canSeagullSpawn);
 //        SpawnPlacements.register(FROSTSTALKER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityFroststalker::canFroststalkerSpawn);
 //        SpawnPlacements.register(TUSKLIN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityTusklin::canTusklinSpawn);
-//        SpawnPlacements.register(LAVIATHAN.get(), SpawnPlacements.Type.IN_LAVA, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityLaviathan::canLaviathanSpawn);
+        SpawnRestriction.register(LAVIATHAN.get(), SpawnRestriction.Location.IN_LAVA, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EntityLaviathan::canLaviathanSpawn);
 //        SpawnPlacements.register(COSMAW.get(), SpawnPlacements.Type.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityCosmaw::canCosmawSpawn);
 //        SpawnPlacements.register(TOUCAN.get(), spawnsOnLeaves, Heightmap.Types.MOTION_BLOCKING, EntityToucan::canToucanSpawn);
 //        SpawnPlacements.register(MANED_WOLF.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityManedWolf::checkAnimalSpawnRules);
@@ -241,7 +277,7 @@ public class AMEntityRegistry {
 //        SpawnPlacements.register(JERBOA.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityJerboa::canJerboaSpawn);
 //        SpawnPlacements.register(TERRAPIN.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityTerrapin::canTerrapinSpawn);
 //        SpawnPlacements.register(COMB_JELLY.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityCombJelly::canCombJellySpawn);
-//        SpawnPlacements.register(BUNFUNGUS.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityBunfungus::canBunfungusSpawn);
+        SpawnRestriction.register(BUNFUNGUS.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EntityBunfungus::canBunfungusSpawn);
 //        SpawnPlacements.register(BISON.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityBison::checkAnimalSpawnRules);
         SpawnRestriction.register(GIANT_SQUID.get(), SpawnRestriction.Location.IN_WATER, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EntityGiantSquid::canGiantSquidSpawn);
 //        SpawnPlacements.register(DEVILS_HOLE_PUPFISH.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityDevilsHolePupfish::canPupfishSpawn);
@@ -261,7 +297,7 @@ public class AMEntityRegistry {
 //        SpawnPlacements.register(BANANA_SLUG.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityBananaSlug::checkBananaSlugSpawnRules);
 //        SpawnPlacements.register(BLUE_JAY.get(), spawnsOnLeaves, Heightmap.Types.MOTION_BLOCKING, EntityBlueJay::checkBlueJaySpawnRules);
 //        SpawnPlacements.register(CAIMAN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityCaiman::canCaimanSpawn);
-//        SpawnPlacements.register(TRIOPS.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, WaterAnimal::checkSurfaceWaterAnimalSpawnRules);
+        SpawnRestriction.register(TRIOPS.get(), SpawnRestriction.Location.IN_WATER, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WaterCreatureEntity::canSpawn);
 //        event.put(GRIZZLY_BEAR.get(), EntityGrizzlyBear.bakeAttributes().build());
 //        event.put(ROADRUNNER.get(), EntityRoadrunner.bakeAttributes().build());
 //        event.put(BONE_SERPENT.get(), EntityBoneSerpent.bakeAttributes().build());
@@ -273,7 +309,7 @@ public class AMEntityRegistry {
 //        event.put(ORCA.get(), EntityOrca.bakeAttributes().build());
 //        event.put(SUNBIRD.get(), EntitySunbird.bakeAttributes().build());
 //        event.put(GORILLA.get(), EntityGorilla.bakeAttributes().build());
-//        event.put(CRIMSON_MOSQUITO.get(), EntityCrimsonMosquito.bakeAttributes().build());
+        EntityAttributeRegistry.register(CRIMSON_MOSQUITO, EntityCrimsonMosquito::createAttributes);
 //        event.put(RATTLESNAKE.get(), EntityRattlesnake.bakeAttributes().build());
 //        event.put(ENDERGRADE.get(), EntityEndergrade.bakeAttributes().build());
 //        event.put(HAMMERHEAD_SHARK.get(), EntityHammerheadShark.bakeAttributes().build());
@@ -297,10 +333,10 @@ public class AMEntityRegistry {
 //        event.put(SPECTRE.get(), EntitySpectre.bakeAttributes().build());
 //        event.put(CROW.get(), EntityCrow.bakeAttributes().build());
         EntityAttributeRegistry.register(ALLIGATOR_SNAPPING_TURTLE, EntityAlligatorSnappingTurtle::createAttributes);
-//        event.put(MUNGUS.get(), EntityMungus.bakeAttributes().build());
+        EntityAttributeRegistry.register(MUNGUS, EntityMungus::createAttributes);
 //        event.put(MANTIS_SHRIMP.get(), EntityMantisShrimp.bakeAttributes().build());
 //        event.put(GUSTER.get(), EntityGuster.bakeAttributes().build());
-//        event.put(WARPED_MOSCO.get(), EntityWarpedMosco.bakeAttributes().build());
+        EntityAttributeRegistry.register(WARPED_MOSCO, EntityWarpedMosco::createAttributes);
 //        event.put(STRADDLER.get(), EntityStraddler.bakeAttributes().build());
 //        event.put(STRADPOLE.get(), EntityStradpole.bakeAttributes().build());
 //        event.put(EMU.get(), EntityEmu.bakeAttributes().build());
@@ -321,7 +357,7 @@ public class AMEntityRegistry {
 //        event.put(SEAGULL.get(), EntitySeagull.bakeAttributes().build());
 //        event.put(FROSTSTALKER.get(), EntityFroststalker.bakeAttributes().build());
 //        event.put(TUSKLIN.get(), EntityTusklin.bakeAttributes().build());
-//        event.put(LAVIATHAN.get(), EntityLaviathan.bakeAttributes().build());
+        EntityAttributeRegistry.register(LAVIATHAN, EntityLaviathan::createAttributes);
 //        event.put(COSMAW.get(), EntityCosmaw.bakeAttributes().build());
 //        event.put(TOUCAN.get(), EntityToucan.bakeAttributes().build());
 //        event.put(MANED_WOLF.get(), EntityManedWolf.bakeAttributes().build());
@@ -335,7 +371,7 @@ public class AMEntityRegistry {
 //        event.put(TERRAPIN.get(), EntityTerrapin.bakeAttributes().build());
 //        event.put(COMB_JELLY.get(), EntityCombJelly.bakeAttributes().build());
 //        event.put(COSMIC_COD.get(), EntityCosmicCod.bakeAttributes().build());
-//        event.put(BUNFUNGUS.get(), EntityBunfungus.bakeAttributes().build());
+        EntityAttributeRegistry.register(BUNFUNGUS, EntityBunfungus::createAttributes);
 //        event.put(BISON.get(), EntityBison.bakeAttributes().build());
         EntityAttributeRegistry.register(GIANT_SQUID, EntityGiantSquid::createAttributes);
 //        event.put(SEA_BEAR.get(), EntitySeaBear.bakeAttributes().build());
@@ -357,7 +393,7 @@ public class AMEntityRegistry {
 //        event.put(BANANA_SLUG.get(), EntityBananaSlug.bakeAttributes().build());
 //        event.put(BLUE_JAY.get(), EntityBlueJay.bakeAttributes().build());
 //        event.put(CAIMAN.get(), EntityCaiman.bakeAttributes().build());
-//        event.put(TRIOPS.get(), EntityTriops.bakeAttributes().build());
+        EntityAttributeRegistry.register(TRIOPS, EntityTriops::createAttributes);
     }
 
     public static Predicate<LivingEntity> buildPredicateFromTag(TagKey<EntityType<?>> entityTag){

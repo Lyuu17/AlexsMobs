@@ -3,6 +3,8 @@ package com.github.alexthe666.alexsmobs;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.registry.*;
 import dev.architectury.platform.Platform;
+import dev.architectury.utils.GameInstance;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,9 +32,12 @@ public class AlexsMobs {
         AMBannerRegistry.DEF_REG.register();
         AMBlockRegistry.DEF_REG.register();
         AMEntityRegistry.DEF_REG.register();
+        AMEffectRegistry.EFFECT_DEF_REG.register();
+        AMEffectRegistry.init();
         AMEntityRegistry.initializeAttributes();
         AMItemRegistry.DEF_REG.register();
         AMSoundRegistry.DEF_REG.register();
+        AMPacketRegistry.register();
         AMParticleRegistry.DEF_REG.register();
 
 //        IEventBus modBusEvent = FMLJavaModLoadingContext.get().getModEventBus();
@@ -101,19 +106,21 @@ public class AlexsMobs {
 //        BiomeConfig.init();
 //    }
 //
-//    public static <MSG> void sendMSGToServer(MSG message) {
-//        NETWORK_WRAPPER.sendToServer(message);
-//    }
-//
-//    public static <MSG> void sendMSGToAll(MSG message) {
-//        for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-//            sendNonLocal(message, player);
-//        }
-//    }
-//
-//    public static <MSG> void sendNonLocal(MSG msg, ServerPlayer player) {
-//        NETWORK_WRAPPER.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-//    }
+
+    public static <MSG> void sendMSGToServer(MSG message) {
+        AMPacketRegistry.CHANNEL.sendToServer(message);
+    }
+
+    public static <MSG> void sendMSGToAll(MSG message) {
+        var players = GameInstance.getServer().getPlayerManager().getPlayerList();
+        for (var player : players) {
+            sendNonLocal(message, player);
+        }
+    }
+
+    public static <MSG> void sendNonLocal(MSG msg, ServerPlayerEntity player) {
+        AMPacketRegistry.CHANNEL.sendToPlayer(player, msg);
+    }
 
 //    private void setup(final FMLCommonSetupEvent event) {
 //        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageMosquitoMountPlayer.class, MessageMosquitoMountPlayer::write, MessageMosquitoMountPlayer::read, MessageMosquitoMountPlayer.Handler::handle);
@@ -130,7 +137,7 @@ public class AlexsMobs {
 //        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSyncEntityPos.class, MessageSyncEntityPos::write, MessageSyncEntityPos::read, MessageSyncEntityPos.Handler::handle);
 //        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageTarantulaHawkSting.class, MessageTarantulaHawkSting::write, MessageTarantulaHawkSting::read, MessageTarantulaHawkSting.Handler::handle);
 //        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageStartDancing.class, MessageStartDancing::write, MessageStartDancing::read, MessageStartDancing.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageInteractMultipart.class, MessageInteractMultipart::write, MessageInteractMultipart::read, MessageInteractMultipart.Handler::handle);
+//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, InteractMultipartPacket.class, InteractMultipartPacket::write, InteractMultipartPacket::read, InteractMultipartPacket.Handler::handle);
 //        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSendVisualFlagFromServer.class, MessageSendVisualFlagFromServer::write, MessageSendVisualFlagFromServer::read, MessageSendVisualFlagFromServer.Handler::handle);
 //        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSetPupfishChunkOnClient.class, MessageSetPupfishChunkOnClient::write, MessageSetPupfishChunkOnClient::read, MessageSetPupfishChunkOnClient.Handler::handle);
 //        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdateTransmutablesToDisplay.class, MessageUpdateTransmutablesToDisplay::write, MessageUpdateTransmutablesToDisplay::read, MessageUpdateTransmutablesToDisplay.Handler::handle);

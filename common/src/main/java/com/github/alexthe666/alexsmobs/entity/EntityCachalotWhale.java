@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
-public class EntityCachalotWhale extends AnimalEntity {
+public class EntityCachalotWhale extends AnimalEntity implements IMultipartEntity {
 
     private static final TargetPredicate REWARD_PLAYER_PREDICATE = TargetPredicate.createNonAttackable().setBaseMaxDistance(50.0D).ignoreVisibility();
     private static final TrackedData<Boolean> CHARGING = DataTracker.registerData(EntityCachalotWhale.class, TrackedDataHandlerRegistry.BOOLEAN);
@@ -820,11 +820,7 @@ public class EntityCachalotWhale extends AnimalEntity {
         part.setPos(this.getX() + offsetX * part.scale, this.getY() + offsetY * part.scale, this.getZ() + offsetZ * part.scale);
     }
 
-    //TODO
-//    @Override
-//    public boolean isMultipartEntity() {
-//        return true;
-//    }
+    //FIXME forge
 //
 //    @Override
 //    public PartEntity<?>[] getParts() {
