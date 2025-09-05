@@ -6,3 +6,8 @@ accessible field net/minecraft/world/chunk/ChunkSection biomeContainer Lnet/mine
 accessible method net/minecraft/recipe/Ingredient ofEntries (Ljava/util/stream/Stream;)Lnet/minecraft/recipe/Ingredient;
 accessible field net/minecraft/item/EntityBucketItem entityType Lnet/minecraft/entity/EntityType;
 accessible field net/minecraft/entity/LivingEntity jumping Z
+accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/entity/ai/goal/GoalSelector;
+accessible field net/minecraft/entity/mob/MobEntity targetSelector Lnet/minecraft/entity/ai/goal/GoalSelector;
+accessible field net/minecraft/entity/projectile/FireworkRocketEntity ITEM Lnet/minecraft/entity/data/TrackedData;
+accessible field net/minecraft/entity/projectile/FireworkRocketEntity lifeTime I
+accessible field net/minecraft/entity/projectile/FireworkRocketEntity SHOOTER_ENTITY_ID Lnet/minecraft/entity/data/TrackedData;

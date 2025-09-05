@@ -137,9 +137,11 @@ public class EntityCrimsonMosquito extends HostileEntity {
         return this.isFromFly() ? FROM_FLY_LOOT : super.getLootTableId();
     }
 
-    public boolean canRiderInteract() {
-        return true;
-    }
+    // FIXME forge
+//    @Override
+//    public boolean canRiderInteract() {
+//        return true;
+//    }
 
     @Override
     protected void initGoals() {

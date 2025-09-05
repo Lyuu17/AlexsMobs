@@ -15,16 +15,16 @@ public class MosquitoMountPlayerPacket {
         this.mountId = mount;
     }
 
-    public static MosquitoMountPlayerPacket read(PacketByteBuf buf) {
+    private static MosquitoMountPlayerPacket read(PacketByteBuf buf) {
         return new MosquitoMountPlayerPacket(buf.readInt(), buf.readInt());
     }
 
-    public void write(PacketByteBuf buf) {
+    private void write(PacketByteBuf buf) {
         buf.writeInt(riderId);
         buf.writeInt(mountId);
     }
 
-    public void handle(PlayerEntity player) {
+    private void handle(PlayerEntity player) {
         if (player.getWorld() != null) {
             var entity = player.getWorld().getEntityById(riderId);
             var mountEntity = player.getWorld().getEntityById(mountId);

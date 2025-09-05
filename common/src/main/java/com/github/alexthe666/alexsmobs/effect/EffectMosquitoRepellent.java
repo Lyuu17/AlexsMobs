@@ -10,14 +10,17 @@ public class EffectMosquitoRepellent extends StatusEffect {
         super(StatusEffectCategory.BENEFICIAL, 0XCC7E70);
     }
 
-    public void applyEffectTick(LivingEntity entity, int amplifier) {
+    @Override
+    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
     }
 
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    @Override
+    public boolean canApplyUpdateEffect(int duration, int amplifier) {
         return duration > 0;
     }
 
-    public String getDescriptionId() {
+    @Override
+    public String getTranslationKey() {
         return "alexsmobs.potion.mosquito_repellent";
     }
 }

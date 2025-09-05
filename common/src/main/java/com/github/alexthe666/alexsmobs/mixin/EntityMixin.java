@@ -27,11 +27,23 @@ public abstract class EntityMixin {
             CallbackInfoReturnable<Boolean> cir
     ) {
         var self = (Entity)(Object)this;
+        if (self instanceof EntityBaldEagle) {
+            cir.cancel();
+        }
+
         if (self instanceof EntityBunfungus) {
             cir.cancel();
         }
 
         if (self instanceof EntityCrimsonMosquito) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityEndergrade) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityEnderiophage) {
             cir.cancel();
         }
 

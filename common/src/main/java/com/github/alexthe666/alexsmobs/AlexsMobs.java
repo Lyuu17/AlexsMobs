@@ -34,6 +34,7 @@ public class AlexsMobs {
         AMEntityRegistry.DEF_REG.register();
         AMEffectRegistry.EFFECT_DEF_REG.register();
         AMEffectRegistry.init();
+        AMEnchantmentRegistry.DEF_REG.register();
         AMEntityRegistry.initializeAttributes();
         AMItemRegistry.DEF_REG.register();
         AMSoundRegistry.DEF_REG.register();

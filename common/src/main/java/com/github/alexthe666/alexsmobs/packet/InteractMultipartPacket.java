@@ -20,14 +20,11 @@ public class InteractMultipartPacket {
         this.offhand = offhand;
     }
 
-    public InteractMultipartPacket() {
-    }
-
-    public static InteractMultipartPacket read(PacketByteBuf buf) {
+    private static InteractMultipartPacket read(PacketByteBuf buf) {
         return new InteractMultipartPacket(buf.readInt(), buf.readBoolean());
     }
 
-    public void write(PacketByteBuf buf) {
+    private void write(PacketByteBuf buf) {
         buf.writeInt(parent);
         buf.writeBoolean(offhand);
     }

@@ -1,9 +1,11 @@
 package com.github.alexthe666.alexsmobs.enchantment;
 
 import com.github.alexthe666.alexsmobs.config.AMConfig;
+import com.github.alexthe666.alexsmobs.item.ItemStraddleboard;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ItemStack;
 
 public class StraddleEnchantment extends Enchantment {
 
@@ -47,4 +49,8 @@ public class StraddleEnchantment extends Enchantment {
 //        return super.canApplyAtEnchantingTable(stack) && AMConfig.straddleboardEnchants;
 //    }
 
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return stack.getItem() instanceof ItemStraddleboard;
+    }
 }
