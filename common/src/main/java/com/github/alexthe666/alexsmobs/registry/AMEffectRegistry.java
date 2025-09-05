@@ -4,6 +4,7 @@ import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.effect.EffectEnderFlu;
 import com.github.alexthe666.alexsmobs.effect.EffectMosquitoRepellent;
 import com.github.alexthe666.alexsmobs.effect.EffectOiled;
+import com.github.alexthe666.alexsmobs.effect.EffectPowerDown;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.entity.effect.StatusEffect;
@@ -35,7 +36,7 @@ public class AMEffectRegistry {
 //    public static final RegistrySupplier<StatusEffect> EXSANGUINATION = EFFECT_DEF_REG.register("exsanguination", EffectExsanguination::new);
 //    public static final RegistrySupplier<StatusEffect> EARTHQUAKE = EFFECT_DEF_REG.register("earthquake", EffectEarthquake::new);
 //    public static final RegistrySupplier<StatusEffect> FLEET_FOOTED = EFFECT_DEF_REG.register("fleet_footed", EffectFleetFooted::new);
-//    public static final RegistrySupplier<StatusEffect> POWER_DOWN = EFFECT_DEF_REG.register("power_down", EffectPowerDown::new);
+    public static final RegistrySupplier<StatusEffect> POWER_DOWN = EFFECT_DEF_REG.register("power_down", EffectPowerDown::new);
 
     public static final RegistrySupplier<StatusEffect> MOSQUITO_REPELLENT = EFFECT_DEF_REG.register("mosquito_repellent", EffectMosquitoRepellent::new);
 //    public static final RegistrySupplier<Potion> KNOCKBACK_RESISTANCE_POTION = POTION_DEF_REG.register("knockback_resistance", ()-> new Potion(new StatusEffectInstance(KNOCKBACK_RESISTANCE.get(), 3600)));

@@ -1,6 +1,8 @@
 package com.github.alexthe666.alexsmobs.platform.forge;
 
 import com.github.alexthe666.alexsmobs.forge.entity.EntityAlligatorSnappingTurtleForge;
+import com.github.alexthe666.alexsmobs.forge.entity.EntityBisonForge;
+import com.github.alexthe666.alexsmobs.forge.entity.EntityMungusForge;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 
@@ -10,15 +12,15 @@ public class PlatformEntityConstructorsImpl {
         return EntityType.Builder.create(EntityAlligatorSnappingTurtleForge::new, category);
     }
 
-//    public static EntityType.Builder<EntityBisonForge> createBisonEntityBuilder(MobCategory category) {
-//        return EntityType.Builder.of(EntityBisonForge::new, category);
-//    }
+    public static EntityType.Builder<EntityBisonForge> createBisonEntityBuilder(SpawnGroup category) {
+        return EntityType.Builder.create(EntityBisonForge::new, category);
+    }
 //
-//    public static EntityType.Builder<EntityCockroachForge> createCochroachEntityBuilder(MobCategory category) {
-//        return EntityType.Builder.of(EntityCockroachForge::new, category);
+//    public static EntityType.Builder<EntityCockroachForge> createCochroachEntityBuilder(SpawnGroup category) {
+//        return EntityType.Builder.create(EntityCockroachForge::new, category);
 //    }
-//
-//    public static EntityType.Builder<EntityMungusForge> createMungusEntityBuilder(MobCategory category) {
-//        return EntityType.Builder.of(EntityMungusForge::new, category);
-//    }
+
+    public static EntityType.Builder<EntityMungusForge> createMungusEntityBuilder(SpawnGroup category) {
+        return EntityType.Builder.create(EntityMungusForge::new, category);
+    }
 }

@@ -36,7 +36,7 @@ public class AMItemRegistry {
 //
 //    public static final RegistrySupplier<Item> TAB_ICON = DEF_REG.register("tab_icon", () -> new ItemTabIcon(new Item.Settings()));
 //    public static final RegistrySupplier<Item> ANIMAL_DICTIONARY = DEF_REG.register("animal_dictionary", () -> new ItemAnimalDictionary(new Item.Settings().stacksTo(1)));
-//    public static final RegistrySupplier<Item> BEAR_FUR = DEF_REG.register("bear_fur", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> BEAR_FUR = DEF_REG.register("bear_fur", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> BEAR_DUST = DEF_REG.register("bear_dust", () -> new ItemBearDust(new Item.Settings().rarity(Rarity.EPIC)));
 //    public static final RegistrySupplier<Item> ROADRUNNER_FEATHER = DEF_REG.register("roadrunner_feather", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> ROADDRUNNER_BOOTS = DEF_REG.register("roadrunner_boots", () -> new ItemModArmor(ROADRUNNER_ARMOR_MATERIAL, ArmorItem.Type.BOOTS));
@@ -129,7 +129,7 @@ public class AMItemRegistry {
 //    public static final RegistrySupplier<Item> SERRATED_SHARK_TOOTH = DEF_REG.register("serrated_shark_tooth", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> FRILLED_SHARK_BUCKET = DEF_REG.register("frilled_shark_bucket", () -> new ItemModFishBucket(AMEntityRegistry.FRILLED_SHARK, Fluids.WATER, new Item.Settings()));
 //    public static final RegistrySupplier<Item> SHIELD_OF_THE_DEEP = DEF_REG.register("shield_of_the_deep", () -> new ItemShieldOfTheDeep(new Item.Settings().durability(400).rarity(Rarity.UNCOMMON)));
-//    public static final RegistrySupplier<Item> MIMIC_OCTOPUS_BUCKET = DEF_REG.register("mimic_octopus_bucket", () -> new ItemModFishBucket(AMEntityRegistry.MIMIC_OCTOPUS, Fluids.WATER, new Item.Settings()));
+    public static final RegistrySupplier<Item> MIMIC_OCTOPUS_BUCKET = DEF_REG.register("mimic_octopus_bucket", () -> new ItemModFishBucket(AMEntityRegistry.MIMIC_OCTOPUS, Fluids.WATER, new Item.Settings()));
 //    public static final RegistrySupplier<Item> FROSTSTALKER_HORN = DEF_REG.register("froststalker_horn", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> FROSTSTALKER_HELMET = DEF_REG.register("froststalker_helmet", () -> new ItemModArmor(FROSTSTALKER_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
 //    public static final RegistrySupplier<Item> PIGSHOES = DEF_REG.register("pigshoes", () -> new ItemPigshoes(new Item.Settings().stacksTo(1)));
@@ -148,7 +148,7 @@ public class AMItemRegistry {
 //    public static final RegistrySupplier<Item> RAINBOW_JELLY = DEF_REG.register("rainbow_jelly", () -> new ItemRainbowJelly(new Item.Settings().food(new FoodComponent.Builder().nutrition(1).saturationMod(0.2F).build())));
 //    public static final RegistrySupplier<Item> COSMIC_COD_BUCKET = DEF_REG.register("cosmic_cod_bucket", () -> new ItemCosmicCodBucket(new Item.Settings()));
     public static final RegistrySupplier<Item> MUNGAL_SPORES = DEF_REG.register("mungal_spores", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> BISON_FUR = DEF_REG.register("bison_fur", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> BISON_FUR = DEF_REG.register("bison_fur", () -> new Item(new Item.Settings()));
     public static final RegistrySupplier<Item> LOST_TENTACLE = DEF_REG.register("lost_tentacle", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> SQUID_GRAPPLE = DEF_REG.register("squid_grapple", () -> new ItemSquidGrapple(new Item.Settings().durability(450)));
 //    public static final RegistrySupplier<Item> DEVILS_HOLE_PUPFISH_BUCKET = DEF_REG.register("devils_hole_pupfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.DEVILS_HOLE_PUPFISH, Fluids.WATER, new Item.Settings()));

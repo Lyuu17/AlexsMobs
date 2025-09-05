@@ -17,6 +17,7 @@ public class LayerEndergradeSaddle extends FeatureRenderer<EntityEndergrade, Mod
         super(renderGrizzlyBear);
     }
 
+    @Override
     public void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, EntityEndergrade entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if(entitylivingbaseIn.isSaddled()){
             var ivertexbuilder = bufferIn.getBuffer(RenderLayer.getEntityCutout(TEXTURE));

@@ -14,6 +14,7 @@ public class AMPacketRegistry {
         InteractMultipartPacket.register();
         MosquitoDismountPacket.register();
         MosquitoMountPlayerPacket.register();
+        SendVisualFlagFromServerPacket.register();
         SyncEntityPosPacket.register();
     }
 }

@@ -11,3 +11,8 @@ accessible field net/minecraft/entity/mob/MobEntity targetSelector Lnet/minecraf
 accessible field net/minecraft/entity/projectile/FireworkRocketEntity ITEM Lnet/minecraft/entity/data/TrackedData;
 accessible field net/minecraft/entity/projectile/FireworkRocketEntity lifeTime I
 accessible field net/minecraft/entity/projectile/FireworkRocketEntity SHOOTER_ENTITY_ID Lnet/minecraft/entity/data/TrackedData;
+accessible method net/minecraft/entity/damage/DamageSource <init> (Lnet/minecraft/registry/entry/RegistryEntry;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;)V
+accessible field net/minecraft/client/texture/SpriteContents animation Lnet/minecraft/client/texture/SpriteContents$Animation;
+accessible method net/minecraft/client/texture/SpriteContents$Animation getFrameX (I)I
+accessible method net/minecraft/client/texture/SpriteContents$Animation getFrameY (I)I
+accessible field net/minecraft/client/texture/SpriteContents image Lnet/minecraft/client/texture/NativeImage;
