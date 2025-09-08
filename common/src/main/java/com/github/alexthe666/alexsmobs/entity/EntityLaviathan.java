@@ -493,7 +493,7 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
     @Override
     public boolean damage(DamageSource source, float amount) {
         boolean prev = super.damage(source, amount);
-        if (prev && source.getSource() != null) {
+        if (prev && source.getAttacker() != null) {
             int fleeTime = 100 + getRandom().nextInt(150);
             this.revengeCooldown = fleeTime;
             this.setChillTime(0);

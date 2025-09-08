@@ -10,6 +10,8 @@ public class AMPacketRegistry {
     public static final NetworkChannel CHANNEL = NetworkChannel.create(new Identifier(AlexsMobs.MOD_ID, "main"));
 
     public static void register() {
+        CrowDismountPacket.register();
+        CrowMountPlayerPacket.register();
         HurtMultipartPacket.register();
         InteractMultipartPacket.register();
         MosquitoDismountPacket.register();

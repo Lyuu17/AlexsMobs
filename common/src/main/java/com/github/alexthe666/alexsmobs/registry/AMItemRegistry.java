@@ -1,33 +1,42 @@
 package com.github.alexthe666.alexsmobs.registry;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
+import com.github.alexthe666.alexsmobs.entity.EntityCockroachEgg;
+import com.github.alexthe666.alexsmobs.entity.EntityEmuEgg;
+import com.github.alexthe666.alexsmobs.entity.EntityEnderiophageRocket;
 import com.github.alexthe666.alexsmobs.item.*;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.dispenser.ProjectileDispenserBehavior;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.FoodComponent;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Rarity;
+import net.minecraft.util.math.Position;
+import net.minecraft.world.World;
 
 public class AMItemRegistry {
-//    public static final AMArmorMaterial ROADRUNNER_ARMOR_MATERIAL = new AMArmorMaterial("roadrunner", 18, new int[]{3, 3, 3, 3}, 20, SoundEvents.ARMOR_EQUIP_TURTLE, 0);
-//    public static final AMArmorMaterial CROCODILE_ARMOR_MATERIAL = new AMArmorMaterial("crocodile", 22, new int[]{2, 5, 7, 3}, 25, SoundEvents.ARMOR_EQUIP_TURTLE, 1);
-//    public static final AMArmorMaterial CENTIPEDE_ARMOR_MATERIAL = new AMArmorMaterial("centipede", 20, new int[]{6, 6, 6, 6}, 22, SoundEvents.ARMOR_EQUIP_TURTLE, 0.5F);
-//    public static final AMArmorMaterial MOOSE_ARMOR_MATERIAL = new AMArmorMaterial("moose", 19, new int[]{3, 3, 3, 3}, 21, SoundEvents.ARMOR_EQUIP_TURTLE, 0.5F);
-//    public static final AMArmorMaterial RACCOON_ARMOR_MATERIAL = new AMArmorMaterial("raccoon", 17, new int[]{3, 3, 3, 3}, 21, SoundEvents.ARMOR_EQUIP_LEATHER, 2.5F);
-//    public static final AMArmorMaterial SOMBRERO_ARMOR_MATERIAL = new AMArmorMaterial("sombrero", 14, new int[]{2, 2, 2, 2}, 30, SoundEvents.ARMOR_EQUIP_LEATHER, 0.5F);
-//    public static final AMArmorMaterial SPIKED_TURTLE_SHELL_ARMOR_MATERIAL = new AMArmorMaterial("spiked_turtle_shell", 35, new int[]{3, 3, 3, 3}, 30, SoundEvents.ARMOR_EQUIP_TURTLE, 1F, 0.2F);
-//    public static final AMArmorMaterial FEDORA_ARMOR_MATERIAL = new AMArmorMaterial("fedora", 10, new int[]{2, 2, 2, 2}, 30, SoundEvents.ARMOR_EQUIP_LEATHER, 0.5F);
-//    public static final AMArmorMaterial EMU_ARMOR_MATERIAL = new AMArmorMaterial("emu", 9, new int[]{4, 4, 4, 4}, 20, SoundEvents.ARMOR_EQUIP_LEATHER, 0.5F);
-//    public static final AMArmorMaterial TARANTULA_HAWK_ELYTRA_MATERIAL = new AMArmorMaterial("tarantula_hawk_elytra", 9, new int[]{3, 3, 3, 3}, 5, SoundEvents.ARMOR_EQUIP_LEATHER, 0);
-//    public static final AMArmorMaterial FROSTSTALKER_ARMOR_MATERIAL = new AMArmorMaterial("froststalker", 9, new int[]{3, 3, 3, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.5F);
-//    public static final AMArmorMaterial ROCKY_ARMOR_MATERIAL = new AMArmorMaterial("rocky_roller", 20, new int[]{2, 5, 7, 3}, 10, SoundEvents.ARMOR_EQUIP_TURTLE, 0.5F);
-//    public static final AMArmorMaterial FLYING_FISH_MATERIAL = new AMArmorMaterial("flying_fish", 9, new int[]{1, 1, 1, 1}, 8, SoundEvents.ARMOR_EQUIP_LEATHER, 0F);
-//    public static final AMArmorMaterial NOVELTY_HAT_MATERIAL = new AMArmorMaterial("novelty_hat", 10, new int[]{2, 2, 2, 2}, 30, SoundEvents.ARMOR_EQUIP_LEATHER, 0F);
-//    public static final AMArmorMaterial KIMONO_MATERIAL = new AMArmorMaterial("kimono", 8, new int[]{3, 3, 3, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0F);
-//
+    public static final AMArmorMaterial ROADRUNNER_ARMOR_MATERIAL = new AMArmorMaterial("roadrunner", 18, new int[]{3, 3, 3, 3}, 20, SoundEvents.ITEM_ARMOR_EQUIP_TURTLE, 0);
+    public static final AMArmorMaterial CROCODILE_ARMOR_MATERIAL = new AMArmorMaterial("crocodile", 22, new int[]{2, 5, 7, 3}, 25, SoundEvents.ITEM_ARMOR_EQUIP_TURTLE, 1);
+    public static final AMArmorMaterial CENTIPEDE_ARMOR_MATERIAL = new AMArmorMaterial("centipede", 20, new int[]{6, 6, 6, 6}, 22, SoundEvents.ITEM_ARMOR_EQUIP_TURTLE, 0.5F);
+    public static final AMArmorMaterial MOOSE_ARMOR_MATERIAL = new AMArmorMaterial("moose", 19, new int[]{3, 3, 3, 3}, 21, SoundEvents.ITEM_ARMOR_EQUIP_TURTLE, 0.5F);
+    public static final AMArmorMaterial RACCOON_ARMOR_MATERIAL = new AMArmorMaterial("raccoon", 17, new int[]{3, 3, 3, 3}, 21, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 2.5F);
+    public static final AMArmorMaterial SOMBRERO_ARMOR_MATERIAL = new AMArmorMaterial("sombrero", 14, new int[]{2, 2, 2, 2}, 30, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F);
+    public static final AMArmorMaterial SPIKED_TURTLE_SHELL_ARMOR_MATERIAL = new AMArmorMaterial("spiked_turtle_shell", 35, new int[]{3, 3, 3, 3}, 30, SoundEvents.ITEM_ARMOR_EQUIP_TURTLE, 1F, 0.2F);
+    public static final AMArmorMaterial FEDORA_ARMOR_MATERIAL = new AMArmorMaterial("fedora", 10, new int[]{2, 2, 2, 2}, 30, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F);
+    public static final AMArmorMaterial EMU_ARMOR_MATERIAL = new AMArmorMaterial("emu", 9, new int[]{4, 4, 4, 4}, 20, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F);
+    public static final AMArmorMaterial TARANTULA_HAWK_ELYTRA_MATERIAL = new AMArmorMaterial("tarantula_hawk_elytra", 9, new int[]{3, 3, 3, 3}, 5, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
+    public static final AMArmorMaterial FROSTSTALKER_ARMOR_MATERIAL = new AMArmorMaterial("froststalker", 9, new int[]{3, 3, 3, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F);
+    public static final AMArmorMaterial ROCKY_ARMOR_MATERIAL = new AMArmorMaterial("rocky_roller", 20, new int[]{2, 5, 7, 3}, 10, SoundEvents.ITEM_ARMOR_EQUIP_TURTLE, 0.5F);
+    public static final AMArmorMaterial FLYING_FISH_MATERIAL = new AMArmorMaterial("flying_fish", 9, new int[]{1, 1, 1, 1}, 8, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0F);
+    public static final AMArmorMaterial NOVELTY_HAT_MATERIAL = new AMArmorMaterial("novelty_hat", 10, new int[]{2, 2, 2, 2}, 30, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0F);
+    public static final AMArmorMaterial KIMONO_MATERIAL = new AMArmorMaterial("kimono", 8, new int[]{3, 3, 3, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0F);
+
     public static final DeferredRegister<Item> DEF_REG = DeferredRegister.create(AlexsMobs.MOD_ID, RegistryKeys.ITEM);
 //
 //    static{
@@ -35,145 +44,145 @@ public class AMItemRegistry {
 //    }
 //
 //    public static final RegistrySupplier<Item> TAB_ICON = DEF_REG.register("tab_icon", () -> new ItemTabIcon(new Item.Settings()));
-//    public static final RegistrySupplier<Item> ANIMAL_DICTIONARY = DEF_REG.register("animal_dictionary", () -> new ItemAnimalDictionary(new Item.Settings().stacksTo(1)));
+//    public static final RegistrySupplier<Item> ANIMAL_DICTIONARY = DEF_REG.register("animal_dictionary", () -> new ItemAnimalDictionary(new Item.Settings().maxCount(1)));
     public static final RegistrySupplier<Item> BEAR_FUR = DEF_REG.register("bear_fur", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> BEAR_DUST = DEF_REG.register("bear_dust", () -> new ItemBearDust(new Item.Settings().rarity(Rarity.EPIC)));
-//    public static final RegistrySupplier<Item> ROADRUNNER_FEATHER = DEF_REG.register("roadrunner_feather", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> ROADDRUNNER_BOOTS = DEF_REG.register("roadrunner_boots", () -> new ItemModArmor(ROADRUNNER_ARMOR_MATERIAL, ArmorItem.Type.BOOTS));
-//    public static final RegistrySupplier<Item> LAVA_BOTTLE = DEF_REG.register("lava_bottle", () -> new Item(new Item.Settings().stacksTo(1)));
-//    public static final RegistrySupplier<Item> BONE_SERPENT_TOOTH = DEF_REG.register("bone_serpent_tooth", () -> new Item(new Item.Settings().fireResistant()));
-//    public static final RegistrySupplier<Item> GAZELLE_HORN = DEF_REG.register("gazelle_horn", () -> new Item(new Item.Settings().fireResistant()));
-//    public static final RegistrySupplier<Item> CROCODILE_SCUTE = DEF_REG.register("crocodile_scute", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> CROCODILE_CHESTPLATE = DEF_REG.register("crocodile_chestplate", () -> new ItemModArmor(CROCODILE_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE));
-//    public static final RegistrySupplier<Item> MAGGOT = DEF_REG.register("maggot", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(1).saturationMod(0.2F).build())));
-//    public static final RegistrySupplier<Item> BANANA = DEF_REG.register("banana", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(4).saturationMod(0.3F).build())));
-//    public static final RegistrySupplier<Item> ANCIENT_DART = DEF_REG.register("ancient_dart", () -> new Item(new Item.Settings().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final RegistrySupplier<Item> ROADRUNNER_FEATHER = DEF_REG.register("roadrunner_feather", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> ROADDRUNNER_BOOTS = DEF_REG.register("roadrunner_boots", () -> new ItemModArmor(ROADRUNNER_ARMOR_MATERIAL, ArmorItem.Type.BOOTS));
+    public static final RegistrySupplier<Item> LAVA_BOTTLE = DEF_REG.register("lava_bottle", () -> new Item(new Item.Settings().maxCount(1)));
+    public static final RegistrySupplier<Item> BONE_SERPENT_TOOTH = DEF_REG.register("bone_serpent_tooth", () -> new Item(new Item.Settings().fireproof()));
+    public static final RegistrySupplier<Item> GAZELLE_HORN = DEF_REG.register("gazelle_horn", () -> new Item(new Item.Settings().fireproof()));
+    public static final RegistrySupplier<Item> CROCODILE_SCUTE = DEF_REG.register("crocodile_scute", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> CROCODILE_CHESTPLATE = DEF_REG.register("crocodile_chestplate", () -> new ItemModArmor(CROCODILE_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE));
+    public static final RegistrySupplier<Item> MAGGOT = DEF_REG.register("maggot", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(1).saturationModifier(0.2F).build())));
+    public static final RegistrySupplier<Item> BANANA = DEF_REG.register("banana", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(4).saturationModifier(0.3F).build())));
+    public static final RegistrySupplier<Item> ANCIENT_DART = DEF_REG.register("ancient_dart", () -> new Item(new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON)));
 //    public static final RegistrySupplier<Item> HALO = DEF_REG.register("halo", () -> new ItemInventoryOnly(new Item.Settings()));
-//    public static final RegistrySupplier<Item> BLOOD_SAC = DEF_REG.register("blood_sac", () -> new Item(new Item.Settings()));
-//
-//    public static final RegistrySupplier<Item> MOSQUITO_PROBOSCIS = DEF_REG.register("mosquito_proboscis", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> BLOOD_SPRAYER = DEF_REG.register("blood_sprayer", () -> new ItemBloodSprayer(new Item.Settings().durability(100)));
-//    public static final RegistrySupplier<Item> RATTLESNAKE_RATTLE = DEF_REG.register("rattlesnake_rattle", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> CHORUS_ON_A_STICK = DEF_REG.register("chorus_on_a_stick", () -> new Item(new Item.Settings().stacksTo(1)));
-//    public static final RegistrySupplier<Item> SHARK_TOOTH = DEF_REG.register("shark_tooth", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> BLOOD_SAC = DEF_REG.register("blood_sac", () -> new Item(new Item.Settings()));
+
+    public static final RegistrySupplier<Item> MOSQUITO_PROBOSCIS = DEF_REG.register("mosquito_proboscis", () -> new Item(new Item.Settings()));
+//    public static final RegistrySupplier<Item> BLOOD_SPRAYER = DEF_REG.register("blood_sprayer", () -> new ItemBloodSprayer(new Item.Settings().maxDamage(100)));
+    public static final RegistrySupplier<Item> RATTLESNAKE_RATTLE = DEF_REG.register("rattlesnake_rattle", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> CHORUS_ON_A_STICK = DEF_REG.register("chorus_on_a_stick", () -> new Item(new Item.Settings().maxCount(1)));
+    public static final RegistrySupplier<Item> SHARK_TOOTH = DEF_REG.register("shark_tooth", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> SHARK_TOOTH_ARROW = DEF_REG.register("shark_tooth_arrow", () -> new ItemModArrow(new Item.Settings()));
-//    public static final RegistrySupplier<Item> LOBSTER_TAIL = DEF_REG.register("lobster_tail", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(2).saturationMod(0.4F).meat().build())));
-//    public static final RegistrySupplier<Item> COOKED_LOBSTER_TAIL = DEF_REG.register("cooked_lobster_tail", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(6).saturationMod(0.65F).meat().build())));
+    public static final RegistrySupplier<Item> LOBSTER_TAIL = DEF_REG.register("lobster_tail", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(2).saturationModifier(0.4F).meat().build())));
+    public static final RegistrySupplier<Item> COOKED_LOBSTER_TAIL = DEF_REG.register("cooked_lobster_tail", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(6).saturationModifier(0.65F).meat().build())));
     public static final RegistrySupplier<Item> LOBSTER_BUCKET = DEF_REG.register("lobster_bucket", () -> new ItemModFishBucket(AMEntityRegistry.LOBSTER, Fluids.WATER, new Item.Settings()));
-//    public static final RegistrySupplier<Item> KOMODO_SPIT = DEF_REG.register("komodo_spit", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> KOMODO_SPIT_BOTTLE = DEF_REG.register("komodo_spit_bottle", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> POISON_BOTTLE = DEF_REG.register("poison_bottle", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> SOPA_DE_MACACO = DEF_REG.register("sopa_de_macaco", () -> new BowlFoodItem(new Item.Settings().food(new FoodComponent.Builder().nutrition(5).saturationMod(0.4F).meat().build()).stacksTo(1)));
-//    public static final RegistrySupplier<Item> CENTIPEDE_LEG = DEF_REG.register("centipede_leg", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> CENTIPEDE_LEGGINGS = DEF_REG.register("centipede_leggings", () -> new ItemModArmor(CENTIPEDE_ARMOR_MATERIAL, ArmorItem.Type.LEGGINGS));
+    public static final RegistrySupplier<Item> KOMODO_SPIT = DEF_REG.register("komodo_spit", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> KOMODO_SPIT_BOTTLE = DEF_REG.register("komodo_spit_bottle", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> POISON_BOTTLE = DEF_REG.register("poison_bottle", () -> new Item(new Item.Settings()));
+//    public static final RegistrySupplier<Item> SOPA_DE_MACACO = DEF_REG.register("sopa_de_macaco", () -> new BowlFoodItem(new Item.Settings().food(new FoodComponent.Builder().hunger(5).saturationModifier(0.4F).meat().build()).maxCount(1)));
+    public static final RegistrySupplier<Item> CENTIPEDE_LEG = DEF_REG.register("centipede_leg", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> CENTIPEDE_LEGGINGS = DEF_REG.register("centipede_leggings", () -> new ItemModArmor(CENTIPEDE_ARMOR_MATERIAL, ArmorItem.Type.LEGGINGS));
     public static final RegistrySupplier<Item> MOSQUITO_LARVA = DEF_REG.register("mosquito_larva", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> MOOSE_ANTLER = DEF_REG.register("moose_antler", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> MOOSE_HEADGEAR = DEF_REG.register("moose_headgear", () -> new ItemModArmor(MOOSE_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
-//    public static final RegistrySupplier<Item> MOOSE_RIBS = DEF_REG.register("moose_ribs", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(3).saturationMod(0.6F).meat().build())));
-//    public static final RegistrySupplier<Item> COOKED_MOOSE_RIBS = DEF_REG.register("cooked_moose_ribs", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(7).saturationMod(0.85F).meat().build())));
-//    public static final RegistrySupplier<Item> MIMICREAM = DEF_REG.register("mimicream", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> RACCOON_TAIL = DEF_REG.register("raccoon_tail", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> FRONTIER_CAP = DEF_REG.register("frontier_cap", () -> new ItemModArmor(RACCOON_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
-//    public static final RegistrySupplier<Item> BLOBFISH = DEF_REG.register("blobfish", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(3).saturationMod(0.4F).meat().effect(new MobEffectInstance(MobEffects.POISON, 120, 0), 1F).build())));
-//    public static final RegistrySupplier<Item> BLOBFISH_BUCKET = DEF_REG.register("blobfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.BLOBFISH, Fluids.WATER, new Item.Settings()));
+    public static final RegistrySupplier<Item> MOOSE_ANTLER = DEF_REG.register("moose_antler", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> MOOSE_HEADGEAR = DEF_REG.register("moose_headgear", () -> new ItemModArmor(MOOSE_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
+    public static final RegistrySupplier<Item> MOOSE_RIBS = DEF_REG.register("moose_ribs", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(3).saturationModifier(0.6F).meat().build())));
+    public static final RegistrySupplier<Item> COOKED_MOOSE_RIBS = DEF_REG.register("cooked_moose_ribs", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(7).saturationModifier(0.85F).meat().build())));
+    public static final RegistrySupplier<Item> MIMICREAM = DEF_REG.register("mimicream", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> RACCOON_TAIL = DEF_REG.register("raccoon_tail", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> FRONTIER_CAP = DEF_REG.register("frontier_cap", () -> new ItemModArmor(RACCOON_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
+    public static final RegistrySupplier<Item> BLOBFISH = DEF_REG.register("blobfish", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(3).saturationModifier(0.4F).meat().statusEffect(new StatusEffectInstance(StatusEffects.POISON, 120, 0), 1F).build())));
+    public static final RegistrySupplier<Item> BLOBFISH_BUCKET = DEF_REG.register("blobfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.BLOBFISH, Fluids.WATER, new Item.Settings()));
     public static final RegistrySupplier<Item> FISH_OIL = DEF_REG.register("fish_oil", () -> new ItemFishOil(new Item.Settings().recipeRemainder(Items.GLASS_BOTTLE).food(new FoodComponent.Builder().hunger(0).saturationModifier(0.2F).build())));
-//    public static final RegistrySupplier<Item> MARACA = DEF_REG.register("maraca", () -> new ItemMaraca(new Item.Settings()));
-//    public static final RegistrySupplier<Item> SOMBRERO = DEF_REG.register("sombrero", () -> new ItemModArmor(SOMBRERO_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
-//    public static final RegistrySupplier<Item> COCKROACH_WING_FRAGMENT = DEF_REG.register("cockroach_wing_fragment", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> COCKROACH_WING = DEF_REG.register("cockroach_wing", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> COCKROACH_OOTHECA = DEF_REG.register("cockroach_ootheca", () -> new ItemAnimalEgg(new Item.Settings()));
-//    public static final RegistrySupplier<Item> ACACIA_BLOSSOM = DEF_REG.register("acacia_blossom", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> SOUL_HEART = DEF_REG.register("soul_heart", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> MARACA = DEF_REG.register("maraca", () -> new ItemMaraca(new Item.Settings()));
+    public static final RegistrySupplier<Item> SOMBRERO = DEF_REG.register("sombrero", () -> new ItemModArmor(SOMBRERO_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
+    public static final RegistrySupplier<Item> COCKROACH_WING_FRAGMENT = DEF_REG.register("cockroach_wing_fragment", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> COCKROACH_WING = DEF_REG.register("cockroach_wing", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> COCKROACH_OOTHECA = DEF_REG.register("cockroach_ootheca", () -> new ItemAnimalEgg(new Item.Settings()));
+    public static final RegistrySupplier<Item> ACACIA_BLOSSOM = DEF_REG.register("acacia_blossom", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> SOUL_HEART = DEF_REG.register("soul_heart", () -> new Item(new Item.Settings()));
     public static final RegistrySupplier<Item> SPIKED_SCUTE = DEF_REG.register("spiked_scute", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> SPIKED_TURTLE_SHELL = DEF_REG.register("spiked_turtle_shell", () -> new ItemModArmor(SPIKED_TURTLE_SHELL_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
-//    public static final RegistrySupplier<Item> SHRIMP_FRIED_RICE = DEF_REG.register("shrimp_fried_rice", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(12).saturationMod(1F).build())));
-//    public static final RegistrySupplier<Item> GUSTER_EYE = DEF_REG.register("guster_eye", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> POCKET_SAND = DEF_REG.register("pocket_sand", () -> new ItemPocketSand(new Item.Settings().durability(220)));
-//    public static final RegistrySupplier<Item> WARPED_MUSCLE = DEF_REG.register("warped_muscle", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> HEMOLYMPH_SAC = DEF_REG.register("hemolymph_sac", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> HEMOLYMPH_BLASTER = DEF_REG.register("hemolymph_blaster", () -> new ItemHemolymphBlaster(new Item.Settings().durability(150)));
+    public static final RegistrySupplier<Item> SPIKED_TURTLE_SHELL = DEF_REG.register("spiked_turtle_shell", () -> new ItemModArmor(SPIKED_TURTLE_SHELL_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
+    public static final RegistrySupplier<Item> SHRIMP_FRIED_RICE = DEF_REG.register("shrimp_fried_rice", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(12).saturationModifier(1F).build())));
+    public static final RegistrySupplier<Item> GUSTER_EYE = DEF_REG.register("guster_eye", () -> new Item(new Item.Settings()));
+//    public static final RegistrySupplier<Item> POCKET_SAND = DEF_REG.register("pocket_sand", () -> new ItemPocketSand(new Item.Settings().maxDamage(220)));
+    public static final RegistrySupplier<Item> WARPED_MUSCLE = DEF_REG.register("warped_muscle", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> HEMOLYMPH_SAC = DEF_REG.register("hemolymph_sac", () -> new Item(new Item.Settings()));
+//    public static final RegistrySupplier<Item> HEMOLYMPH_BLASTER = DEF_REG.register("hemolymph_blaster", () -> new ItemHemolymphBlaster(new Item.Settings().maxDamage(150)));
     public static final RegistrySupplier<Item> WARPED_MIXTURE = DEF_REG.register("warped_mixture", () -> new Item(new Item.Settings().rarity(Rarity.RARE).maxCount(1).recipeRemainder(Items.GLASS_BOTTLE)));
-//    public static final RegistrySupplier<Item> STRADDLITE = DEF_REG.register("straddlite", () -> new Item(new Item.Settings().fireResistant()));
+//    public static final RegistrySupplier<Item> STRADDLITE = DEF_REG.register("straddlite", () -> new Item(new Item.Settings().fireproof()));
 //    public static final RegistrySupplier<Item> STRADPOLE_BUCKET = DEF_REG.register("stradpole_bucket", () -> new ItemModFishBucket(AMEntityRegistry.STRADPOLE, Fluids.LAVA, new Item.Settings()));
     public static final RegistrySupplier<Item> STRADDLEBOARD = DEF_REG.register("straddleboard", () -> new ItemStraddleboard(new Item.Settings().fireproof().maxDamage(220)));
-//    public static final RegistrySupplier<Item> EMU_EGG = DEF_REG.register("emu_egg", () -> new ItemAnimalEgg(new Item.Settings().stacksTo(8)));
-//    public static final RegistrySupplier<Item> BOILED_EMU_EGG = DEF_REG.register("boiled_emu_egg", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(4).saturationMod(1F).meat().build())));
-//    public static final RegistrySupplier<Item> EMU_FEATHER = DEF_REG.register("emu_feather", () -> new Item(new Item.Settings().fireResistant()));
-//    public static final RegistrySupplier<Item> EMU_LEGGINGS = DEF_REG.register("emu_leggings", () -> new ItemModArmor(EMU_ARMOR_MATERIAL, ArmorItem.Type.LEGGINGS));
-//    public static final RegistrySupplier<Item> PLATYPUS_BUCKET = DEF_REG.register("platypus_bucket", () -> new ItemModFishBucket(AMEntityRegistry.PLATYPUS, Fluids.WATER, new Item.Settings()));
-//    public static final RegistrySupplier<Item> FEDORA = DEF_REG.register("fedora", () -> new ItemModArmor(FEDORA_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
-//    public static final RegistrySupplier<Item> DROPBEAR_CLAW = DEF_REG.register("dropbear_claw", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> KANGAROO_MEAT = DEF_REG.register("kangaroo_meat", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(4).saturationMod(0.6F).meat().build())));
-//    public static final RegistrySupplier<Item> COOKED_KANGAROO_MEAT = DEF_REG.register("cooked_kangaroo_meat", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(8).saturationMod(0.85F).meat().build())));
-//    public static final RegistrySupplier<Item> KANGAROO_HIDE = DEF_REG.register("kangaroo_hide", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> KANGAROO_BURGER = DEF_REG.register("kangaroo_burger", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(12).saturationMod(1F).meat().build())));
+    public static final RegistrySupplier<Item> EMU_EGG = DEF_REG.register("emu_egg", () -> new ItemAnimalEgg(new Item.Settings().maxCount(8)));
+    public static final RegistrySupplier<Item> BOILED_EMU_EGG = DEF_REG.register("boiled_emu_egg", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(4).saturationModifier(1F).meat().build())));
+    public static final RegistrySupplier<Item> EMU_FEATHER = DEF_REG.register("emu_feather", () -> new Item(new Item.Settings().fireproof()));
+    public static final RegistrySupplier<Item> EMU_LEGGINGS = DEF_REG.register("emu_leggings", () -> new ItemModArmor(EMU_ARMOR_MATERIAL, ArmorItem.Type.LEGGINGS));
+    public static final RegistrySupplier<Item> PLATYPUS_BUCKET = DEF_REG.register("platypus_bucket", () -> new ItemModFishBucket(AMEntityRegistry.PLATYPUS, Fluids.WATER, new Item.Settings()));
+    public static final RegistrySupplier<Item> FEDORA = DEF_REG.register("fedora", () -> new ItemModArmor(FEDORA_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
+    public static final RegistrySupplier<Item> DROPBEAR_CLAW = DEF_REG.register("dropbear_claw", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> KANGAROO_MEAT = DEF_REG.register("kangaroo_meat", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(4).saturationModifier(0.6F).meat().build())));
+    public static final RegistrySupplier<Item> COOKED_KANGAROO_MEAT = DEF_REG.register("cooked_kangaroo_meat", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(8).saturationModifier(0.85F).meat().build())));
+    public static final RegistrySupplier<Item> KANGAROO_HIDE = DEF_REG.register("kangaroo_hide", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> KANGAROO_BURGER = DEF_REG.register("kangaroo_burger", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(12).saturationModifier(1F).meat().build())));
     public static final RegistrySupplier<Item> AMBERGRIS = DEF_REG.register("ambergris", () -> new ItemFuel(new Item.Settings(), 12800));
     public static final RegistrySupplier<Item> CACHALOT_WHALE_TOOTH = DEF_REG.register("cachalot_whale_tooth", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> ECHOLOCATOR = DEF_REG.register("echolocator", () -> new ItemEcholocator(new Item.Settings().durability(100), ItemEcholocator.EchoType.ECHOLOCATION));
-//    public static final RegistrySupplier<Item> ENDOLOCATOR = DEF_REG.register("endolocator", () -> new ItemEcholocator(new Item.Settings().durability(25), ItemEcholocator.EchoType.ENDER));
-//    public static final RegistrySupplier<Item> GONGYLIDIA = DEF_REG.register("gongylidia", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(3).saturationMod(1.2F).build())));
+//    public static final RegistrySupplier<Item> ECHOLOCATOR = DEF_REG.register("echolocator", () -> new ItemEcholocator(new Item.Settings().maxDamage(100), ItemEcholocator.EchoType.ECHOLOCATION));
+//    public static final RegistrySupplier<Item> ENDOLOCATOR = DEF_REG.register("endolocator", () -> new ItemEcholocator(new Item.Settings().maxDamage(25), ItemEcholocator.EchoType.ENDER));
+    public static final RegistrySupplier<Item> GONGYLIDIA = DEF_REG.register("gongylidia", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(3).saturationModifier(1.2F).build())));
 //    public static final RegistrySupplier<Item> LEAFCUTTER_ANT_PUPA = DEF_REG.register("leafcutter_ant_pupa", () -> new ItemLeafcutterPupa(new Item.Settings()));
     public static final RegistrySupplier<Item> ENDERIOPHAGE_ROCKET = DEF_REG.register("enderiophage_rocket", () -> new ItemEnderiophageRocket(new Item.Settings()));
 //    public static final RegistrySupplier<Item> FALCONRY_GLOVE_INVENTORY = DEF_REG.register("falconry_glove_inventory", () -> new ItemInventoryOnly(new Item.Settings()));
 //    public static final RegistrySupplier<Item> FALCONRY_GLOVE_HAND = DEF_REG.register("falconry_glove_hand", () -> new ItemInventoryOnly(new Item.Settings()));
     public static final RegistrySupplier<Item> FALCONRY_GLOVE = DEF_REG.register("falconry_glove", () -> new ItemFalconryGlove(new Item.Settings().maxCount(1)));
     public static final RegistrySupplier<Item> FALCONRY_HOOD = DEF_REG.register("falconry_hood", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> TARANTULA_HAWK_WING_FRAGMENT = DEF_REG.register("tarantula_hawk_wing_fragment", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> TARANTULA_HAWK_WING = DEF_REG.register("tarantula_hawk_wing", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> TARANTULA_HAWK_ELYTRA = DEF_REG.register("tarantula_hawk_elytra", () -> new ItemTarantulaHawkElytra(new Item.Settings().durability(800).rarity(Rarity.UNCOMMON), TARANTULA_HAWK_ELYTRA_MATERIAL));
+    public static final RegistrySupplier<Item> TARANTULA_HAWK_WING_FRAGMENT = DEF_REG.register("tarantula_hawk_wing_fragment", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> TARANTULA_HAWK_WING = DEF_REG.register("tarantula_hawk_wing", () -> new Item(new Item.Settings()));
+//    public static final RegistrySupplier<Item> TARANTULA_HAWK_ELYTRA = DEF_REG.register("tarantula_hawk_elytra", () -> new ItemTarantulaHawkElytra(new Item.Settings().maxDamage(800).rarity(Rarity.UNCOMMON), TARANTULA_HAWK_ELYTRA_MATERIAL));
 //    public static final RegistrySupplier<Item> MYSTERIOUS_WORM = DEF_REG.register("mysterious_worm", () -> new ItemMysteriousWorm(new Item.Settings().rarity(Rarity.RARE)));
-//    public static final RegistrySupplier<Item> VOID_WORM_MANDIBLE = DEF_REG.register("void_worm_mandible", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> VOID_WORM_EYE = DEF_REG.register("void_worm_eye", () -> new Item(new Item.Settings().rarity(Rarity.RARE)));
-//    public static final RegistrySupplier<Item> DIMENSIONAL_CARVER = DEF_REG.register("dimensional_carver", () -> new ItemDimensionalCarver(new Item.Settings().durability(20).rarity(Rarity.EPIC)));
-//    public static final RegistrySupplier<Item> SHATTERED_DIMENSIONAL_CARVER = DEF_REG.register("shattered_dimensional_carver", () -> new ItemShatteredDimensionalCarver(new Item.Settings().durability(4).rarity(Rarity.RARE)));
-//    public static final RegistrySupplier<Item> SERRATED_SHARK_TOOTH = DEF_REG.register("serrated_shark_tooth", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> FRILLED_SHARK_BUCKET = DEF_REG.register("frilled_shark_bucket", () -> new ItemModFishBucket(AMEntityRegistry.FRILLED_SHARK, Fluids.WATER, new Item.Settings()));
-//    public static final RegistrySupplier<Item> SHIELD_OF_THE_DEEP = DEF_REG.register("shield_of_the_deep", () -> new ItemShieldOfTheDeep(new Item.Settings().durability(400).rarity(Rarity.UNCOMMON)));
+    public static final RegistrySupplier<Item> VOID_WORM_MANDIBLE = DEF_REG.register("void_worm_mandible", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> VOID_WORM_EYE = DEF_REG.register("void_worm_eye", () -> new Item(new Item.Settings().rarity(Rarity.RARE)));
+//    public static final RegistrySupplier<Item> DIMENSIONAL_CARVER = DEF_REG.register("dimensional_carver", () -> new ItemDimensionalCarver(new Item.Settings().maxDamage(20).rarity(Rarity.EPIC)));
+//    public static final RegistrySupplier<Item> SHATTERED_DIMENSIONAL_CARVER = DEF_REG.register("shattered_dimensional_carver", () -> new ItemShatteredDimensionalCarver(new Item.Settings().maxDamage(4).rarity(Rarity.RARE)));
+    public static final RegistrySupplier<Item> SERRATED_SHARK_TOOTH = DEF_REG.register("serrated_shark_tooth", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> FRILLED_SHARK_BUCKET = DEF_REG.register("frilled_shark_bucket", () -> new ItemModFishBucket(AMEntityRegistry.FRILLED_SHARK, Fluids.WATER, new Item.Settings()));
+//    public static final RegistrySupplier<Item> SHIELD_OF_THE_DEEP = DEF_REG.register("shield_of_the_deep", () -> new ItemShieldOfTheDeep(new Item.Settings().maxDamage(400).rarity(Rarity.UNCOMMON)));
     public static final RegistrySupplier<Item> MIMIC_OCTOPUS_BUCKET = DEF_REG.register("mimic_octopus_bucket", () -> new ItemModFishBucket(AMEntityRegistry.MIMIC_OCTOPUS, Fluids.WATER, new Item.Settings()));
-//    public static final RegistrySupplier<Item> FROSTSTALKER_HORN = DEF_REG.register("froststalker_horn", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> FROSTSTALKER_HELMET = DEF_REG.register("froststalker_helmet", () -> new ItemModArmor(FROSTSTALKER_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
-//    public static final RegistrySupplier<Item> PIGSHOES = DEF_REG.register("pigshoes", () -> new ItemPigshoes(new Item.Settings().stacksTo(1)));
+    public static final RegistrySupplier<Item> FROSTSTALKER_HORN = DEF_REG.register("froststalker_horn", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> FROSTSTALKER_HELMET = DEF_REG.register("froststalker_helmet", () -> new ItemModArmor(FROSTSTALKER_ARMOR_MATERIAL, ArmorItem.Type.HELMET));
+//    public static final RegistrySupplier<Item> PIGSHOES = DEF_REG.register("pigshoes", () -> new ItemPigshoes(new Item.Settings().maxCount(1)));
     public static final RegistrySupplier<Item> STRADDLE_HELMET = DEF_REG.register("straddle_helmet", () -> new Item(new Item.Settings().fireproof()));
     public static final RegistrySupplier<Item> STRADDLE_SADDLE = DEF_REG.register("straddle_saddle", () -> new Item(new Item.Settings().fireproof()));
-//    public static final RegistrySupplier<Item> COSMIC_COD = DEF_REG.register("cosmic_cod", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(6).saturationMod(0.3F).effect(new MobEffectInstance(AMEffectRegistry.ENDER_FLU.get(), 12000), 0.15F).build())));
+    public static final RegistrySupplier<Item> COSMIC_COD = DEF_REG.register("cosmic_cod", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(6).saturationModifier(0.3F).statusEffect(new StatusEffectInstance(AMEffectRegistry.ENDER_FLU.get(), 12000), 0.15F).build())));
     public static final RegistrySupplier<Item> SHED_SNAKE_SKIN = DEF_REG.register("shed_snake_skin", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> VINE_LASSO_INVENTORY = DEF_REG.register("vine_lasso_inventory", () -> new ItemInventoryOnly(new Item.Settings()));
 //    public static final RegistrySupplier<Item> VINE_LASSO_HAND = DEF_REG.register("vine_lasso_hand", () -> new ItemInventoryOnly(new Item.Settings()));
-//    public static final RegistrySupplier<Item> VINE_LASSO = DEF_REG.register("vine_lasso", () -> new ItemVineLasso(new Item.Settings().stacksTo(1)));
-//    public static final RegistrySupplier<Item> ROCKY_SHELL = DEF_REG.register("rocky_shell", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> ROCKY_CHESTPLATE = DEF_REG.register("rocky_chestplate", () -> new ItemModArmor(ROCKY_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE));
+//    public static final RegistrySupplier<Item> VINE_LASSO = DEF_REG.register("vine_lasso", () -> new ItemVineLasso(new Item.Settings().maxCount(1)));
+    public static final RegistrySupplier<Item> ROCKY_SHELL = DEF_REG.register("rocky_shell", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> ROCKY_CHESTPLATE = DEF_REG.register("rocky_chestplate", () -> new ItemModArmor(ROCKY_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE));
 //    public static final RegistrySupplier<Item> POTTED_FLUTTER = DEF_REG.register("potted_flutter", () -> new ItemFlutterPot(new Item.Settings()));
     public static final RegistrySupplier<Item> TERRAPIN_BUCKET = DEF_REG.register("terrapin_bucket", () -> new ItemModFishBucket(AMEntityRegistry.TERRAPIN, Fluids.WATER, new Item.Settings()));
     public static final RegistrySupplier<Item> COMB_JELLY_BUCKET = DEF_REG.register("comb_jelly_bucket", () -> new ItemModFishBucket(AMEntityRegistry.COMB_JELLY, Fluids.WATER, new Item.Settings()));
-//    public static final RegistrySupplier<Item> RAINBOW_JELLY = DEF_REG.register("rainbow_jelly", () -> new ItemRainbowJelly(new Item.Settings().food(new FoodComponent.Builder().nutrition(1).saturationMod(0.2F).build())));
+//    public static final RegistrySupplier<Item> RAINBOW_JELLY = DEF_REG.register("rainbow_jelly", () -> new ItemRainbowJelly(new Item.Settings().food(new FoodComponent.Builder().hunger(1).saturationModifier(0.2F).build())));
 //    public static final RegistrySupplier<Item> COSMIC_COD_BUCKET = DEF_REG.register("cosmic_cod_bucket", () -> new ItemCosmicCodBucket(new Item.Settings()));
     public static final RegistrySupplier<Item> MUNGAL_SPORES = DEF_REG.register("mungal_spores", () -> new Item(new Item.Settings()));
     public static final RegistrySupplier<Item> BISON_FUR = DEF_REG.register("bison_fur", () -> new Item(new Item.Settings()));
     public static final RegistrySupplier<Item> LOST_TENTACLE = DEF_REG.register("lost_tentacle", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> SQUID_GRAPPLE = DEF_REG.register("squid_grapple", () -> new ItemSquidGrapple(new Item.Settings().durability(450)));
+//    public static final RegistrySupplier<Item> SQUID_GRAPPLE = DEF_REG.register("squid_grapple", () -> new ItemSquidGrapple(new Item.Settings().maxDamage(450)));
 //    public static final RegistrySupplier<Item> DEVILS_HOLE_PUPFISH_BUCKET = DEF_REG.register("devils_hole_pupfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.DEVILS_HOLE_PUPFISH, Fluids.WATER, new Item.Settings()));
-//    public static final RegistrySupplier<Item> PUPFISH_LOCATOR = DEF_REG.register("pupfish_locator", () -> new ItemEcholocator(new Item.Settings().durability(200), ItemEcholocator.EchoType.PUPFISH));
+//    public static final RegistrySupplier<Item> PUPFISH_LOCATOR = DEF_REG.register("pupfish_locator", () -> new ItemEcholocator(new Item.Settings().maxDamage(200), ItemEcholocator.EchoType.PUPFISH));
 //    public static final RegistrySupplier<Item> SMALL_CATFISH_BUCKET = DEF_REG.register("small_catfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.CATFISH, Fluids.WATER, new Item.Settings()));
 //    public static final RegistrySupplier<Item> MEDIUM_CATFISH_BUCKET = DEF_REG.register("medium_catfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.CATFISH, Fluids.WATER, new Item.Settings()));
 //    public static final RegistrySupplier<Item> LARGE_CATFISH_BUCKET = DEF_REG.register("large_catfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.CATFISH, Fluids.WATER, new Item.Settings()));
-//    public static final RegistrySupplier<Item> RAW_CATFISH = DEF_REG.register("raw_catfish", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(2).saturationMod(0.3F).meat().build())));
-//    public static final RegistrySupplier<Item> COOKED_CATFISH = DEF_REG.register("cooked_catfish", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(5).saturationMod(0.5F).meat().build())));
-//    public static final RegistrySupplier<Item> FLYING_FISH = DEF_REG.register("flying_fish", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().nutrition(3).saturationMod(0.4F).meat().build())));
-//    public static final RegistrySupplier<Item> FLYING_FISH_BOOTS = DEF_REG.register("flying_fish_boots", () -> new ItemModArmor(FLYING_FISH_MATERIAL, ArmorItem.Type.BOOTS));
+    public static final RegistrySupplier<Item> RAW_CATFISH = DEF_REG.register("raw_catfish", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(2).saturationModifier(0.3F).meat().build())));
+    public static final RegistrySupplier<Item> COOKED_CATFISH = DEF_REG.register("cooked_catfish", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(5).saturationModifier(0.5F).meat().build())));
+    public static final RegistrySupplier<Item> FLYING_FISH = DEF_REG.register("flying_fish", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(3).saturationModifier(0.4F).meat().build())));
+    public static final RegistrySupplier<Item> FLYING_FISH_BOOTS = DEF_REG.register("flying_fish_boots", () -> new ItemModArmor(FLYING_FISH_MATERIAL, ArmorItem.Type.BOOTS));
 //    public static final RegistrySupplier<Item> FLYING_FISH_BUCKET = DEF_REG.register("flying_fish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.FLYING_FISH, Fluids.WATER, new Item.Settings()));
-//    public static final RegistrySupplier<Item> FISH_BONES = DEF_REG.register("fish_bones", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> FISH_BONES = DEF_REG.register("fish_bones", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> SKELEWAG_SWORD_INVENTORY = DEF_REG.register("skelewag_sword_inventory", () -> new ItemInventoryOnly(new Item.Settings()));
 //    public static final RegistrySupplier<Item> SKELEWAG_SWORD_HAND = DEF_REG.register("skelewag_sword_hand", () -> new ItemInventoryOnly(new Item.Settings()));
-//    public static final RegistrySupplier<Item> SKELEWAG_SWORD = DEF_REG.register("skelewag_sword", () -> new ItemSkelewagSword(new Item.Settings().stacksTo(1).durability(430)));
+//    public static final RegistrySupplier<Item> SKELEWAG_SWORD = DEF_REG.register("skelewag_sword", () -> new ItemSkelewagSword(new Item.Settings().maxCount(1).maxDamage(430)));
 //    public static final RegistrySupplier<Item> NOVELTY_HAT = DEF_REG.register("novelty_hat", () -> new ItemModArmor(NOVELTY_HAT_MATERIAL, ArmorItem.Type.HELMET));
 //    public static final RegistrySupplier<Item> MUDSKIPPER_BUCKET = DEF_REG.register("mudskipper_bucket", () -> new ItemModFishBucket(AMEntityRegistry.MUDSKIPPER, Fluids.WATER, new Item.Settings()));
-//    public static final RegistrySupplier<Item> FARSEER_ARM = DEF_REG.register("farseer_arm", () -> new Item(new Item.Settings().rarity(Rarity.RARE)));
-//    public static final RegistrySupplier<Item> SKREECHER_SOUL = DEF_REG.register("skreecher_soul", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> FARSEER_ARM = DEF_REG.register("farseer_arm", () -> new Item(new Item.Settings().rarity(Rarity.RARE)));
+    public static final RegistrySupplier<Item> SKREECHER_SOUL = DEF_REG.register("skreecher_soul", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> GHOSTLY_PICKAXE = DEF_REG.register("ghostly_pickaxe", () -> new ItemGhostlyPickaxe(new Item.Settings()));
-//    public static final RegistrySupplier<Item> ELASTIC_TENDON = DEF_REG.register("elastic_tendon", () -> new Item(new Item.Settings()));
+    public static final RegistrySupplier<Item> ELASTIC_TENDON = DEF_REG.register("elastic_tendon", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> TENDON_WHIP = DEF_REG.register("tendon_whip", () -> new ItemTendonWhip(new Item.Settings()));
-//    public static final RegistrySupplier<Item> UNSETTLING_KIMONO = DEF_REG.register("unsettling_kimono", () -> new ItemModArmor(KIMONO_MATERIAL, ArmorItem.Type.CHESTPLATE));
-//    public static final RegistrySupplier<Item> STINK_BOTTLE = DEF_REG.register("stink_bottle", () -> new ItemStinkBottle(AMBlockRegistry.SKUNK_SPRAY, new Item.Settings().stacksTo(16)));
+    public static final RegistrySupplier<Item> UNSETTLING_KIMONO = DEF_REG.register("unsettling_kimono", () -> new ItemModArmor(KIMONO_MATERIAL, ArmorItem.Type.CHESTPLATE));
+//    public static final RegistrySupplier<Item> STINK_BOTTLE = DEF_REG.register("stink_bottle", () -> new ItemStinkBottle(AMBlockRegistry.SKUNK_SPRAY, new Item.Settings().maxCount(16)));
 //
 //    public static final RegistrySupplier<Item> STINK_RAY_HAND = DEF_REG.register("stink_ray_hand", () -> new ItemInventoryOnly(new Item.Settings()));
 //
@@ -183,13 +192,13 @@ public class AMItemRegistry {
 //
 //    public static final RegistrySupplier<Item> STINK_RAY_EMPTY_INVENTORY = DEF_REG.register("stink_ray_empty_inventory", () -> new ItemInventoryOnly(new Item.Settings()));
 //
-//    public static final RegistrySupplier<Item> STINK_RAY = DEF_REG.register("stink_ray", () -> new ItemStinkRay(new Item.Settings().durability(5)));
-//    public static final RegistrySupplier<Item> BANANA_SLUG_SLIME = DEF_REG.register("banana_slug_slime", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> MOSQUITO_REPELLENT_STEW = DEF_REG.register("mosquito_repellent_stew", () -> new BowlFoodItem(new Item.Settings().food(new FoodComponent.Builder().nutrition(4).alwaysEat().saturationMod(0.3F).effect(() -> new MobEffectInstance(AMEffectRegistry.MOSQUITO_REPELLENT.get(), 24000), 1.0F).build()).stacksTo(1)));
+//    public static final RegistrySupplier<Item> STINK_RAY = DEF_REG.register("stink_ray", () -> new ItemStinkRay(new Item.Settings().maxDamage(5)));
+    public static final RegistrySupplier<Item> BANANA_SLUG_SLIME = DEF_REG.register("banana_slug_slime", () -> new Item(new Item.Settings()));
+//    public static final RegistrySupplier<Item> MOSQUITO_REPELLENT_STEW = DEF_REG.register("mosquito_repellent_stew", () -> new BowlFoodItem(new Item.Settings().food(new FoodComponent.Builder().hunger(4).alwaysEat().saturationModifier(0.3F).effect(() -> new MobEffectInstance(AMEffectRegistry.MOSQUITO_REPELLENT.get(), 24000), 1.0F).build()).maxCount(1)));
     public static final RegistrySupplier<Item> TRIOPS_BUCKET = DEF_REG.register("triops_bucket", () -> new ItemModFishBucket(AMEntityRegistry.TRIOPS, Fluids.WATER, new Item.Settings()));
 //
-//    public static final RegistrySupplier<Item> MUSIC_DISC_THIME = DEF_REG.register("music_disc_thime", () -> new RecordItem(14, AMSoundRegistry.MUSIC_DISC_THIME, new Item.Settings().stacksTo(1).rarity(Rarity.RARE), 314 * 20));
-//    public static final RegistrySupplier<Item> MUSIC_DISC_DAZE = DEF_REG.register("music_disc_daze", () -> new RecordItem(14, AMSoundRegistry.MUSIC_DISC_DAZE, new Item.Settings().stacksTo(1).rarity(Rarity.RARE), 191 * 20));
+//    public static final RegistrySupplier<Item> MUSIC_DISC_THIME = DEF_REG.register("music_disc_thime", () -> new RecordItem(14, AMSoundRegistry.MUSIC_DISC_THIME, new Item.Settings().maxCount(1).rarity(Rarity.RARE), 314 * 20));
+//    public static final RegistrySupplier<Item> MUSIC_DISC_DAZE = DEF_REG.register("music_disc_daze", () -> new RecordItem(14, AMSoundRegistry.MUSIC_DISC_DAZE, new Item.Settings().maxCount(1).rarity(Rarity.RARE), 191 * 20));
 //
 //    public static void initSpawnEggs() {
 //        DEF_REG.register("spawn_egg_grizzly_bear", () -> new SpawnEggItem(AMEntityRegistry.GRIZZLY_BEAR, 0X693A2C, 0X976144, new Item.Settings()));
@@ -293,7 +302,7 @@ public class AMItemRegistry {
 //
 //    private static void registerPatternItem(String name) {
 //        TagKey<BannerPattern> bannerPatternTagKey = TagKey.create(Registries.BANNER_PATTERN, new ResourceLocation(AlexsMobs.MOD_ID, "pattern_for_" + name));
-//        DEF_REG.register("banner_pattern_" + name, () -> new BannerPatternItem(bannerPatternTagKey, (new Item.Settings()).stacksTo(1)));
+//        DEF_REG.register("banner_pattern_" + name, () -> new BannerPatternItem(bannerPatternTagKey, (new Item.Settings()).maxCount(1)));
 //    }
 //
 //    public static void init() {
@@ -313,8 +322,8 @@ public class AMItemRegistry {
 //        LecternBooks.BOOKS.put(ANIMAL_DICTIONARY.getId(), new LecternBooks.BookData(0X606B26, 0XFDF8ED));
 //    }
 //
-//    public static void initDispenser(){
-//        DispenserBlock.registerBehavior(SHARK_TOOTH_ARROW.get(), new AbstractProjectileDispenseBehavior() {
+    public static void initDispenser(){
+//        DispenserBlock.registerBehavior(SHARK_TOOTH_ARROW.get(), new ProjectileDispenserBehavior() {
 //            /**
 //             * Return the projectile entity spawned by this dispense behavior.
 //             */
@@ -324,31 +333,31 @@ public class AMItemRegistry {
 //                return entityarrow;
 //            }
 //        });
-//        DispenserBlock.registerBehavior(ANCIENT_DART.get(), new AbstractProjectileDispenseBehavior() {
+//        DispenserBlock.registerBehavior(ANCIENT_DART.get(), new ProjectileDispenserBehavior() {
 //            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
 //                EntityTossedItem tossedItem = new EntityTossedItem(worldIn, position.x(), position.y(), position.z());
 //                tossedItem.setDart(true);
 //                return tossedItem;
 //            }
 //        });
-//        DispenserBlock.registerBehavior(COCKROACH_OOTHECA.get(), new AbstractProjectileDispenseBehavior() {
-//            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
-//                EntityCockroachEgg entityarrow = new EntityCockroachEgg(worldIn, position.x(), position.y(), position.z());
-//                return entityarrow;
-//            }
-//        });
-//        DispenserBlock.registerBehavior(EMU_EGG.get(), new AbstractProjectileDispenseBehavior() {
-//            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
-//                EntityEmuEgg entityarrow = new EntityEmuEgg(worldIn, position.x(), position.y(), position.z());
-//                return entityarrow;
-//            }
-//        });
-//        DispenserBlock.registerBehavior(ENDERIOPHAGE_ROCKET.get(), new AbstractProjectileDispenseBehavior() {
-//            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
-//                EntityEnderiophageRocket entityarrow = new EntityEnderiophageRocket(worldIn, position.x(), position.y(), position.z(), stackIn);
-//                return entityarrow;
-//            }
-//        });
+        DispenserBlock.registerBehavior(COCKROACH_OOTHECA.get(), new ProjectileDispenserBehavior() {
+            @Override
+            protected ProjectileEntity createProjectile(World world, Position position, ItemStack stack) {
+                return new EntityCockroachEgg(world, position.getX(), position.getY(), position.getZ());
+            }
+        });
+        DispenserBlock.registerBehavior(EMU_EGG.get(), new ProjectileDispenserBehavior() {
+            @Override
+            protected ProjectileEntity createProjectile(World world, Position position, ItemStack stack) {
+                return new EntityEmuEgg(world, position.getX(), position.getY(), position.getZ());
+            }
+        });
+        DispenserBlock.registerBehavior(ENDERIOPHAGE_ROCKET.get(), new ProjectileDispenserBehavior() {
+            @Override
+            protected ProjectileEntity createProjectile(World world, Position position, ItemStack stack) {
+                return new EntityEnderiophageRocket(world, position.getX(), position.getY(), position.getZ(), stack);
+            }
+        });
 //        DispenseItemBehavior bucketDispenseBehavior = new DefaultDispenseItemBehavior() {
 //            private final DefaultDispenseItemBehavior defaultDispenseItemBehavior = new DefaultDispenseItemBehavior();
 //
@@ -383,6 +392,6 @@ public class AMItemRegistry {
 //        ComposterBlock.COMPOSTABLES.put(AMBlockRegistry.BANANA_PEEL.get().asItem(), 1F);
 //        ComposterBlock.COMPOSTABLES.put(ACACIA_BLOSSOM.get(), 0.65F);
 //        ComposterBlock.COMPOSTABLES.put(GONGYLIDIA.get(), 0.9F);
-//    }
+    }
 
 }

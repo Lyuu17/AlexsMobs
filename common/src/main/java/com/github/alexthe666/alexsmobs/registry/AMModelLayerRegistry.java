@@ -1,12 +1,16 @@
-package com.github.alexthe666.alexsmobs.model.layered;
+package com.github.alexthe666.alexsmobs.registry;
 
+import com.github.alexthe666.alexsmobs.AlexsMobs;
+import com.github.alexthe666.alexsmobs.model.layered.ModelSombrero;
+import dev.architectury.registry.client.level.entity.EntityModelLayerRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.model.Dilation;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
-public class AMModelLayers {
+public class AMModelLayerRegistry {
 
     public static final EntityModelLayer AM_ELYTRA = createLocation("am_elytra", "main");
     public static final EntityModelLayer SITTING_WANDERING_VILLAGER = createLocation("sitting_wandering_villager", "main");
@@ -25,6 +29,11 @@ public class AMModelLayers {
     public static final EntityModelLayer UNSETTLING_KIMONO = createLocation("unsettling_kimono", "main");
 
     private static EntityModelLayer createLocation(String model, String layer) {
-        return new EntityModelLayer(new Identifier("alexsmobs", model), layer);
+        return new EntityModelLayer(new Identifier(AlexsMobs.MOD_ID, model), layer);
+    }
+
+    public static void register() {
+        EntityModelLayerRegistry.register(SOMBRERO, () -> ModelSombrero.createArmorLayer(Dilation.NONE));
+        EntityModelLayerRegistry.register(SOMBRERO_GOOFY_FASHION, () -> ModelSombrero.createArmorLayerAprilFools(Dilation.NONE));
     }
 }

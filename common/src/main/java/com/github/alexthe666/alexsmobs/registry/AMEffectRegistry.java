@@ -1,10 +1,7 @@
 package com.github.alexthe666.alexsmobs.registry;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
-import com.github.alexthe666.alexsmobs.effect.EffectEnderFlu;
-import com.github.alexthe666.alexsmobs.effect.EffectMosquitoRepellent;
-import com.github.alexthe666.alexsmobs.effect.EffectOiled;
-import com.github.alexthe666.alexsmobs.effect.EffectPowerDown;
+import com.github.alexthe666.alexsmobs.effect.*;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.entity.effect.StatusEffect;
@@ -25,7 +22,7 @@ public class AMEffectRegistry {
 //    public static final RegistrySupplier<StatusEffect> SUNBIRD_CURSE = EFFECT_DEF_REG.register("sunbird_curse", ()-> new EffectSunbird(true));
 //    public static final RegistrySupplier<StatusEffect> POISON_RESISTANCE = EFFECT_DEF_REG.register("poison_resistance", EffectPoisonResistance::new);
     public static final RegistrySupplier<StatusEffect> OILED = EFFECT_DEF_REG.register("oiled", EffectOiled::new);
-//    public static final RegistrySupplier<StatusEffect> ORCAS_MIGHT = EFFECT_DEF_REG.register("orcas_might", EffectOrcaMight::new);
+    public static final RegistrySupplier<StatusEffect> ORCAS_MIGHT = EFFECT_DEF_REG.register("orcas_might", EffectOrcaMight::new);
 //    public static final RegistrySupplier<StatusEffect> BUG_PHEROMONES = EFFECT_DEF_REG.register("bug_pheromones", EffectBugPheromones::new);
 //    public static final RegistrySupplier<StatusEffect> SOULSTEAL = EFFECT_DEF_REG.register("soulsteal", EffectSoulsteal::new);
 //    public static final RegistrySupplier<StatusEffect> CLINGING = EFFECT_DEF_REG.register("clinging", EffectClinging::new);
@@ -33,7 +30,7 @@ public class AMEffectRegistry {
 //    public static final RegistrySupplier<StatusEffect> FEAR = EFFECT_DEF_REG.register("fear", ()-> new EffectFear());
 //    public static final RegistrySupplier<StatusEffect> TIGERS_BLESSING = EFFECT_DEF_REG.register("tigers_blessing", EffectTigersBlessing::new);
 //    public static final RegistrySupplier<StatusEffect> DEBILITATING_STING = EFFECT_DEF_REG.register("debilitating_sting", EffectDebilitatingSting::new);
-//    public static final RegistrySupplier<StatusEffect> EXSANGUINATION = EFFECT_DEF_REG.register("exsanguination", EffectExsanguination::new);
+    public static final RegistrySupplier<StatusEffect> EXSANGUINATION = EFFECT_DEF_REG.register("exsanguination", EffectExsanguination::new);
 //    public static final RegistrySupplier<StatusEffect> EARTHQUAKE = EFFECT_DEF_REG.register("earthquake", EffectEarthquake::new);
 //    public static final RegistrySupplier<StatusEffect> FLEET_FOOTED = EFFECT_DEF_REG.register("fleet_footed", EffectFleetFooted::new);
     public static final RegistrySupplier<StatusEffect> POWER_DOWN = EFFECT_DEF_REG.register("power_down", EffectPowerDown::new);

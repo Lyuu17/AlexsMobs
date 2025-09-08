@@ -123,7 +123,7 @@ public class EntityGrizzlyBear extends TameableEntity implements Angerable, IAni
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            var entity = source.getSource();
+            var entity = source.getAttacker();
             this.setSitting(false);
             if (entity != null && this.isTamed() && !(entity instanceof PlayerEntity) && !(entity instanceof PersistentProjectileEntity)) {
                 amount = (amount + 1.0F) / 3.0F;

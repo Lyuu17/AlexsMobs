@@ -31,11 +31,19 @@ public abstract class EntityMixin {
             cir.cancel();
         }
 
+        if (self instanceof EntityBlueJay) {
+            cir.cancel();
+        }
+
         if (self instanceof EntityBunfungus) {
             cir.cancel();
         }
 
         if (self instanceof EntityCrimsonMosquito) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityCrow) {
             cir.cancel();
         }
 
@@ -47,7 +55,19 @@ public abstract class EntityMixin {
             cir.cancel();
         }
 
+        if (self instanceof EntityFroststalker) {
+            cir.cancel();
+        }
+
         if (self instanceof EntityLaviathan) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityToucan) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntitySoulVulture) {
             cir.cancel();
         }
 

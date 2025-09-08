@@ -218,7 +218,7 @@ public class EntityCrimsonMosquito extends HostileEntity {
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (source.getSource() != null && this.getRootVehicle() == source.getSource().getRootVehicle()) {
+        if (source.getAttacker() != null && this.getRootVehicle() == source.getAttacker().getRootVehicle()) {
             return super.damage(source, amount * 0.333F);
         }
         if (flightTicks < 0) {

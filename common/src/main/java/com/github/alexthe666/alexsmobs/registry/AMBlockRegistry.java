@@ -1,6 +1,7 @@
 package com.github.alexthe666.alexsmobs.registry;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
+import com.github.alexthe666.alexsmobs.block.BlockReptileEgg;
 import com.github.alexthe666.alexsmobs.block.BlockTerrapinEgg;
 import com.github.alexthe666.alexsmobs.block.BlockTriopsEggs;
 import com.github.alexthe666.alexsmobs.item.AMBlockItem;
@@ -25,10 +26,10 @@ public class AMBlockRegistry {
     public static final DeferredRegister<Block> DEF_REG = DeferredRegister.create(AlexsMobs.MOD_ID, RegistryKeys.BLOCK);
 //    public static final RegistrySupplier<Block> BANANA_PEEL = registerBlockAndItem("banana_peel", BlockBananaPeel::new);
 //    public static final RegistrySupplier<Block> HUMMINGBIRD_FEEDER = registerBlockAndItem("hummingbird_feeder", BlockHummingbirdFeeder::new);
-//    public static final RegistrySupplier<Block> CROCODILE_EGG = registerBlockAndItem("crocodile_egg", () -> new BlockReptileEgg<>(AMEntityRegistry.CROCODILE));
+    public static final RegistrySupplier<Block> CROCODILE_EGG = registerBlockAndItem("crocodile_egg", () -> new BlockReptileEgg<>(AMEntityRegistry.CROCODILE));
 //    public static final RegistrySupplier<Block> GUSTMAKER = registerBlockAndItem("gustmaker", BlockGustmaker::new);
 //    public static final RegistrySupplier<Block> STRADDLITE_BLOCK = registerBlockAndItem("straddlite_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).requiresCorrectToolForDrops().strength(1.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)), new Item.Properties().fireResistant(), false);
-//    public static final RegistrySupplier<Block> PLATYPUS_EGG = registerBlockAndItem("platypus_egg", () -> new BlockReptileEgg<>(AMEntityRegistry.PLATYPUS));
+    public static final RegistrySupplier<Block> PLATYPUS_EGG = registerBlockAndItem("platypus_egg", () -> new BlockReptileEgg<>(AMEntityRegistry.PLATYPUS));
 //    public static final RegistrySupplier<Block> LEAFCUTTER_ANTHILL = registerBlockAndItem("leafcutter_anthill", BlockLeafcutterAnthill::new);
 //    public static final RegistrySupplier<Block> LEAFCUTTER_ANT_CHAMBER = registerBlockAndItem("leafcutter_ant_chamber", BlockLeafcutterAntChamber::new);
 //    public static final RegistrySupplier<Block> CAPSID = registerBlockAndItem("capsid", BlockCapsid::new);
@@ -46,7 +47,7 @@ public class AMBlockRegistry {
 //    public static final RegistrySupplier<Block> SKUNK_SPRAY = DEF_REG.register("skunk_spray", BlockSkunkSpray::new);
 //    public static final RegistrySupplier<Block> BANANA_SLUG_SLIME_BLOCK = registerBlockAndItem("banana_slug_slime_block", BlockBananaSlugSlime::new);
 //    public static final RegistrySupplier<Block> CRYSTALIZED_BANANA_SLUG_MUCUS = registerBlockAndItem("crystalized_banana_slug_mucus", BlockCrystalizedMucus::new);
-//    public static final RegistrySupplier<Block> CAIMAN_EGG = registerBlockAndItem("caiman_egg", () -> new BlockReptileEgg<>(AMEntityRegistry.CAIMAN));
+    public static final RegistrySupplier<Block> CAIMAN_EGG = registerBlockAndItem("caiman_egg", () -> new BlockReptileEgg<>(AMEntityRegistry.CAIMAN));
     public static final RegistrySupplier<Block> TRIOPS_EGGS = registerBlockAndItem("triops_eggs", BlockTriopsEggs::new);
 //    /*
 //        public static final RegistrySupplier<Block> PURPUR_PLANKS = registerBlockAndItem("purpur_planks", () -> new Block(PURPUR_PLANKS_PROPERTIES));;

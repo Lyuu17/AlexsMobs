@@ -24,11 +24,11 @@ public class SyncEntityPosPacket {
         this.posZ = posZ;
     }
 
-    public static SyncEntityPosPacket read(PacketByteBuf buf) {
+    private static SyncEntityPosPacket read(PacketByteBuf buf) {
         return new SyncEntityPosPacket(buf.readInt(), buf.readDouble(), buf.readDouble(), buf.readDouble());
     }
 
-    public void write(PacketByteBuf buf) {
+    private void write(PacketByteBuf buf) {
         buf.writeInt(eagleId);
         buf.writeDouble(posX);
         buf.writeDouble(posY);

@@ -37,23 +37,15 @@ public class HurtMultipartPacket {
         this.damageType = damageType;
     }
 
-    public static HurtMultipartPacket read(PacketByteBuf buf) {
+    private static HurtMultipartPacket read(PacketByteBuf buf) {
         return new HurtMultipartPacket(buf.readInt(), buf.readInt(), buf.readFloat(), buf.readString());
     }
 
-    public void write(PacketByteBuf buf) {
+    private void write(PacketByteBuf buf) {
         buf.writeInt(part);
         buf.writeInt(parent);
         buf.writeFloat(damage);
         buf.writeString(damageType);
-    }
-
-    public static void register() {
-        AMPacketRegistry.CHANNEL.register(HurtMultipartPacket.class,
-                HurtMultipartPacket::write,
-                HurtMultipartPacket::read,
-                HurtMultipartPacket::handle
-        );
     }
 
     private void handle(Supplier<NetworkManager.PacketContext> context) {
@@ -86,5 +78,13 @@ public class HurtMultipartPacket {
 
             }
         }
+    }
+
+    public static void register() {
+        AMPacketRegistry.CHANNEL.register(HurtMultipartPacket.class,
+                HurtMultipartPacket::write,
+                HurtMultipartPacket::read,
+                HurtMultipartPacket::handle
+        );
     }
 }

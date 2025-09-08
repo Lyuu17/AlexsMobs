@@ -627,7 +627,7 @@ public class EntityEnderiophage extends AnimalEntity implements Monster, Flutter
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            var entity = source.getSource();
+            var entity = source.getAttacker();
             if (entity instanceof EndermanEntity) {
                 amount = (amount + 1.0F) * 0.35F;
                 angryEnderman = (EndermanEntity) entity;
