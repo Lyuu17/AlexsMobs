@@ -5,4 +5,6 @@ public interface IMultipartEntity {
     default boolean isMultipartEntity() {
         return true;
     }
+
+    PartEntity<?>[] getParts();
 }

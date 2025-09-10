@@ -6,6 +6,8 @@ import dev.architectury.registry.client.level.entity.EntityModelLayerRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.Dilation;
+import net.minecraft.client.model.TexturedModelData;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 
@@ -35,5 +37,6 @@ public class AMModelLayerRegistry {
     public static void register() {
         EntityModelLayerRegistry.register(SOMBRERO, () -> ModelSombrero.createArmorLayer(Dilation.NONE));
         EntityModelLayerRegistry.register(SOMBRERO_GOOFY_FASHION, () -> ModelSombrero.createArmorLayerAprilFools(Dilation.NONE));
+        EntityModelLayerRegistry.register(UNDERMINER, () -> TexturedModelData.of(BipedEntityModel.getModelData(Dilation.NONE, 0.05F), 64, 64) );
     }
 }

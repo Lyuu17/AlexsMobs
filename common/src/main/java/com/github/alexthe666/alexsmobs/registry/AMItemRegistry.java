@@ -133,8 +133,8 @@ public class AMItemRegistry {
 //    public static final RegistrySupplier<Item> MYSTERIOUS_WORM = DEF_REG.register("mysterious_worm", () -> new ItemMysteriousWorm(new Item.Settings().rarity(Rarity.RARE)));
     public static final RegistrySupplier<Item> VOID_WORM_MANDIBLE = DEF_REG.register("void_worm_mandible", () -> new Item(new Item.Settings()));
     public static final RegistrySupplier<Item> VOID_WORM_EYE = DEF_REG.register("void_worm_eye", () -> new Item(new Item.Settings().rarity(Rarity.RARE)));
-//    public static final RegistrySupplier<Item> DIMENSIONAL_CARVER = DEF_REG.register("dimensional_carver", () -> new ItemDimensionalCarver(new Item.Settings().maxDamage(20).rarity(Rarity.EPIC)));
-//    public static final RegistrySupplier<Item> SHATTERED_DIMENSIONAL_CARVER = DEF_REG.register("shattered_dimensional_carver", () -> new ItemShatteredDimensionalCarver(new Item.Settings().maxDamage(4).rarity(Rarity.RARE)));
+    public static final RegistrySupplier<Item> DIMENSIONAL_CARVER = DEF_REG.register("dimensional_carver", () -> new ItemDimensionalCarver(new Item.Settings().maxDamage(20).rarity(Rarity.EPIC)));
+    public static final RegistrySupplier<Item> SHATTERED_DIMENSIONAL_CARVER = DEF_REG.register("shattered_dimensional_carver", () -> new ItemShatteredDimensionalCarver(new Item.Settings().maxDamage(4).rarity(Rarity.RARE)));
     public static final RegistrySupplier<Item> SERRATED_SHARK_TOOTH = DEF_REG.register("serrated_shark_tooth", () -> new Item(new Item.Settings()));
     public static final RegistrySupplier<Item> FRILLED_SHARK_BUCKET = DEF_REG.register("frilled_shark_bucket", () -> new ItemModFishBucket(AMEntityRegistry.FRILLED_SHARK, Fluids.WATER, new Item.Settings()));
 //    public static final RegistrySupplier<Item> SHIELD_OF_THE_DEEP = DEF_REG.register("shield_of_the_deep", () -> new ItemShieldOfTheDeep(new Item.Settings().maxDamage(400).rarity(Rarity.UNCOMMON)));
@@ -155,7 +155,7 @@ public class AMItemRegistry {
     public static final RegistrySupplier<Item> TERRAPIN_BUCKET = DEF_REG.register("terrapin_bucket", () -> new ItemModFishBucket(AMEntityRegistry.TERRAPIN, Fluids.WATER, new Item.Settings()));
     public static final RegistrySupplier<Item> COMB_JELLY_BUCKET = DEF_REG.register("comb_jelly_bucket", () -> new ItemModFishBucket(AMEntityRegistry.COMB_JELLY, Fluids.WATER, new Item.Settings()));
 //    public static final RegistrySupplier<Item> RAINBOW_JELLY = DEF_REG.register("rainbow_jelly", () -> new ItemRainbowJelly(new Item.Settings().food(new FoodComponent.Builder().hunger(1).saturationModifier(0.2F).build())));
-//    public static final RegistrySupplier<Item> COSMIC_COD_BUCKET = DEF_REG.register("cosmic_cod_bucket", () -> new ItemCosmicCodBucket(new Item.Settings()));
+    public static final RegistrySupplier<Item> COSMIC_COD_BUCKET = DEF_REG.register("cosmic_cod_bucket", () -> new ItemCosmicCodBucket(new Item.Settings()));
     public static final RegistrySupplier<Item> MUNGAL_SPORES = DEF_REG.register("mungal_spores", () -> new Item(new Item.Settings()));
     public static final RegistrySupplier<Item> BISON_FUR = DEF_REG.register("bison_fur", () -> new Item(new Item.Settings()));
     public static final RegistrySupplier<Item> LOST_TENTACLE = DEF_REG.register("lost_tentacle", () -> new Item(new Item.Settings()));
@@ -169,7 +169,7 @@ public class AMItemRegistry {
     public static final RegistrySupplier<Item> COOKED_CATFISH = DEF_REG.register("cooked_catfish", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(5).saturationModifier(0.5F).meat().build())));
     public static final RegistrySupplier<Item> FLYING_FISH = DEF_REG.register("flying_fish", () -> new Item(new Item.Settings().food(new FoodComponent.Builder().hunger(3).saturationModifier(0.4F).meat().build())));
     public static final RegistrySupplier<Item> FLYING_FISH_BOOTS = DEF_REG.register("flying_fish_boots", () -> new ItemModArmor(FLYING_FISH_MATERIAL, ArmorItem.Type.BOOTS));
-//    public static final RegistrySupplier<Item> FLYING_FISH_BUCKET = DEF_REG.register("flying_fish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.FLYING_FISH, Fluids.WATER, new Item.Settings()));
+    public static final RegistrySupplier<Item> FLYING_FISH_BUCKET = DEF_REG.register("flying_fish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.FLYING_FISH, Fluids.WATER, new Item.Settings()));
     public static final RegistrySupplier<Item> FISH_BONES = DEF_REG.register("fish_bones", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> SKELEWAG_SWORD_INVENTORY = DEF_REG.register("skelewag_sword_inventory", () -> new ItemInventoryOnly(new Item.Settings()));
 //    public static final RegistrySupplier<Item> SKELEWAG_SWORD_HAND = DEF_REG.register("skelewag_sword_hand", () -> new ItemInventoryOnly(new Item.Settings()));
@@ -178,7 +178,7 @@ public class AMItemRegistry {
 //    public static final RegistrySupplier<Item> MUDSKIPPER_BUCKET = DEF_REG.register("mudskipper_bucket", () -> new ItemModFishBucket(AMEntityRegistry.MUDSKIPPER, Fluids.WATER, new Item.Settings()));
     public static final RegistrySupplier<Item> FARSEER_ARM = DEF_REG.register("farseer_arm", () -> new Item(new Item.Settings().rarity(Rarity.RARE)));
     public static final RegistrySupplier<Item> SKREECHER_SOUL = DEF_REG.register("skreecher_soul", () -> new Item(new Item.Settings()));
-//    public static final RegistrySupplier<Item> GHOSTLY_PICKAXE = DEF_REG.register("ghostly_pickaxe", () -> new ItemGhostlyPickaxe(new Item.Settings()));
+    public static final RegistrySupplier<Item> GHOSTLY_PICKAXE = DEF_REG.register("ghostly_pickaxe", () -> new ItemGhostlyPickaxe(new Item.Settings()));
     public static final RegistrySupplier<Item> ELASTIC_TENDON = DEF_REG.register("elastic_tendon", () -> new Item(new Item.Settings()));
 //    public static final RegistrySupplier<Item> TENDON_WHIP = DEF_REG.register("tendon_whip", () -> new ItemTendonWhip(new Item.Settings()));
     public static final RegistrySupplier<Item> UNSETTLING_KIMONO = DEF_REG.register("unsettling_kimono", () -> new ItemModArmor(KIMONO_MATERIAL, ArmorItem.Type.CHESTPLATE));

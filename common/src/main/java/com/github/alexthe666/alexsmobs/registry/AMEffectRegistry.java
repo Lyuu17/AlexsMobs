@@ -29,10 +29,10 @@ public class AMEffectRegistry {
     public static final RegistrySupplier<StatusEffect> ENDER_FLU = EFFECT_DEF_REG.register("ender_flu", EffectEnderFlu::new);
 //    public static final RegistrySupplier<StatusEffect> FEAR = EFFECT_DEF_REG.register("fear", ()-> new EffectFear());
 //    public static final RegistrySupplier<StatusEffect> TIGERS_BLESSING = EFFECT_DEF_REG.register("tigers_blessing", EffectTigersBlessing::new);
-//    public static final RegistrySupplier<StatusEffect> DEBILITATING_STING = EFFECT_DEF_REG.register("debilitating_sting", EffectDebilitatingSting::new);
+    public static final RegistrySupplier<StatusEffect> DEBILITATING_STING = EFFECT_DEF_REG.register("debilitating_sting", EffectDebilitatingSting::new);
     public static final RegistrySupplier<StatusEffect> EXSANGUINATION = EFFECT_DEF_REG.register("exsanguination", EffectExsanguination::new);
 //    public static final RegistrySupplier<StatusEffect> EARTHQUAKE = EFFECT_DEF_REG.register("earthquake", EffectEarthquake::new);
-//    public static final RegistrySupplier<StatusEffect> FLEET_FOOTED = EFFECT_DEF_REG.register("fleet_footed", EffectFleetFooted::new);
+    public static final RegistrySupplier<StatusEffect> FLEET_FOOTED = EFFECT_DEF_REG.register("fleet_footed", EffectFleetFooted::new);
     public static final RegistrySupplier<StatusEffect> POWER_DOWN = EFFECT_DEF_REG.register("power_down", EffectPowerDown::new);
 
     public static final RegistrySupplier<StatusEffect> MOSQUITO_REPELLENT = EFFECT_DEF_REG.register("mosquito_repellent", EffectMosquitoRepellent::new);

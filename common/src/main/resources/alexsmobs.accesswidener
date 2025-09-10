@@ -16,3 +16,7 @@ accessible field net/minecraft/client/texture/SpriteContents animation Lnet/mine
 accessible method net/minecraft/client/texture/SpriteContents$Animation getFrameX (I)I
 accessible method net/minecraft/client/texture/SpriteContents$Animation getFrameY (I)I
 accessible field net/minecraft/client/texture/SpriteContents image Lnet/minecraft/client/texture/NativeImage;
+accessible method net/minecraft/entity/mob/MobEntity changeAngle (FFF)F
+accessible method net/minecraft/block/Block dropExperience (Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;I)V
+accessible method net/minecraft/entity/boss/dragon/EnderDragonEntity parentDamage (Lnet/minecraft/entity/damage/DamageSource;F)Z
+accessible method net/minecraft/entity/Entity setWorld (Lnet/minecraft/world/World;)V

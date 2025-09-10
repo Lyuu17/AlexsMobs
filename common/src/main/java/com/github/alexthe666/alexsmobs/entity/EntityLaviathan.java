@@ -995,12 +995,10 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
         part.setPos(this.getX() + offsetX * part.scale, this.getY() + offsetY * part.scale, this.getZ() + offsetZ * part.scale);
     }
 
-    //FIXME forge
-//
-//    @Override
-//    public net.minecraftforge.entity.PartEntity<?>[] getParts() {
-//        return this.allParts;
-//    }
+    @Override
+    public PartEntity<?>[] getParts() {
+        return this.allParts;
+    }
 
     public boolean attackEntityPartFrom(EntityLaviathanPart part, DamageSource source, float amount) {
         return this.damage(source, amount);

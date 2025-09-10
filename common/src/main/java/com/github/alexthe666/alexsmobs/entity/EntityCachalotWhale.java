@@ -820,12 +820,10 @@ public class EntityCachalotWhale extends AnimalEntity implements IMultipartEntit
         part.setPos(this.getX() + offsetX * part.scale, this.getY() + offsetY * part.scale, this.getZ() + offsetZ * part.scale);
     }
 
-    //FIXME forge
-//
-//    @Override
-//    public PartEntity<?>[] getParts() {
-//        return this.whaleParts;
-//    }
+    @Override
+    public PartEntity<?>[] getParts() {
+        return this.whaleParts;
+    }
 
     @Nullable
     @Override

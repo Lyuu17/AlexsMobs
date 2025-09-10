@@ -875,9 +875,9 @@ public class EntityMimicOctopus extends TameableEntity implements ISemiAquatic, 
     }
 
     @Override
-    public void onDataTrackerUpdate(List<DataTracker.SerializedEntry<?>> dataEntries) {
-        super.onDataTrackerUpdate(dataEntries);
-        if (UPGRADED_LASER_ENTITY_ID.equals(dataEntries)) {
+    public void onTrackedDataSet(TrackedData<?> data) {
+        super.onTrackedDataSet(data);
+        if (UPGRADED_LASER_ENTITY_ID.equals(data)) {
             this.guardianLaserTime = 0;
             this.laserTargetEntity = null;
         }

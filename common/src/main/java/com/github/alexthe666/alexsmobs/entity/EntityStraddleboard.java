@@ -27,8 +27,6 @@ import net.minecraft.world.BlockLocating;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class EntityStraddleboard extends Entity implements JumpingMount {
 
     private static final TrackedData<ItemStack> ITEMSTACK = DataTracker.registerData(EntityStraddleboard.class, TrackedDataHandlerRegistry.ITEM_STACK);
@@ -388,9 +386,9 @@ public class EntityStraddleboard extends Entity implements JumpingMount {
     }
 
     @Override
-    public void onDataTrackerUpdate(List<DataTracker.SerializedEntry<?>> dataEntries) {
-        super.onDataTrackerUpdate(dataEntries);
-        if (REMOVE_SOON.equals(dataEntries)) {
+    public void onTrackedDataSet(TrackedData<?> data) {
+        super.onTrackedDataSet(data);
+        if (REMOVE_SOON.equals(data)) {
             this.removeIn = 5;
         }
     }

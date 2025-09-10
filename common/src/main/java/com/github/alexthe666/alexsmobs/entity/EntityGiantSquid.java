@@ -514,11 +514,10 @@ public class EntityGiantSquid extends WaterCreatureEntity implements IMultipartE
         return getSquidPitch();
     }
 
-    //FIXME forge
-//    @Override
-//    public net.minecraftforge.entity.PartEntity<?>[] getParts() {
-//        return this.allParts;
-//    }
+    @Override
+    public PartEntity<?>[] getParts() {
+        return this.allParts;
+    }
 
     public boolean attackEntityPartFrom(EntityGiantSquidPart part, DamageSource source, float amount) {
         return this.damage(source, amount);

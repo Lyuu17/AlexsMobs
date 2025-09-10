@@ -1,0 +1,159 @@
+package com.github.alexthe666.alexsmobs.entity.ai;
+
+import com.github.alexthe666.alexsmobs.entity.EntityMoose;
+import net.minecraft.entity.ai.TargetPredicate;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumSet;
+
+public class MooseAIJostle extends Goal {
+
+    private static final TargetPredicate JOSTLE_PREDICATE = TargetPredicate.createNonAttackable().setBaseMaxDistance(16D).ignoreVisibility();
+    protected EntityMoose targetMoose;
+    private EntityMoose moose;
+    private World world;
+    private float angle;
+
+    public MooseAIJostle(EntityMoose moose) {
+        this.setControls(EnumSet.of(Control.MOVE, Control.LOOK, Control.TARGET));
+        this.moose = moose;
+        this.world = moose.getWorld();
+    }
+
+    @Override
+    public boolean canStart() {
+        if (this.moose.isJostling() || !moose.isAntlered() || this.moose.isBaby() || this.moose.getTarget() != null || this.moose.jostleCooldown > 0) {
+            return false;
+        }
+        if(this.moose.instantlyTriggerJostleAI || this.moose.getRandom().nextInt(30) == 0){
+            this.moose.instantlyTriggerJostleAI = false;
+            if (this.moose.getJostlingPartner() instanceof EntityMoose) {
+                targetMoose = (EntityMoose) moose.getJostlingPartner();
+                return targetMoose.jostleCooldown == 0;
+            } else {
+                var possiblePartner = this.getNearbyMoose();
+                if (possiblePartner != null) {
+                    this.moose.setJostlingPartner(possiblePartner);
+                    possiblePartner.setJostlingPartner(moose);
+                    targetMoose = possiblePartner;
+                    targetMoose.instantlyTriggerJostleAI = true;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void start(){
+        this.moose.jostleTimer = 0;
+        this.angle = 0;
+        setJostleDirection(this.moose.getRandom().nextBoolean());
+    }
+
+    public void setJostleDirection(boolean dir){
+        this.moose.jostleDirection = dir;
+        this.targetMoose.jostleDirection = dir;
+    }
+
+    @Override
+    public void stop() {
+        this.moose.setJostling(false);
+        this.moose.setJostlingPartner(null);
+        this.moose.jostleTimer = 0;
+        this.angle = 0;
+        this.moose.getNavigation().stop();
+        if (this.targetMoose != null) {
+            this.targetMoose.setJostling(false);
+            this.targetMoose.setJostlingPartner(null);
+            this.targetMoose.jostleTimer = 0;
+            this.targetMoose = null;
+        }
+
+    }
+
+    @Override
+    public void tick() {
+        if(targetMoose != null){
+            this.moose.lookAtEntity(targetMoose, 360, 180);
+            this.moose.setJostling(true);
+            float f = (float)(moose.getX() - targetMoose.getX());
+            float f1 = Math.abs((float)(moose.getY() - targetMoose.getY()));
+            float f2 = (float)(moose.getZ() - targetMoose.getZ());
+            double distXZ = Math.sqrt((f * f + f2 * f2));
+            if (distXZ < 4F) {
+                this.moose.getNavigation().stop();
+                this.moose.getMoveControl().strafeTo(-0.5F, 0);
+            } else if(distXZ > 4.5F) {
+                this.moose.setJostling(false);
+                this.moose.getNavigation().startMovingTo(targetMoose, 1);
+            }else{
+                this.moose.lookAtEntity(targetMoose, 360, 180);
+                //perfect jostle condition
+                if(moose.jostleDirection){
+                    if(angle < 30){
+                        angle++;
+                    }
+                    this.moose.getMoveControl().strafeTo(0, -0.2F);
+                }
+                if(!moose.jostleDirection){
+                    if(angle > -30){
+                        angle--;
+                    }
+                    this.moose.getMoveControl().strafeTo(0, 0.2F);
+                }
+                if(this.moose.getRandom().nextInt(55) == 0 && this.moose.isOnGround()){
+                    moose.pushBackJostling(targetMoose, 0.2F);
+                }
+                if(this.moose.getRandom().nextInt(25) == 0 && this.moose.isOnGround()) {
+                    moose.playJostleSound();
+                }
+                moose.setJostleAngle(angle);
+                if(this.moose.jostleTimer % 60 == 0 || this.moose.getRandom().nextInt(80) == 0){
+                    this.setJostleDirection(!moose.jostleDirection);
+                }
+                this.moose.jostleTimer++;
+                this.targetMoose.jostleTimer++;
+                if(this.moose.jostleTimer > 1000 || f1 > 2.0F){
+                    moose.velocityDirty = true;
+                    if(moose.isOnGround()){
+                        moose.pushBackJostling(targetMoose, 0.9F);
+                    }
+                    if(targetMoose.isOnGround()){
+                        targetMoose.pushBackJostling(moose, 0.9F);
+                    }
+                    this.moose.jostleTimer = 0;
+                    this.targetMoose.jostleTimer = 0;
+                    this.moose.jostleCooldown = 500 + this.moose.getRandom().nextInt(2000);
+                    this.targetMoose.jostleTimer = 0;
+                    this.targetMoose.jostleCooldown = 500 + this.targetMoose.getRandom().nextInt(2000);
+                    this.stop();
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean shouldContinue() {
+        return !this.moose.isBaby() && this.moose.isAntlered() && this.moose.getTarget() == null && targetMoose != null && this.targetMoose.isAntlered() && targetMoose.isAlive() && moose.jostleCooldown == 0 && targetMoose.jostleCooldown == 0;
+    }
+
+    @Nullable
+    private EntityMoose getNearbyMoose() {
+        var listOfMeese = this.world.getTargets(EntityMoose.class, JOSTLE_PREDICATE, this.moose, this.moose.getBoundingBox().expand(16.0D));
+        double lvt_2_1_ = 1.7976931348623157E308D;
+        EntityMoose lvt_4_1_ = null;
+
+        for (var lvt_6_1_ : listOfMeese) {
+            if (this.moose.canJostleWith(lvt_6_1_) && this.moose.squaredDistanceTo(lvt_6_1_) < lvt_2_1_) {
+                lvt_4_1_ = lvt_6_1_;
+                lvt_2_1_ = this.moose.squaredDistanceTo(lvt_6_1_);
+            }
+        }
+
+        return lvt_4_1_;
+    }
+
+}

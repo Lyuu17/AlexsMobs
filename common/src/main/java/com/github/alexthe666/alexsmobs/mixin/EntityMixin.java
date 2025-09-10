@@ -39,7 +39,15 @@ public abstract class EntityMixin {
             cir.cancel();
         }
 
+        if (self instanceof EntityCosmicCod) {
+            cir.cancel();
+        }
+
         if (self instanceof EntityCrimsonMosquito) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityCapuchinMonkey) {
             cir.cancel();
         }
 
@@ -55,7 +63,31 @@ public abstract class EntityMixin {
             cir.cancel();
         }
 
+        if (self instanceof EntityFarseer) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityFly) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityFlyingFish) {
+            cir.cancel();
+        }
+
         if (self instanceof EntityFroststalker) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityGuster) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityHummingbird) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityJerboa) {
             cir.cancel();
         }
 
@@ -63,11 +95,31 @@ public abstract class EntityMixin {
             cir.cancel();
         }
 
-        if (self instanceof EntityToucan) {
+        if (self instanceof EntityMurmurHead) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityRoadrunner) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntitySnowLeopard) {
             cir.cancel();
         }
 
         if (self instanceof EntitySoulVulture) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityTarantulaHawk) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityToucan) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntityUnderminer) {
             cir.cancel();
         }
 
