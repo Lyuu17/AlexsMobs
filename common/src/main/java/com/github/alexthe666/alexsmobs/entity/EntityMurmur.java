@@ -54,6 +54,7 @@ public class EntityMurmur extends HostileEntity implements ISemiAquatic {
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2F);
     }
 
+    @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(1, new AnimalAILeaveWater(this));
@@ -61,15 +62,17 @@ public class EntityMurmur extends HostileEntity implements ISemiAquatic {
         this.targetSelector.add(0, (new RevengeGoal(this)));
     }
 
-
+    @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
         return AMSoundRegistry.MURMUR_HURT.get();
     }
 
+    @Override
     protected SoundEvent getDeathSound() {
         return AMSoundRegistry.MURMUR_HURT.get();
     }
 
+    @Override
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
     }
 

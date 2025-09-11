@@ -538,7 +538,6 @@ public class EntityRaccoon extends TameableEntity implements IAnimatedEntity, IF
         this.dataTracker.startTracking(WASH_POS, Optional.empty());
     }
 
-
     public BlockPos getWashPos() {
         return this.dataTracker.get(WASH_POS).orElse(null);
     }
@@ -575,7 +574,6 @@ public class EntityRaccoon extends TameableEntity implements IAnimatedEntity, IF
     public Animation[] getAnimations() {
         return new Animation[]{ANIMATION_ATTACK};
     }
-
 
     @Nullable
     @Override
@@ -800,7 +798,6 @@ public class EntityRaccoon extends TameableEntity implements IAnimatedEntity, IF
             }
         }
 
-        @Nullable
         private boolean isGolemNearby() {
             List<IronGolemEntity> lvt_1_1_ = raccoon.getWorld().getTargets(IronGolemEntity.class, IRON_GOLEM_PREDICATE, raccoon, raccoon.getBoundingBox().expand(25.0D));
             return !lvt_1_1_.isEmpty();

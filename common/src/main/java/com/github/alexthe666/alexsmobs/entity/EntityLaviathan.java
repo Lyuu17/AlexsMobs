@@ -64,9 +64,7 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
     private static final TrackedData<Integer> ATTACK_TICK = DataTracker.registerData(EntityLaviathan.class, TrackedDataHandlerRegistry.INTEGER);
     private static final TrackedData<Boolean> HAS_BODY_GEAR = DataTracker.registerData(EntityLaviathan.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final TrackedData<Boolean> HAS_HEAD_GEAR = DataTracker.registerData(EntityLaviathan.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static final Predicate<EntityCrimsonMosquito> HEALTHY_MOSQUITOES = (mob) -> {
-        return mob.isAlive() && mob.getHealth() > 0 && !mob.isSick();
-    };
+    private static final Predicate<EntityCrimsonMosquito> HEALTHY_MOSQUITOES = (mob) -> mob.isAlive() && mob.getHealth() > 0 && !mob.isSick();
     public static final Identifier OBSIDIAN_LOOT = new Identifier("alexsmobs", "entities/laviathan_obsidian");
     public final EntityLaviathanPart headPart;
     public final EntityLaviathanPart neckPart1;
@@ -195,6 +193,7 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
         return 0.0F;
     }
 
+    @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         var itemstack = player.getStackInHand(hand);
         var item = itemstack.getItem();
@@ -253,6 +252,7 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
     }
 
     @Nullable
+    @Override
     public LivingEntity getControllingPassenger() {
         int playerPosition = -1;
         PlayerEntity player = null;
@@ -338,19 +338,21 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
         this.setChillTime(compound.getInt("ChillTime"));
     }
 
-    public void positionRider(Entity passenger, Entity.PositionUpdater moveFunc) {
+    @Override
+    public void updatePassengerPosition(Entity passenger, Entity.PositionUpdater moveFunc) {
         if (this.hasPassenger(passenger)) {
             int posit = getRiderPosition(passenger);
             if (posit < 0 || posit > 3) {
                 passenger.stopRiding();
             } else {
                 EntityLaviathanPart seat = seatParts[posit];
-                passenger.setPos(seat.getX(), this.getY() + this.getPassengersRidingOffset() + passenger.getHeightOffset(), seat.getZ());
+                passenger.setPos(seat.getX(), this.getY() + this.getMountedHeightOffset() + passenger.getHeightOffset(), seat.getZ());
             }
         }
     }
 
-    public double getPassengersRidingOffset() {
+    @Override
+    public double getMountedHeightOffset() {
         float f = this.limbAnimator.getPos();
         float f1 = this.limbAnimator.getSpeed();
         float f2 = 0;
@@ -422,7 +424,8 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
         return shouldSwim() || this.isOnSoulSpeedBlock() ? 1.0F : super.getVelocityMultiplier();
     }
 
-    public float getWalkTargetValue(BlockPos pos, WorldView worldIn) {
+    @Override
+    public float getPathfindingFavor(BlockPos pos, WorldView worldIn) {
         if (worldIn.getBlockState(pos).getFluidState().isIn(FluidTags.WATER) || worldIn.getBlockState(pos).getFluidState().isIn(FluidTags.LAVA)) {
             return 10.0F;
         } else {
@@ -567,6 +570,7 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
         return EntityGroup.AQUATIC;
     }
 
+    @Override
     public void tick() {
         super.tick();
         this.bodyYaw = MathHelper.stepUnwrappedAngleTowards(this.prevBodyYaw, bodyYaw, getMaxLookYawChange());
@@ -1075,6 +1079,7 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
             this.laviathan = dolphinIn;
         }
 
+        @Override
         public void tick() {
             float speed = (float) (this.speed * 3 * laviathan.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
             if (this.state == State.MOVE_TO && (!this.laviathan.getNavigation().isIdle() || laviathan.getControllingPassenger() != null)) {

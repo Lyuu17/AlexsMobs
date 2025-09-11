@@ -338,6 +338,7 @@ public class EntityBoneSerpent extends HostileEntity {
             this.dolphin = dolphinIn;
         }
 
+        @Override
         public void tick() {
             if (this.dolphin.isTouchingWater() || this.dolphin.isInLava()) {
                 this.dolphin.setVelocity(this.dolphin.getVelocity().add(0.0D, 0.005D, 0.0D));

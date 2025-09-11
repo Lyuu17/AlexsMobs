@@ -236,7 +236,7 @@ public class EntityLobster extends WaterCreatureEntity implements ISemiAquatic, 
     }
 
     public void setVariant(int variant) {
-        this.dataTracker.set(VARIANT, Integer.valueOf(variant));
+        this.dataTracker.set(VARIANT, variant);
     }
 
     @Override

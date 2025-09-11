@@ -111,6 +111,7 @@ public class EntityBaldEagle extends TameableEntity implements IFollower, IFalco
         return worldIn.getBaseLightLevel(pos, 0) > 8;
     }
 
+    @Override
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(0, new SwimGoal(this) {
@@ -329,6 +330,7 @@ public class EntityBaldEagle extends TameableEntity implements IFollower, IFalco
         this.dataTracker.set(TACKLING, tackling);
     }
 
+    @Override
     public void followEntity(TameableEntity tameable, LivingEntity owner, double followSpeed) {
         if (this.distanceTo(owner) > 15) {
             this.setFlying(true);
@@ -828,6 +830,7 @@ public class EntityBaldEagle extends TameableEntity implements IFollower, IFalco
         this.controlledFlag = true;
     }
 
+    @Override
     public float getHandOffset() {
         return 0.8F;
     }
@@ -837,7 +840,8 @@ public class EntityBaldEagle extends TameableEntity implements IFollower, IFalco
     }
 
     //killEntity
-    public void updateKilledAdvancementCriterion(LivingEntity entity, int score, DamageSource src) {
+    @Override
+    public void updateKilledAdvancementCriterion(Entity entity, int score, DamageSource src) {
         if (this.isLaunched() && this.hasCap() && this.isTamed() && this.getOwner() != null) {
             if (this.getOwner() instanceof ServerPlayerEntity owner && this.distanceTo(this.getOwner()) >= 100) {
                 AMAdvancementTriggerRegistry.BALD_EAGLE_CHALLENGE.trigger(owner);

@@ -77,7 +77,8 @@ public class EntityCachalotPart extends PartEntity<EntityCachalotWhale> {
         return !this.isInvulnerableTo(source) && this.getParent().attackEntityPartFrom(this, source, amount);
     }
 
-    public boolean is(Entity entityIn) {
+    @Override
+    public boolean isPartOf(Entity entityIn) {
         return this == entityIn || this.getParent() == entityIn;
     }
 
@@ -88,7 +89,6 @@ public class EntityCachalotPart extends PartEntity<EntityCachalotWhale> {
 
     @Override
     protected void initDataTracker() {
-
     }
 
     @Override
@@ -98,11 +98,9 @@ public class EntityCachalotPart extends PartEntity<EntityCachalotWhale> {
 
     @Override
     protected void readCustomDataFromNbt(NbtCompound compound) {
-
     }
 
     @Override
     protected void writeCustomDataToNbt(NbtCompound compound) {
-
     }
 }

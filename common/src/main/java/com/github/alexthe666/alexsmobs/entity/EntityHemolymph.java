@@ -71,6 +71,7 @@ public class EntityHemolymph extends Entity {
 //        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
 //    }
 
+    @Override
     public void tick() {
         if (!this.leftOwner) {
             this.leftOwner = this.checkLeftOwner();

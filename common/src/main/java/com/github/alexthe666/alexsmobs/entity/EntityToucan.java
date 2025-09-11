@@ -661,6 +661,7 @@ public class EntityToucan extends AnimalEntity implements ITargetsDroppedItems {
             }
         }
 
+        @Override
         public boolean shouldContinue() {
             if (toucan.aiItemFlag) {
                 return false;
@@ -672,6 +673,7 @@ public class EntityToucan extends AnimalEntity implements ITargetsDroppedItems {
             }
         }
 
+        @Override
         public void start() {
             if (flightTarget) {
                 toucan.setFlying(true);
@@ -681,6 +683,7 @@ public class EntityToucan extends AnimalEntity implements ITargetsDroppedItems {
             }
         }
 
+        @Override
         public void stop() {
             this.toucan.getNavigation().stop();
             super.stop();
@@ -723,6 +726,7 @@ public class EntityToucan extends AnimalEntity implements ITargetsDroppedItems {
             return toucan.isGolden() && !toucan.isEnchanted() ? 50 + random.nextInt(40) : 200 + random.nextInt(200);
         }
 
+        @Override
         public void tick() {
             toucan.aiItemFlag = true;
             double up = 3.0;
@@ -778,6 +782,7 @@ public class EntityToucan extends AnimalEntity implements ITargetsDroppedItems {
             return null;
         }
 
+        @Override
         public void stop() {
             toucan.aiItemFlag = false;
             pos = null;
@@ -785,6 +790,7 @@ public class EntityToucan extends AnimalEntity implements ITargetsDroppedItems {
             encircleTime = 0;
         }
 
+        @Override
         public boolean shouldContinue() {
             return pos != null && toucan.getSaplingState() != null;
         }

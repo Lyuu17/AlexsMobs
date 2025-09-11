@@ -233,9 +233,6 @@ public class EntityTerrapin extends AnimalEntity implements ISemiAquatic, Bucket
     private Direction collideDirectionAndSound(){
         var raytraceresult = ProjectileUtil.getCollision(this, entity -> false);
         if(raytraceresult instanceof BlockHitResult){
-            BlockState state = getWorld().getBlockState(((BlockHitResult) raytraceresult).getBlockPos());
-            if(state != null && !this.isSilent()){
-            }
             return ((BlockHitResult) raytraceresult).getSide();
         }
         return Direction.DOWN;
@@ -593,6 +590,7 @@ public class EntityTerrapin extends AnimalEntity implements ISemiAquatic, Bucket
         return s != null && s.toLowerCase().contains("koopa");
     }
 
+    @Override
     public EntityGroup getGroup() {
         return EntityGroup.AQUATIC;
     }

@@ -106,7 +106,6 @@ public class EntityRoadrunner extends AnimalEntity {
         return AMSoundRegistry.ROADRUNNER_HURT.get();
     }
 
-
     @Override
     protected void initDataTracker() {
         super.initDataTracker();

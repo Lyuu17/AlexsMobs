@@ -233,6 +233,7 @@ public class EntityCosmicCod extends MobEntity implements Bucketable {
         }
     }
 
+    @Override
     public void handleStatus(byte msg) {
         if (msg == 46) {
             this.emitGameEvent(GameEvent.TELEPORT);
@@ -259,6 +260,7 @@ public class EntityCosmicCod extends MobEntity implements Bucketable {
         return 3F;
     }
 
+    @Override
     public boolean hasNoGravity() {
         return true;
     }

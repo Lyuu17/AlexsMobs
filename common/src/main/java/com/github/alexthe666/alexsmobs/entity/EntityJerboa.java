@@ -517,12 +517,12 @@ public class EntityJerboa extends AnimalEntity {
             this.canJump = canJumpIn;
         }
 
+        @Override
         public void tick() {
             if (this.active) {
                 this.jerboa.startJumping();
                 this.active = false;
             }
-
         }
     }
 }

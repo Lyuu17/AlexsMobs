@@ -274,6 +274,7 @@ public class EntityBlobfish extends WaterCreatureEntity implements Flutterer, Bu
     }
 
     @Nullable
+    @Override
     public EntityData initialize(ServerWorldAccess worldIn, LocalDifficulty difficultyIn, SpawnReason reason, @Nullable EntityData spawnDataIn, @Nullable NbtCompound dataTag) {
         this.setBlobfishScale(0.75F + random.nextFloat() * 0.5F);
         return super.initialize(worldIn, difficultyIn, reason, spawnDataIn, dataTag);

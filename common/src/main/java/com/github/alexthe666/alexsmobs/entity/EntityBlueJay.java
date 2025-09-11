@@ -573,6 +573,7 @@ public class EntityBlueJay extends AnimalEntity implements ITargetsDroppedItems{
         return stack.getItem().isFood() || stack.isIn(AMTagRegistry.BLUE_JAY_FOODSTUFFS);
     }
 
+    @Override
     public double getMaxDistToItem() {
         return 1.0D;
     }

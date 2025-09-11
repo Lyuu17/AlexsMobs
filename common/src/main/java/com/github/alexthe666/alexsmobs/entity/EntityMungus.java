@@ -126,14 +126,17 @@ public abstract class EntityMungus extends AnimalEntity implements ITargetsDropp
 
     }
 
+    @Override
     protected SoundEvent getAmbientSound() {
         return AMSoundRegistry.MUNGUS_IDLE.get();
     }
 
+    @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
         return AMSoundRegistry.MUNGUS_HURT.get();
     }
 
+    @Override
     protected SoundEvent getDeathSound() {
         return AMSoundRegistry.MUNGUS_HURT.get();
     }
@@ -143,6 +146,7 @@ public abstract class EntityMungus extends AnimalEntity implements ITargetsDropp
         return AMEntityRegistry.rollSpawn(AMConfig.mungusSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
+    @Override
     protected void initGoals() {
         this.goalSelector.add(0, new AnimalMateGoal(this, 1.0D));
         this.goalSelector.add(1, new SwimGoal(this));

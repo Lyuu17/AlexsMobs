@@ -173,6 +173,7 @@ public class EntityBunfungus extends PathAwareEntity implements IAnimatedEntity 
     protected void fall(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
+    @Override
     public void tick() {
         super.tick();
         prevJumpProgress = jumpProgress;

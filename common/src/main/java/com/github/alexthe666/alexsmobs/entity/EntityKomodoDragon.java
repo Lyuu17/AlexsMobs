@@ -127,6 +127,7 @@ public class EntityKomodoDragon extends TameableEntity implements ITargetsDroppe
         this.targetSelector.add(8, new EntityAINearestTarget3D<>(this, LivingEntity.class, 180, false, true, AMEntityRegistry.buildPredicateFromTag(AMTagRegistry.KOMODO_DRAGON_TARGETS)));
     }
 
+    @Override
     protected Vec3d getControlledMovementInput(PlayerEntity player, Vec3d deltaIn) {
         if (player.forwardSpeed != 0) {
             float f = player.forwardSpeed < 0.0F ? 0.5F : 1.0F;
@@ -333,6 +334,7 @@ public class EntityKomodoDragon extends TameableEntity implements ITargetsDroppe
     }
 
     @Nullable
+    @Override
     public LivingEntity getControllingPassenger() {
         for (Entity passenger : this.getPassengerList()) {
             if (passenger instanceof PlayerEntity) {

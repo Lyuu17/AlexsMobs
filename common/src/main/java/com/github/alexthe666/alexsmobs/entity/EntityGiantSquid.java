@@ -167,8 +167,6 @@ public class EntityGiantSquid extends WaterCreatureEntity implements IMultipartE
 
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
-        var itemstack = player.getStackInHand(hand);
-        var item = itemstack.getItem();
         return super.interactMob(player, hand);
     }
 
@@ -523,6 +521,7 @@ public class EntityGiantSquid extends WaterCreatureEntity implements IMultipartE
         return this.damage(source, amount);
     }
 
+    @Override
     public boolean isInvulnerableTo(DamageSource source) {
         return source.isOf(DamageTypes.IN_WALL) || super.isInvulnerableTo(source);
     }
@@ -534,11 +533,13 @@ public class EntityGiantSquid extends WaterCreatureEntity implements IMultipartE
         this.setYaw(this.rotlerp(this.getYaw(), f, shift ? 10 : 5));
     }
 
-    public float getViewXRot(float partialTick) {
+    @Override
+    public float getPitch(float partialTick) {
         return prevSquidPitch + (getSquidPitch() - prevSquidPitch) * partialTick;
     }
 
-    public float getViewYRot(float partialTick) {
+    @Override
+    public float getYaw(float partialTick) {
         return partialTick == 1.0F ? this.bodyYaw : MathHelper.lerp(partialTick, this.prevBodyYaw, this.bodyYaw);
     }
 
@@ -575,7 +576,6 @@ public class EntityGiantSquid extends WaterCreatureEntity implements IMultipartE
         }
         return 1F - (waterLevelAbove / 10F);
     }
-
 
     private boolean canFitAt(BlockPos pos) {
         return true;

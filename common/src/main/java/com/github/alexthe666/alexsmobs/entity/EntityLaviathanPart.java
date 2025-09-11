@@ -38,6 +38,7 @@ public class EntityLaviathanPart extends PartEntity<EntityLaviathan> {
         return new Vec3d(0.0D, (double)this.getStandingEyeHeight() * 0.15F, (double)(this.getWidth() * 0.1F));
     }
 
+    // FIXME forge unused?
     protected void collideWithNearbyEntities() {
 
     }
@@ -57,11 +58,13 @@ public class EntityLaviathanPart extends PartEntity<EntityLaviathan> {
         }
     }
 
+    @Override
     public boolean canHit() {
         return true;
     }
 
     @Nullable
+    @Override
     public ItemStack getPickBlockStack() {
         Entity parent = this.getParent();
         return parent != null ? parent.getPickBlockStack() : ItemStack.EMPTY;

@@ -154,6 +154,7 @@ public class EntityFrilledShark extends WaterCreatureEntity implements IAnimated
     }
 
     @Nullable
+    @Override
     public EntityData initialize(ServerWorldAccess worldIn, LocalDifficulty difficultyIn, SpawnReason reason, @Nullable EntityData spawnDataIn, @Nullable NbtCompound dataTag) {
         if (reason == SpawnReason.NATURAL) {
             doInitialPosing(worldIn);

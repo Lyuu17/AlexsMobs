@@ -125,7 +125,7 @@ public abstract class EntityBison extends AnimalEntity implements IAnimatedEntit
     }
 
     public void setSnowy(boolean honeyed) {
-        this.dataTracker.set(SNOWY, Boolean.valueOf(honeyed));
+        this.dataTracker.set(SNOWY, honeyed);
     }
 
     @Override
@@ -316,7 +316,6 @@ public abstract class EntityBison extends AnimalEntity implements IAnimatedEntit
         launch.setVelocity(vec31.x, huge ? 1F : 0.5F, vec31.z);
         launch.setOnGround(false);
     }
-
 
     private void knockbackTarget(LivingEntity entity, float strength, float angle) {
         float rot = getYaw() + angle;

@@ -121,6 +121,7 @@ public class EntityUnderminer extends PathAwareEntity {
         this.dataTracker.startTracking(VARIANT, 0);
     }
 
+    @Override
     public void writeCustomDataToNbt(NbtCompound compound) {
         super.writeCustomDataToNbt(compound);
         compound.putBoolean("Dwarf", this.isDwarf());
@@ -198,6 +199,7 @@ public class EntityUnderminer extends PathAwareEntity {
         this.dataTracker.set(TARGETED_BLOCK_POS, Optional.ofNullable(beamTarget));
     }
 
+    @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(1, new MeleeAttackGoal(this, 1.2D, true));

@@ -183,6 +183,7 @@ public class EntityGust extends Entity {
 
     }
 
+    @Override
     public void setVelocityClient(double x, double y, double z) {
         this.setVelocity(x, y, z);
         if (this.prevPitch == 0.0F && this.prevYaw == 0.0F) {

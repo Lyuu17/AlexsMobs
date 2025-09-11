@@ -66,7 +66,6 @@ public class EntityTossedItem extends ThrownItemEntity {
                 this.getWorld().addParticle(new ItemStackParticleEffect(ParticleTypes.ITEM, this.getItem()), this.getX(), this.getY(), this.getZ(), ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D);
             }
         }
-
     }
 
     @Override
@@ -80,7 +79,6 @@ public class EntityTossedItem extends ThrownItemEntity {
             this.prevYaw = this.getYaw();
             this.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), this.getYaw(), this.getPitch());
         }
-
     }
 
     @Override

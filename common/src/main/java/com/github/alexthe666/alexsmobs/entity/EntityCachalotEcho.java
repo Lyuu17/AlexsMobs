@@ -82,6 +82,7 @@ public class EntityCachalotEcho extends Entity {
 //        return (Packet<ClientPlayPacketListener>) NetworkHooks.getEntitySpawningPacket(this);
 //    }
 
+    @Override
     public void tick() {
         final double yMot = MathHelper.sqrt((float)(this.getVelocity().x * this.getVelocity().x + this.getVelocity().z * this.getVelocity().z));
         this.setPitch((float) (MathHelper.atan2(this.getVelocity().y, yMot) * MathHelper.DEGREES_PER_RADIAN));

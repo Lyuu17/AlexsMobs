@@ -48,14 +48,17 @@ public class EntityCombJelly extends WaterCreatureEntity implements Bucketable {
         super(animal, level);
     }
 
+    @Override
     public int getLimitPerChunk() {
         return 4;
     }
 
+    @Override
     public boolean cannotDespawn() {
         return super.cannotDespawn() || this.hasCustomName() || this.isFromBucket();
     }
 
+    @Override
     public boolean canImmediatelyDespawn(double p_213397_1_) {
         return !this.isFromBucket() && !this.hasCustomName();
     }

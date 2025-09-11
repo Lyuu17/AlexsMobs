@@ -102,6 +102,7 @@ public class EntityOrca extends TameableEntity implements IAnimatedEntity {
         this.dataTracker.set(MOISTNESS, p_211137_1_);
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(MOISTNESS, 2400);
@@ -129,18 +130,22 @@ public class EntityOrca extends TameableEntity implements IAnimatedEntity {
         }
     }
 
+    @Override
     protected SoundEvent getAmbientSound() {
         return AMSoundRegistry.ORCA_IDLE.get();
     }
 
+    @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
         return AMSoundRegistry.ORCA_HURT.get();
     }
 
+    @Override
     protected SoundEvent getDeathSound() {
         return AMSoundRegistry.ORCA_DIE.get();
     }
 
+    @Override
     protected void initGoals() {
         this.goalSelector.add(0, new BreatheAirGoal(this));
         this.goalSelector.add(1, new MoveIntoWaterGoal(this));

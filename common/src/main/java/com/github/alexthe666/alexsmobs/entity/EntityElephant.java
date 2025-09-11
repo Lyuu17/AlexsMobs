@@ -1067,6 +1067,7 @@ public class EntityElephant extends TameableEntity implements ITargetsDroppedIte
             super(EntityElephant.this);
         }
 
+        @Override
         public void start() {
             if (EntityElephant.this.isBaby() || !EntityElephant.this.isTusked()) {
                 this.callSameTypeForRevenge();

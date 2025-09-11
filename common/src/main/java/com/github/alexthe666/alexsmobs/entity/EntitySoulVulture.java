@@ -447,6 +447,7 @@ public class EntitySoulVulture extends HostileEntity implements Flutterer {
             this.parentEntity = bird;
         }
 
+        @Override
         public void tick() {
             if (this.state == MoveControl.State.MOVE_TO) {
                 var vector3d = new Vec3d(this.targetX - parentEntity.getX(), this.targetY - parentEntity.getY(), this.targetZ - parentEntity.getZ());

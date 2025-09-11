@@ -348,6 +348,7 @@ public class EntityCapuchinMonkey extends TameableEntity implements IAnimatedEnt
         this.dataTracker.set(COMMAND, command);
     }
 
+    @Override
     public boolean isSitting() {
         return this.dataTracker.get(SITTING);
     }

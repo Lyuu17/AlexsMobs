@@ -138,14 +138,17 @@ public class EntityCachalotWhale extends AnimalEntity implements IMultipartEntit
         }
     }
 
+    @Override
     protected SoundEvent getAmbientSound() {
         return AMSoundRegistry.CACHALOT_WHALE_IDLE.get();
     }
 
+    @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
         return AMSoundRegistry.CACHALOT_WHALE_HURT.get();
     }
 
+    @Override
     protected SoundEvent getDeathSound() {
         return AMSoundRegistry.CACHALOT_WHALE_HURT.get();
     }

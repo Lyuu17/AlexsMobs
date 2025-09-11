@@ -276,6 +276,7 @@ public class EntityMimicOctopus extends TameableEntity implements ISemiAquatic, 
         return false;
     }
 
+    @Override
     protected void initGoals() {
         this.goalSelector.add(0, new AIAttack());
         this.goalSelector.add(1, new SitGoal(this));
@@ -331,7 +332,6 @@ public class EntityMimicOctopus extends TameableEntity implements ISemiAquatic, 
     @NotNull
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         var itemstack = player.getStackInHand(hand);
-        var item = itemstack.getItem();
         var readState = getStateForItem(itemstack);
         var type = super.interactMob(player, hand);
         if (readState != null && this.isTamed()) {
@@ -815,6 +815,7 @@ public class EntityMimicOctopus extends TameableEntity implements ISemiAquatic, 
         return this.dataTracker.get(PREV_MIMICKED_BLOCK).orElse(null);
     }
 
+    // FIXME forge?
     protected void updateAir(int p_209207_1_) {
         if (this.isAlive() && !this.isInsideWaterOrBubbleColumn()) {
             this.setAir(p_209207_1_ - 1);

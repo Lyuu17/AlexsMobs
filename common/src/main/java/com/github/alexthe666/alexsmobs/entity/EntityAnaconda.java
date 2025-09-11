@@ -577,6 +577,7 @@ public class EntityAnaconda extends AnimalEntity implements ISemiAquatic {
         return this.getSheddingTime() > 0;
     }
 
+    @Override
     public EntityData initialize(ServerWorldAccess worldIn, LocalDifficulty difficultyIn, SpawnReason reason, EntityData spawnDataIn, NbtCompound dataTag) {
         this.setYellow(random.nextBoolean());
         return super.initialize(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
@@ -595,6 +596,7 @@ public class EntityAnaconda extends AnimalEntity implements ISemiAquatic {
             return snake.getTarget() != null && snake.getTarget().isAlive();
         }
 
+        @Override
         public void tick() {
             if (jumpAttemptCooldown > 0)
                 jumpAttemptCooldown--;
@@ -619,6 +621,7 @@ public class EntityAnaconda extends AnimalEntity implements ISemiAquatic {
             }
         }
 
+        @Override
         public void stop() {
             snake.setStrangling(false);
         }

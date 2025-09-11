@@ -166,6 +166,7 @@ public class EntityCrow extends TameableEntity implements ITargetsDroppedItems {
         }
     }
 
+    // FIXME unused?
     public boolean canTrample(BlockState state, BlockPos pos, float fallDistance) {
         return false;
     }
@@ -690,6 +691,7 @@ public class EntityCrow extends TameableEntity implements ITargetsDroppedItems {
             }
         }
 
+        @Override
         public void tick() {
             if (flightTarget) {
                 crow.getMoveControl().moveTo(x, y, z, 1F);
@@ -726,6 +728,7 @@ public class EntityCrow extends TameableEntity implements ITargetsDroppedItems {
             }
         }
 
+        @Override
         public boolean shouldContinue() {
             if (crow.aiItemFlag || crow.isSitting() || EntityCrow.this.getCommand() == 1) {
                 return false;
@@ -737,6 +740,7 @@ public class EntityCrow extends TameableEntity implements ITargetsDroppedItems {
             }
         }
 
+        @Override
         public void start() {
             if (flightTarget) {
                 crow.setFlying(true);
@@ -746,6 +750,7 @@ public class EntityCrow extends TameableEntity implements ITargetsDroppedItems {
             }
         }
 
+        @Override
         public void stop() {
             this.crow.getNavigation().stop();
             super.stop();

@@ -645,6 +645,7 @@ public class EntityWarpedMosco extends HostileEntity implements IAnimatedEntity 
             return EntityWarpedMosco.this.getBlockPos();
         }
 
+        @Override
         public void stop() {
             upTicks = 0;
             dashCooldown = 0;

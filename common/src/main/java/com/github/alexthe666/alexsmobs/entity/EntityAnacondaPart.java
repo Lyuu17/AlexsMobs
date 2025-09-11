@@ -87,10 +87,10 @@ public class EntityAnacondaPart extends LivingEntity implements IHurtableMultipa
         return source.isOf(DamageTypes.IN_WALL)  || super.isInvulnerableTo(source);
     }
 
-    public boolean isNoGravity() {
+    @Override
+    public boolean hasNoGravity() {
         return false;
     }
-
 
     @Override
     public void tick() {
