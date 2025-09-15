@@ -14,9 +14,15 @@ public class AMPacketRegistry {
         CrowMountPlayerPacket.register();
         HurtMultipartPacket.register();
         InteractMultipartPacket.register();
+        KangarooEatPacket.register();
+        KangarooInventorySyncPacket.register();
         MosquitoDismountPacket.register();
         MosquitoMountPlayerPacket.register();
         SendVisualFlagFromServerPacket.register();
         SyncEntityPosPacket.register();
+        TarantulaHawkStingPacket.register();
+        TransmuteFromMenuPacket.register();
+        UpdateCapsidPacket.register();
+        UpdateTransmutablesToDisplayPacket.register();
     }
 }

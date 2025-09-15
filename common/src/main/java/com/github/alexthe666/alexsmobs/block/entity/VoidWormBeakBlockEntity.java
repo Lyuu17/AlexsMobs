@@ -1,7 +1,7 @@
-package com.github.alexthe666.alexsmobs.tileentity;
+package com.github.alexthe666.alexsmobs.block.entity;
 
-import com.github.alexthe666.alexsmobs.block.BlockVoidWormBeak;
-import com.github.alexthe666.alexsmobs.registry.AMTileEntityRegistry;
+import com.github.alexthe666.alexsmobs.block.VoidWormBeakBlock;
+import com.github.alexthe666.alexsmobs.registry.AMBlockEntityRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
@@ -9,26 +9,21 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
-public class TileEntityVoidWormBeak extends BlockEntity {
+public class VoidWormBeakBlockEntity extends BlockEntity {
 
     private float chompProgress;
     private float prevChompProgress;
     public int ticksExisted;
 
-
-    public TileEntityVoidWormBeak(BlockPos pos, BlockState state) {
-        super(AMTileEntityRegistry.VOID_WORM_BEAK.get(), pos, state);
+    public VoidWormBeakBlockEntity(BlockPos pos, BlockState state) {
+        super(AMBlockEntityRegistry.VOID_WORM_BEAK.get(), pos, state);
     }
 
-    public static void commonTick(World level, BlockPos pos, BlockState state, TileEntityVoidWormBeak entity) {
-        entity.tick();
-    }
-
-    public void tick() {
+    public void tick(World level, BlockPos pos, BlockState state, VoidWormBeakBlockEntity blockEntity) {
         prevChompProgress = chompProgress;
         boolean powered = false;
-        if(getCachedState().getBlock() instanceof BlockVoidWormBeak){
-            powered = getCachedState().get(BlockVoidWormBeak.POWERED);
+        if(getCachedState().getBlock() instanceof VoidWormBeakBlock){
+            powered = getCachedState().get(VoidWormBeakBlock.POWERED);
         }
         if(powered && chompProgress < 5F){
             chompProgress++;
@@ -41,7 +36,7 @@ public class TileEntityVoidWormBeak extends BlockEntity {
             float j = this.getPos().getY() + 0.5F;
             float k = this.getPos().getZ() + 0.5F;
             float d0 = 0.5F;
-            for (LivingEntity entity : world.getNonSpectatingEntities(LivingEntity.class, new Box((double) i - d0, (double) j - d0, (double) k - d0, (double) i + d0, (double) j + d0, (double) k + d0))) {
+            for (var entity : world.getNonSpectatingEntities(LivingEntity.class, new Box((double) i - d0, (double) j - d0, (double) k - d0, (double) i + d0, (double) j + d0, (double) k + d0))) {
                 entity.damage(entity.getDamageSources().generic(), 5);
             }
         }

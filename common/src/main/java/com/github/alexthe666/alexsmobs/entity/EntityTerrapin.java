@@ -1,11 +1,11 @@
 package com.github.alexthe666.alexsmobs.entity;
 
-import com.github.alexthe666.alexsmobs.block.BlockTerrapinEgg;
+import com.github.alexthe666.alexsmobs.block.TerrapinEggBlock;
+import com.github.alexthe666.alexsmobs.block.entity.TerrapinEggBlockEntity;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.TerrapinTypes;
 import com.github.alexthe666.alexsmobs.registry.*;
-import com.github.alexthe666.alexsmobs.tileentity.TileEntityTerrapinEgg;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -77,7 +77,7 @@ public class EntityTerrapin extends AnimalEntity implements ISemiAquatic, Bucket
     private float spinYRot;
     private int changeSpinAngleCooldown = 0;
     private LivingEntity lastLauncher = null;
-    private TileEntityTerrapinEgg.ParentData partnerData;
+    private TerrapinEggBlockEntity.ParentData partnerData;
 
     public EntityTerrapin(EntityType<? extends EntityTerrapin> animal, World level) {
         super(animal, level);
@@ -625,7 +625,7 @@ public class EntityTerrapin extends AnimalEntity implements ISemiAquatic, Bucket
                 Criteria.BRED_ANIMALS.trigger(serverplayerentity, this.animal, this.mate, this.animal);
             }
             if(mate instanceof EntityTerrapin terrapin){
-                this.turtle.partnerData = new TileEntityTerrapinEgg.ParentData(terrapin.getTurtleType(), terrapin.getShellType(), terrapin.getSkinType(), terrapin.getTurtleColor(), terrapin.getShellColor(), terrapin.getSkinColor());
+                this.turtle.partnerData = new TerrapinEggBlockEntity.ParentData(terrapin.getTurtleType(), terrapin.getShellType(), terrapin.getSkinType(), terrapin.getTurtleColor(), terrapin.getShellColor(), terrapin.getSkinColor());
             }
             this.turtle.setHasEgg(true);
             this.animal.resetLoveTicks();
@@ -677,9 +677,9 @@ public class EntityTerrapin extends AnimalEntity implements ISemiAquatic, Bucket
                 var world = this.turtle.getWorld();
                 turtle.emitGameEvent(GameEvent.BLOCK_PLACE);
                 world.playSound(null, blockpos, SoundEvents.ENTITY_TURTLE_LAY_EGG, SoundCategory.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
-                world.setBlockState(this.targetPos.up(), AMBlockRegistry.TERRAPIN_EGG.get().getDefaultState().with(BlockTerrapinEgg.EGGS, this.turtle.random.nextInt(1) + 3), 3);
-                if(world.getBlockEntity(this.targetPos.up()) instanceof TileEntityTerrapinEgg eggTe){
-                    eggTe.parent1 = new TileEntityTerrapinEgg.ParentData(turtle.getTurtleType(), turtle.getShellType(), turtle.getSkinType(), turtle.getTurtleColor(), turtle.getShellColor(), turtle.getSkinColor());
+                world.setBlockState(this.targetPos.up(), AMBlockRegistry.TERRAPIN_EGG.get().getDefaultState().with(TerrapinEggBlock.EGGS, this.turtle.random.nextInt(1) + 3), 3);
+                if(world.getBlockEntity(this.targetPos.up()) instanceof TerrapinEggBlockEntity eggTe){
+                    eggTe.parent1 = new TerrapinEggBlockEntity.ParentData(turtle.getTurtleType(), turtle.getShellType(), turtle.getSkinType(), turtle.getTurtleColor(), turtle.getShellColor(), turtle.getSkinColor());
                     eggTe.parent2 = turtle.partnerData == null ? eggTe.parent1 : turtle.partnerData;
                 }
                 this.turtle.setHasEgg(false);
@@ -689,7 +689,7 @@ public class EntityTerrapin extends AnimalEntity implements ISemiAquatic, Bucket
 
         @Override
         protected boolean isTargetPos(WorldView worldIn, BlockPos pos) {
-            return worldIn.isAir(pos.up()) && BlockTerrapinEgg.isProperHabitat(worldIn, pos);
+            return worldIn.isAir(pos.up()) && TerrapinEggBlock.isProperHabitat(worldIn, pos);
         }
     }
 }

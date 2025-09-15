@@ -1,6 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity;
 
-import com.github.alexthe666.alexsmobs.block.BlockEnderResidue;
+import com.github.alexthe666.alexsmobs.block.EnderResidueBlock;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.DirectPathNavigator;
 import com.github.alexthe666.alexsmobs.entity.ai.EntityAINearestTarget3D;
@@ -167,7 +167,7 @@ public class EntityVoidWorm extends HostileEntity {
             pos = pos.up();
         }
         int radius = 2;
-        var residue = AMBlockRegistry.ENDER_RESIDUE.get().getDefaultState().with(BlockEnderResidue.SLOW_DECAY, true);
+        var residue = AMBlockRegistry.ENDER_RESIDUE.get().getDefaultState().with(EnderResidueBlock.SLOW_DECAY, true);
         for(int x = -radius; x <= radius; x++){
             for(int y = -radius; y <= radius; y++){
                 for(int z = -radius; z <= radius; z++){

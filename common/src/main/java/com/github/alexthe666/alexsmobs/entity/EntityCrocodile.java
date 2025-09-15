@@ -1,6 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity;
 
-import com.github.alexthe666.alexsmobs.block.BlockReptileEgg;
+import com.github.alexthe666.alexsmobs.block.ReptileEggBlock;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
@@ -39,6 +39,7 @@ import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.UseAction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -368,30 +369,29 @@ public class EntityCrocodile extends TameableEntity implements IAnimatedEntity, 
     }
 
     protected void damageShieldFor(PlayerEntity holder, float damage) {
-        // FIXME forge
-//        if (holder.getActiveItem().canPerformAction(ToolActions.SHIELD_BLOCK)) {
-//            if (!this.getWorld().isClient) {
-//                holder.incrementStat(Stats.USED.getOrCreateStat(holder.getActiveItem().getItem()));
-//            }
-//
-//            if (damage >= 3.0F) {
-//                int i = 1 + MathHelper.floor(damage);
-//                var hand = holder.getUsedItemHand();
-//                holder.getActiveItem().hurtAndBreak(i, holder, (p_213833_1_) -> {
-//                    p_213833_1_.broadcastBreakEvent(hand);
+        if (holder.getActiveItem().getUseAction().equals(UseAction.BLOCK)) {
+            if (!this.getWorld().isClient) {
+                holder.incrementStat(Stats.USED.getOrCreateStat(holder.getActiveItem().getItem()));
+            }
+
+            if (damage >= 3.0F) {
+                int i = 1 + MathHelper.floor(damage);
+                var hand = holder.getActiveHand();
+                holder.getActiveItem().damage(i, holder, playerEntity -> {
+                    playerEntity.sendToolBreakStatus(hand);
+                    // FIXME forge
 //                    net.minecraftforge.event.ForgeEventFactory.onafterBreakItem(holder, holder.getActiveItem(), hand);
-//                });
-//                if (holder.getActiveItem().isEmpty()) {
-//                    if (hand == Hand.MAIN_HAND) {
-//                        holder.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
-//                    } else {
-//                        holder.equipStack(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
-//                    }
-//                    holder.playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.8F, 0.8F + this.getWorld().random.nextFloat() * 0.4F);
-//                }
-//            }
-//
-//        }
+                });
+                if (holder.getActiveItem().isEmpty()) {
+                    if (hand == Hand.MAIN_HAND) {
+                        holder.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+                    } else {
+                        holder.equipStack(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+                    }
+                    holder.playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.8F, 0.8F + this.getWorld().random.nextFloat() * 0.4F);
+                }
+            }
+        }
     }
 
     @Override
@@ -781,7 +781,7 @@ public class EntityCrocodile extends TameableEntity implements IAnimatedEntity, 
                 final World world = this.turtle.getWorld();
                 turtle.emitGameEvent(GameEvent.BLOCK_PLACE);
                 world.playSound(null, blockpos, SoundEvents.ENTITY_TURTLE_LAY_EGG, SoundCategory.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
-                world.setBlockState(this.targetPos.up(), AMBlockRegistry.CROCODILE_EGG.get().getDefaultState().with(BlockReptileEgg.EGGS, this.turtle.random.nextInt(1) + 1), 3);
+                world.setBlockState(this.targetPos.up(), AMBlockRegistry.CROCODILE_EGG.get().getDefaultState().with(ReptileEggBlock.EGGS, this.turtle.random.nextInt(1) + 1), 3);
                 this.turtle.setHasEgg(false);
                 this.turtle.setDigging(false);
                 this.turtle.setLoveTicks(600);
@@ -791,7 +791,7 @@ public class EntityCrocodile extends TameableEntity implements IAnimatedEntity, 
 
         @Override
         protected boolean isTargetPos(WorldView worldIn, BlockPos pos) {
-            return worldIn.isAir(pos.up()) && BlockReptileEgg.isProperHabitat(worldIn, pos);
+            return worldIn.isAir(pos.up()) && ReptileEggBlock.isProperHabitat(worldIn, pos);
         }
     }
 }

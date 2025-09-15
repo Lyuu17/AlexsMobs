@@ -1,7 +1,6 @@
 package com.github.alexthe666.alexsmobs.block;
 
-import com.github.alexthe666.alexsmobs.registry.AMTileEntityRegistry;
-import com.github.alexthe666.alexsmobs.tileentity.TileEntityVoidWormBeak;
+import com.github.alexthe666.alexsmobs.block.entity.VoidWormBeakBlockEntity;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -23,14 +22,14 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockVoidWormBeak extends BlockWithEntity {
+public class VoidWormBeakBlock extends BlockWithEntity {
 
     public static final DirectionProperty FACING = FacingBlock.FACING;
     public static final BooleanProperty POWERED = Properties.POWERED;
     private static final VoxelShape AABB = Block.createCuboidShape(0, 4, 0, 16, 12, 16);
     private static final VoxelShape AABB_VERTICAL = Block.createCuboidShape(0, 0, 4, 16, 16, 12);
 
-    public BlockVoidWormBeak() {
+    public VoidWormBeakBlock() {
         super(Settings.create()
                 .mapColor(MapColor.PURPLE)
                 .nonOpaque()
@@ -76,7 +75,7 @@ public class BlockVoidWormBeak extends BlockWithEntity {
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new TileEntityVoidWormBeak(pos, state);
+        return new VoidWormBeakBlockEntity(pos, state);
     }
 
     @Override
@@ -100,7 +99,12 @@ public class BlockVoidWormBeak extends BlockWithEntity {
     }
 
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World p_152180_, BlockState p_152181_, BlockEntityType<T> p_152182_) {
-        return checkType(p_152182_, AMTileEntityRegistry.VOID_WORM_BEAK.get(), TileEntityVoidWormBeak::commonTick);
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        return (world1, pos, state1, blockEntity) -> {
+            if (blockEntity instanceof VoidWormBeakBlockEntity voidWormBeakBlockEntity) {
+                voidWormBeakBlockEntity.tick(world1, pos, state1, voidWormBeakBlockEntity);
+            }
+        };
     }
 }

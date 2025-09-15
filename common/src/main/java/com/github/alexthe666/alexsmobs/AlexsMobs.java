@@ -1,6 +1,7 @@
 package com.github.alexthe666.alexsmobs;
 
 import com.github.alexthe666.alexsmobs.config.AMConfig;
+import com.github.alexthe666.alexsmobs.misc.CapsidRecipeManager;
 import com.github.alexthe666.alexsmobs.registry.*;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.GameInstance;
@@ -22,6 +23,7 @@ public class AlexsMobs {
     private static int packetsRegistered;
     private static boolean isAprilFools = false;
     private static boolean isHalloween = false;
+    private static CapsidRecipeManager capsidRecipeManager;
 
     static {
         VERSION = Platform.getMod(AlexsMobs.MOD_ID).getVersion();
@@ -31,6 +33,7 @@ public class AlexsMobs {
         AMAdvancementTriggerRegistry.init();
         AMBannerRegistry.DEF_REG.register();
         AMBlockRegistry.DEF_REG.register();
+        AMBlockEntityRegistry.DEF_REG.register();
         AMEntityRegistry.DEF_REG.register();
         AMEffectRegistry.EFFECT_DEF_REG.register();
         AMEffectRegistry.init();
@@ -38,11 +41,11 @@ public class AlexsMobs {
         AMEntityRegistry.initializeAttributes();
         AMItemRegistry.DEF_REG.register();
         AMItemRegistry.initDispenser();
-        AMSoundRegistry.DEF_REG.register();
+        AMMenuRegistry.init(true);
         AMPacketRegistry.register();
         AMParticleRegistry.DEF_REG.register();
         AMPointOfInterestRegistry.DEF_REG.register();
-        AMTileEntityRegistry.DEF_REG.register();
+        AMSoundRegistry.DEF_REG.register();
 
 //        IEventBus modBusEvent = FMLJavaModLoadingContext.get().getModEventBus();
 //        modBusEvent.addListener(this::setup);
@@ -126,36 +129,11 @@ public class AlexsMobs {
         AMPacketRegistry.CHANNEL.sendToPlayer(player, msg);
     }
 
-//    private void setup(final FMLCommonSetupEvent event) {
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageMosquitoMountPlayer.class, MessageMosquitoMountPlayer::write, MessageMosquitoMountPlayer::read, MessageMosquitoMountPlayer.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageMosquitoDismount.class, MessageMosquitoDismount::write, MessageMosquitoDismount::read, MessageMosquitoDismount.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageHurtMultipart.class, MessageHurtMultipart::write, MessageHurtMultipart::read, MessageHurtMultipart.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageCrowMountPlayer.class, MessageCrowMountPlayer::write, MessageCrowMountPlayer::read, MessageCrowMountPlayer.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageCrowDismount.class, MessageCrowDismount::write, MessageCrowDismount::read, MessageCrowDismount.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageMungusBiomeChange.class, MessageMungusBiomeChange::write, MessageMungusBiomeChange::read, MessageMungusBiomeChange.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageKangarooInventorySync.class, MessageKangarooInventorySync::write, MessageKangarooInventorySync::read, MessageKangarooInventorySync.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageKangarooEat.class, MessageKangarooEat::write, MessageKangarooEat::read, MessageKangarooEat.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdateCapsid.class, MessageUpdateCapsid::write, MessageUpdateCapsid::read, MessageUpdateCapsid.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSwingArm.class, MessageSwingArm::write, MessageSwingArm::read, MessageSwingArm.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdateEagleControls.class, MessageUpdateEagleControls::write, MessageUpdateEagleControls::read, MessageUpdateEagleControls.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSyncEntityPos.class, MessageSyncEntityPos::write, MessageSyncEntityPos::read, MessageSyncEntityPos.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageTarantulaHawkSting.class, MessageTarantulaHawkSting::write, MessageTarantulaHawkSting::read, MessageTarantulaHawkSting.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageStartDancing.class, MessageStartDancing::write, MessageStartDancing::read, MessageStartDancing.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, InteractMultipartPacket.class, InteractMultipartPacket::write, InteractMultipartPacket::read, InteractMultipartPacket.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSendVisualFlagFromServer.class, MessageSendVisualFlagFromServer::write, MessageSendVisualFlagFromServer::read, MessageSendVisualFlagFromServer.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageSetPupfishChunkOnClient.class, MessageSetPupfishChunkOnClient::write, MessageSetPupfishChunkOnClient::read, MessageSetPupfishChunkOnClient.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageUpdateTransmutablesToDisplay.class, MessageUpdateTransmutablesToDisplay::write, MessageUpdateTransmutablesToDisplay::read, MessageUpdateTransmutablesToDisplay.Handler::handle);
-//        NETWORK_WRAPPER.registerMessage(packetsRegistered++, MessageTransmuteFromMenu.class, MessageTransmuteFromMenu::write, MessageTransmuteFromMenu::read, MessageTransmuteFromMenu.Handler::handle);
-//        event.enqueueWork(AMItemRegistry::init);
-//        event.enqueueWork(AMItemRegistry::initDispenser);
-//        AMAdvancementTriggerRegistry.init();
-//        AMEffectRegistry.init();
-//        AMRecipeRegistry.init();
-//        PROXY.initPathfinding();
-//    }
-//
-//    private void setupClient(FMLClientSetupEvent event) {
-//        event.enqueueWork(PROXY::clientInit);
-//    }
+    public static CapsidRecipeManager getCapsidRecipeManager(){
+        if(capsidRecipeManager == null){
+            capsidRecipeManager = new CapsidRecipeManager();
+        }
+        return capsidRecipeManager;
+    }
 
 }

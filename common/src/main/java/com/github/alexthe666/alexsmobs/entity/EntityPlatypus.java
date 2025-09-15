@@ -1,6 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity;
 
-import com.github.alexthe666.alexsmobs.block.BlockReptileEgg;
+import com.github.alexthe666.alexsmobs.block.ReptileEggBlock;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
@@ -559,7 +559,7 @@ public class EntityPlatypus extends AnimalEntity implements ISemiAquatic, ITarge
                 final World world = this.turtle.getWorld();
                 turtle.emitGameEvent(GameEvent.BLOCK_PLACE);
                 world.playSound(null, blockpos, SoundEvents.ENTITY_TURTLE_LAY_EGG, SoundCategory.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
-                world.setBlockState(this.targetPos.up(), AMBlockRegistry.PLATYPUS_EGG.get().getDefaultState().with(BlockReptileEgg.EGGS, this.turtle.random.nextInt(3) + 1), 3);
+                world.setBlockState(this.targetPos.up(), AMBlockRegistry.PLATYPUS_EGG.get().getDefaultState().with(ReptileEggBlock.EGGS, this.turtle.random.nextInt(3) + 1), 3);
                 this.turtle.setHasEgg(false);
                 this.turtle.setDigging(false);
                 this.turtle.setLoveTicks(600);
@@ -568,7 +568,7 @@ public class EntityPlatypus extends AnimalEntity implements ISemiAquatic, ITarge
 
         @Override
         protected boolean isTargetPos(WorldView worldIn, BlockPos pos) {
-            return worldIn.isAir(pos.up()) && BlockReptileEgg.isProperHabitat(worldIn, pos);
+            return worldIn.isAir(pos.up()) && ReptileEggBlock.isProperHabitat(worldIn, pos);
         }
     }
 }

@@ -18,8 +18,8 @@ public class AMEffectRegistry {
 //
 //    public static final RegistrySupplier<StatusEffect> KNOCKBACK_RESISTANCE = EFFECT_DEF_REG.register("knockback_resistance", EffectKnockbackResistance::new);
 //    public static final RegistrySupplier<StatusEffect> LAVA_VISION = EFFECT_DEF_REG.register("lava_vision", EffectLavaVision::new);
-//    public static final RegistrySupplier<StatusEffect> SUNBIRD_BLESSING = EFFECT_DEF_REG.register("sunbird_blessing", ()-> new EffectSunbird(false));
-//    public static final RegistrySupplier<StatusEffect> SUNBIRD_CURSE = EFFECT_DEF_REG.register("sunbird_curse", ()-> new EffectSunbird(true));
+    public static final RegistrySupplier<StatusEffect> SUNBIRD_BLESSING = EFFECT_DEF_REG.register("sunbird_blessing", ()-> new EffectSunbird(false));
+    public static final RegistrySupplier<StatusEffect> SUNBIRD_CURSE = EFFECT_DEF_REG.register("sunbird_curse", ()-> new EffectSunbird(true));
 //    public static final RegistrySupplier<StatusEffect> POISON_RESISTANCE = EFFECT_DEF_REG.register("poison_resistance", EffectPoisonResistance::new);
     public static final RegistrySupplier<StatusEffect> OILED = EFFECT_DEF_REG.register("oiled", EffectOiled::new);
     public static final RegistrySupplier<StatusEffect> ORCAS_MIGHT = EFFECT_DEF_REG.register("orcas_might", EffectOrcaMight::new);

@@ -1,8 +1,8 @@
-package com.github.alexthe666.alexsmobs.tileentity;
+package com.github.alexthe666.alexsmobs.block.entity;
 
 import com.github.alexthe666.alexsmobs.entity.EntityTerrapin;
 import com.github.alexthe666.alexsmobs.entity.util.TerrapinTypes;
-import com.github.alexthe666.alexsmobs.registry.AMTileEntityRegistry;
+import com.github.alexthe666.alexsmobs.registry.AMBlockEntityRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -10,12 +10,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 
-public class TileEntityTerrapinEgg extends BlockEntity {
+public class TerrapinEggBlockEntity extends BlockEntity {
     public ParentData parent1;
     public ParentData parent2;
 
-    public TileEntityTerrapinEgg(BlockPos pos, BlockState state) {
-        super(AMTileEntityRegistry.TERRAPIN_EGG.get(), pos, state);
+    public TerrapinEggBlockEntity(BlockPos pos, BlockState state) {
+        super(AMBlockEntityRegistry.TERRAPIN_EGG.get(), pos, state);
     }
 
     public void addAttributesToOffspring(EntityTerrapin baby, Random random){

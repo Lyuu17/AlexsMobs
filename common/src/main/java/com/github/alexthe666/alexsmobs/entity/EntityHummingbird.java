@@ -1,6 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity;
 
-import com.github.alexthe666.alexsmobs.block.BlockHummingbirdFeeder;
+import com.github.alexthe666.alexsmobs.block.HummingbirdFeederBlock;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.FlightMoveController;
 import com.github.alexthe666.alexsmobs.entity.ai.HummingbirdAIPollinate;
@@ -418,7 +418,7 @@ public class EntityHummingbird extends AnimalEntity {
                     EntityHummingbird.this.getWorld().sendEntityStatus(EntityHummingbird.this, (byte)68);
                     if(idleAtFlowerTime > 55){
                         if(EntityHummingbird.this.getCropsPollinated() > 2 && random.nextInt(25) == 0 && isValidFeeder(getWorld().getBlockState(localFeeder))){
-                            getWorld().setBlockState(localFeeder, getWorld().getBlockState(localFeeder).with(BlockHummingbirdFeeder.CONTENTS, 0));
+                            getWorld().setBlockState(localFeeder, getWorld().getBlockState(localFeeder).with(HummingbirdFeederBlock.CONTENTS, 0));
                         }
                         EntityHummingbird.this.setCropsPollinated(EntityHummingbird.this.getCropsPollinated() + 1);
                         EntityHummingbird.this.sipCooldown = 120 + random.nextInt(1200);
@@ -431,7 +431,7 @@ public class EntityHummingbird extends AnimalEntity {
         }
 
         public boolean isValidFeeder(BlockState state){
-            return state.getBlock() instanceof BlockHummingbirdFeeder && state.get(BlockHummingbirdFeeder.CONTENTS) == 3;
+            return state.getBlock() instanceof HummingbirdFeederBlock && state.get(HummingbirdFeederBlock.CONTENTS) == 3;
         }
     }
 }

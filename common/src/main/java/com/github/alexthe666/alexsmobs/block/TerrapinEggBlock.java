@@ -1,11 +1,11 @@
 package com.github.alexthe666.alexsmobs.block;
 
+import com.github.alexthe666.alexsmobs.block.entity.TerrapinEggBlockEntity;
 import com.github.alexthe666.alexsmobs.entity.EntityTerrapin;
 import com.github.alexthe666.alexsmobs.entity.util.TerrapinTypes;
 import com.github.alexthe666.alexsmobs.registry.AMBlockRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMTagRegistry;
-import com.github.alexthe666.alexsmobs.tileentity.TileEntityTerrapinEgg;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
@@ -44,14 +44,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BlockTerrapinEgg extends BlockWithEntity {
+public class TerrapinEggBlock extends BlockWithEntity {
 
     public static final IntProperty HATCH = Properties.HATCH;
     public static final IntProperty EGGS = Properties.EGGS;
     private static final VoxelShape ONE_EGG_SHAPE = Block.createCuboidShape(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
     private static final VoxelShape MULTI_EGG_SHAPE = Block.createCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 7.0D, 15.0D);
 
-    public BlockTerrapinEgg() {
+    public TerrapinEggBlock() {
         super(Settings.create()
                 .mapColor(MapColor.PALE_YELLOW)
                 .strength(0.5F)
@@ -129,7 +129,7 @@ public class BlockTerrapinEgg extends BlockWithEntity {
                     worldIn.syncWorldEvent(2001, pos, Block.getRawIdFromState(state));
                     var turtleentity = AMEntityRegistry.TERRAPIN.get().create(worldIn);
                     turtleentity.setBreedingAge(-24000);
-                    if(worldIn.getBlockEntity(pos) instanceof TileEntityTerrapinEgg eggTE){
+                    if(worldIn.getBlockEntity(pos) instanceof TerrapinEggBlockEntity eggTE){
                         eggTE.addAttributesToOffspring(turtleentity, random);
                     }
                     turtleentity.setFromBucket(true);
@@ -211,9 +211,9 @@ public class BlockTerrapinEgg extends BlockWithEntity {
         if(pickaxe != null){
             silkTouch = EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, pickaxe) > 0;
         }
-        if (silkTouch && blockentity instanceof TileEntityTerrapinEgg) {
+        if (silkTouch && blockentity instanceof TerrapinEggBlockEntity) {
             ItemStack stack = new ItemStack(AMBlockRegistry.TERRAPIN_EGG.get());
-            TileEntityTerrapinEgg egg = (TileEntityTerrapinEgg)blockentity;
+            TerrapinEggBlockEntity egg = (TerrapinEggBlockEntity)blockentity;
             NbtCompound tag = stack.getOrCreateSubNbt("BlockEntityTag");
             NbtCompound parent1 = new NbtCompound();
             NbtCompound parent2 = new NbtCompound();
@@ -257,7 +257,7 @@ public class BlockTerrapinEgg extends BlockWithEntity {
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new TileEntityTerrapinEgg(pos, state);
+        return new TerrapinEggBlockEntity(pos, state);
     }
 
 }

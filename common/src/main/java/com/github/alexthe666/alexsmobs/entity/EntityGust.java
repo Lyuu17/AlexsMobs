@@ -1,5 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity;
 
+import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMParticleRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -25,6 +26,10 @@ public class EntityGust extends Entity {
 
     public EntityGust(EntityType<EntityGust> p_i50162_1_, World p_i50162_2_) {
         super(p_i50162_1_, p_i50162_2_);
+    }
+
+    public EntityGust(World worldIn) {
+        this(AMEntityRegistry.GUST.get(), worldIn);
     }
 
     @Override

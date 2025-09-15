@@ -6,7 +6,7 @@ import net.minecraft.entity.passive.TameableEntity;
 public interface IFollower {
     boolean shouldFollow();
 
-   default void followEntity(TameableEntity tameable, LivingEntity owner, double followSpeed){
-       tameable.getNavigation().startMovingTo(owner, followSpeed);
-   }
+    default void followEntity(TameableEntity tameable, LivingEntity owner, double followSpeed) {
+        tameable.getNavigation().startMovingTo(owner, followSpeed);
+    }
 }

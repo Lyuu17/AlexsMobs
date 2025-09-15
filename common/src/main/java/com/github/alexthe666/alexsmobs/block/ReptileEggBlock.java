@@ -37,14 +37,14 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockReptileEgg<T extends Entity> extends Block {
+public class ReptileEggBlock<T extends Entity> extends Block {
     public static final IntProperty HATCH = Properties.HATCH;
     public static final IntProperty EGGS = Properties.EGGS;
     private static final VoxelShape ONE_EGG_SHAPE = Block.createCuboidShape(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
     private static final VoxelShape MULTI_EGG_SHAPE = Block.createCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 7.0D, 15.0D);
     private final RegistrySupplier<EntityType<T>> births;
 
-    public BlockReptileEgg(RegistrySupplier<EntityType<T>> births) {
+    public ReptileEggBlock(RegistrySupplier<EntityType<T>> births) {
         super(AbstractBlock.Settings.create()
                 .mapColor(MapColor.PALE_YELLOW)
                 .strength(0.5F)

@@ -1,5 +1,3 @@
-// common/src/main/java/com/example/platform/PlatformEntityConstructors.java
-
 package com.github.alexthe666.alexsmobs.platform;
 
 import com.github.alexthe666.alexsmobs.entity.EntityAlligatorSnappingTurtle;

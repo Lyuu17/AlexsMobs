@@ -16,6 +16,7 @@ import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.UseAction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -126,12 +127,10 @@ public class EntityVoidWormShot extends Entity {
         Entity entity = this.getShooter();
         if (entity instanceof LivingEntity && !(p_213868_1_.getEntity() instanceof EntityVoidWorm || p_213868_1_.getEntity() instanceof EntityVoidWormPart)) {
             final boolean b = wormAttack(p_213868_1_.getEntity(), getDamageSources().mobProjectile(this, (LivingEntity) entity), (float) (AMConfig.voidWormDamageModifier * 4F));
-            if(b && p_213868_1_.getEntity() instanceof PlayerEntity){
-                PlayerEntity player = ((PlayerEntity)p_213868_1_.getEntity());
-                //FIXME forge
-//                if(player.getActiveItem().canPerformAction(ToolActions.SHIELD_BLOCK)){
-//                    player.disableShield(true);
-//                }
+            if(b && p_213868_1_.getEntity() instanceof PlayerEntity player){
+                if (player.getActiveItem().getUseAction().equals(UseAction.BLOCK)) {
+                    player.disableShield(true);
+                }
             }
         }
 

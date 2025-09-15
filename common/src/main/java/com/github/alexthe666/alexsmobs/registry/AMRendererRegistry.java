@@ -1,7 +1,11 @@
 package com.github.alexthe666.alexsmobs.registry;
 
 import com.github.alexthe666.alexsmobs.renderer.*;
+import com.github.alexthe666.alexsmobs.renderer.block.entity.RenderCapsid;
+import com.github.alexthe666.alexsmobs.renderer.block.entity.RenderTransmutationTable;
+import com.github.alexthe666.alexsmobs.renderer.block.entity.RenderVoidWormBeak;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
+import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
@@ -56,6 +60,7 @@ public class AMRendererRegistry {
         EntityRendererRegistry.register(AMEntityRegistry.ICE_SHARD, RenderIceShard::new);
         EntityRendererRegistry.register(AMEntityRegistry.JERBOA, RenderJerboa::new);
         EntityRendererRegistry.register(AMEntityRegistry.KOMODO_DRAGON, RenderKomodoDragon::new);
+        EntityRendererRegistry.register(AMEntityRegistry.KANGAROO, RenderKangaroo::new);
         EntityRendererRegistry.register(AMEntityRegistry.LAVIATHAN, RenderLaviathan::new);
         EntityRendererRegistry.register(AMEntityRegistry.LOBSTER, RenderLobster::new);
         EntityRendererRegistry.register(AMEntityRegistry.MIMIC_OCTOPUS, RenderMimicOctopus::new);
@@ -71,14 +76,20 @@ public class AMRendererRegistry {
         EntityRendererRegistry.register(AMEntityRegistry.ROADRUNNER, RenderRoadrunner::new);
         EntityRendererRegistry.register(AMEntityRegistry.SAND_SHOT, RenderSandShot::new);
         EntityRendererRegistry.register(AMEntityRegistry.SEA_BEAR, RenderSeaBear::new);
+        EntityRendererRegistry.register(AMEntityRegistry.SKUNK, RenderSkunk::new);
         EntityRendererRegistry.register(AMEntityRegistry.SNOW_LEOPARD, RenderSnowLeopard::new);
         EntityRendererRegistry.register(AMEntityRegistry.SOUL_VULTURE, RenderSoulVulture::new);
         EntityRendererRegistry.register(AMEntityRegistry.STRADDLEBOARD, RenderStraddleboard::new);
+        EntityRendererRegistry.register(AMEntityRegistry.STRADDLER, RenderStraddler::new);
+        EntityRendererRegistry.register(AMEntityRegistry.STRADPOLE, RenderStradpole::new);
+        EntityRendererRegistry.register(AMEntityRegistry.SUNBIRD, RenderSunbird::new);
         EntityRendererRegistry.register(AMEntityRegistry.TARANTULA_HAWK, RenderTarantulaHawk::new);
+        EntityRendererRegistry.register(AMEntityRegistry.TASMANIAN_DEVIL, RenderTasmanianDevil::new);
         EntityRendererRegistry.register(AMEntityRegistry.TERRAPIN, RenderTerrapin::new);
         EntityRendererRegistry.register(AMEntityRegistry.TOSSED_ITEM, RenderTossedItem::new);
         EntityRendererRegistry.register(AMEntityRegistry.TOUCAN, RenderToucan::new);
         EntityRendererRegistry.register(AMEntityRegistry.TRIOPS, RenderTriops::new);
+        EntityRendererRegistry.register(AMEntityRegistry.TUSKLIN, RenderTusklin::new);
         EntityRendererRegistry.register(AMEntityRegistry.UNDERMINER, RenderUnderminer::new);
         EntityRendererRegistry.register(AMEntityRegistry.VOID_PORTAL, RenderVoidPortal::new);
         EntityRendererRegistry.register(AMEntityRegistry.VOID_WORM, RenderVoidWormHead::new);
@@ -86,5 +97,11 @@ public class AMRendererRegistry {
         EntityRendererRegistry.register(AMEntityRegistry.VOID_WORM_SHOT, RenderVoidWormShot::new);
         EntityRendererRegistry.register(AMEntityRegistry.WARPED_MOSCO, RenderWarpedMosco::new);
         EntityRendererRegistry.register(AMEntityRegistry.WARPED_TOAD, RenderWarpedToad::new);
+    }
+
+    public static void registerBlockEntityRenderers() {
+        BlockEntityRendererRegistry.register(AMBlockEntityRegistry.CAPSID.get(), RenderCapsid::new);
+        BlockEntityRendererRegistry.register(AMBlockEntityRegistry.TRANSMUTATION_TABLE.get(), RenderTransmutationTable::new);
+        BlockEntityRendererRegistry.register(AMBlockEntityRegistry.VOID_WORM_BEAK.get(), RenderVoidWormBeak::new);
     }
 }

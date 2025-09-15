@@ -91,6 +91,10 @@ public abstract class EntityMixin {
             cir.cancel();
         }
 
+        if (self instanceof EntityKangaroo) {
+            cir.cancel();
+        }
+
         if (self instanceof EntityLaviathan) {
             cir.cancel();
         }
@@ -108,6 +112,10 @@ public abstract class EntityMixin {
         }
 
         if (self instanceof EntitySoulVulture) {
+            cir.cancel();
+        }
+
+        if (self instanceof EntitySunbird) {
             cir.cancel();
         }
 

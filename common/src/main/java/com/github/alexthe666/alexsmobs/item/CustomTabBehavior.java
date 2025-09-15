@@ -1,6 +1,8 @@
 package com.github.alexthe666.alexsmobs.item;
 
+import net.minecraft.item.ItemGroup;
+
 public interface CustomTabBehavior {
-    //FIXME forge
-//    void fillItemCategory(CreativeModeTab.Output contents);
+
+    void fillItemCategory(ItemGroup.Entries contents);
 }

@@ -12,8 +12,8 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 
-public class BlockTriopsEggs extends FrogspawnBlock {
-    public BlockTriopsEggs() {
+public class TriopsEggsBlock extends FrogspawnBlock {
+    public TriopsEggsBlock() {
         super(AbstractBlock.Settings.create()
                 .mapColor(MapColor.ORANGE)
                 .breakInstantly()

@@ -1,6 +1,6 @@
 package com.github.alexthe666.alexsmobs.model;
 
-import com.github.alexthe666.alexsmobs.tileentity.TileEntityVoidWormBeak;
+import com.github.alexthe666.alexsmobs.block.entity.VoidWormBeakBlockEntity;
 import com.google.common.collect.ImmutableList;
 import com.iafenvoy.uranus.client.model.AdvancedEntityModel;
 import com.iafenvoy.uranus.client.model.AdvancedModelBox;
@@ -45,7 +45,7 @@ public class ModelVoidWormBeak extends AdvancedEntityModel<Entity> {
     public void setAngles(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 
-    public void renderBeak(TileEntityVoidWormBeak beak, float partialTick) {
+    public void renderBeak(VoidWormBeakBlockEntity beak, float partialTick) {
         this.resetToDefaultPose();
         float amount = beak.getChompProgress(partialTick) * 0.2F;
         float ageInTicks = beak.ticksExisted + partialTick;

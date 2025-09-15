@@ -15,12 +15,12 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class BlockEnderResidue extends AbstractGlassBlock {
+public class EnderResidueBlock extends AbstractGlassBlock {
 
     public static final IntProperty AGE = Properties.AGE_3;
     public static final BooleanProperty SLOW_DECAY = BooleanProperty.of("slow_decay");
 
-    public BlockEnderResidue() {
+    public EnderResidueBlock() {
         super(AbstractBlock.Settings.create()
                 .mapColor(MapColor.LIGHT_BLUE)
                 .nonOpaque()

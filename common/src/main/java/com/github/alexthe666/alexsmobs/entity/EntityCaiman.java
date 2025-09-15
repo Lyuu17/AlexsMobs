@@ -1,6 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity;
 
-import com.github.alexthe666.alexsmobs.block.BlockReptileEgg;
+import com.github.alexthe666.alexsmobs.block.ReptileEggBlock;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.registry.AMBlockRegistry;
@@ -524,7 +524,7 @@ public class EntityCaiman extends TameableEntity implements ISemiAquatic,IFollow
                 World world = this.caiman.getWorld();
                 caiman.emitGameEvent(GameEvent.BLOCK_PLACE);
                 world.playSound(null, blockpos, SoundEvents.ENTITY_TURTLE_LAY_EGG, SoundCategory.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
-                world.setBlockState(this.targetPos.up(), AMBlockRegistry.CAIMAN_EGG.get().getDefaultState().with(BlockReptileEgg.EGGS, this.caiman.random.nextInt(1) + 3), 3);
+                world.setBlockState(this.targetPos.up(), AMBlockRegistry.CAIMAN_EGG.get().getDefaultState().with(ReptileEggBlock.EGGS, this.caiman.random.nextInt(1) + 3), 3);
                 this.caiman.setHasEgg(false);
                 this.caiman.setLoveTicks(600);
             }
@@ -533,7 +533,7 @@ public class EntityCaiman extends TameableEntity implements ISemiAquatic,IFollow
 
         @Override
         protected boolean isTargetPos(WorldView worldIn, BlockPos pos) {
-            return worldIn.isAir(pos.up()) && BlockReptileEgg.isProperHabitat(worldIn, pos);
+            return worldIn.isAir(pos.up()) && ReptileEggBlock.isProperHabitat(worldIn, pos);
         }
     }
 }

@@ -29,14 +29,14 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockHummingbirdFeeder extends Block {
+public class HummingbirdFeederBlock extends Block {
     public static final IntProperty CONTENTS = IntProperty.of("contents", 0, 3);
     public static final BooleanProperty HANGING = Properties.HANGING;
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     private static final VoxelShape AABB = Block.createCuboidShape(4, 0, 4, 12, 12, 12);
     private static final VoxelShape AABB_HANGING = Block.createCuboidShape(4, 0, 4, 12, 16, 12);
 
-    public BlockHummingbirdFeeder() {
+    public HummingbirdFeederBlock() {
         super(AbstractBlock.Settings.create()
                 .mapColor(MapColor.ORANGE)
                 .sounds(BlockSoundGroup.LANTERN)
