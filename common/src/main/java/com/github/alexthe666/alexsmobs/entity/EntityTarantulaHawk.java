@@ -508,6 +508,11 @@ public class EntityTarantulaHawk extends TameableEntity implements IFollower {
     }
 
     @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
+    }
+
+    @Override
     protected void fall(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 

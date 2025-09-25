@@ -32,12 +32,14 @@ public class SculkBoomerBlock extends BlockWithEntity {
                 .with(POWERED, false));
     }
 
+    @Override
     public void neighborUpdate(BlockState state, World worldIn, BlockPos pos, net.minecraft.block.Block blockIn, BlockPos fromPos, boolean isMoving) {
         if(!worldIn.isClient){
             this.updateState(state, worldIn, pos, blockIn);
         }
     }
 
+    @Override
     public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
         if(!worldIn.isClient){
             this.updateState(state, worldIn, pos, state.getBlock());
@@ -54,16 +56,17 @@ public class SculkBoomerBlock extends BlockWithEntity {
         }
     }
 
-
+    @Override
     public BlockState getPlacementState(ItemPlacementContext context) {
         return this.getDefaultState()
                 .with(OPEN, false)
                 .with(POWERED, context.getWorld().isReceivingRedstonePower(context.getBlockPos()));
     }
 
-//    public BlockRenderLayer getRenderLayer(BlockState state) {
-//        return BlockRenderType.MODEL;
-//    }
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
+    }
 
     @Nullable
     @Override

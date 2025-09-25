@@ -6,7 +6,6 @@ import com.github.alexthe666.alexsmobs.misc.TransmutationData;
 import com.github.alexthe666.alexsmobs.packet.UpdateTransmutablesToDisplayPacket;
 import com.github.alexthe666.alexsmobs.registry.AMAdvancementTriggerRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMBlockEntityRegistry;
-import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
 import com.github.alexthe666.alexsmobs.screen.TransmutationTableScreenHandler;
 import dev.architectury.registry.menu.ExtendedMenuProvider;
 import net.minecraft.block.BlockState;
@@ -24,7 +23,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -74,14 +72,6 @@ public class TransmutationTableBlockEntity extends BlockEntity implements Extend
     @Override
     public void tick(World world, BlockPos pos, BlockState state, TransmutationTableBlockEntity blockEntity) {
         ticksExisted++;
-        if(rerollPlayerUUID != null){
-            var player = world.getPlayerByUuid(rerollPlayerUUID);
-            if(player != null) {
-                this.world.playSound(null, this.getPos(), AMSoundRegistry.TRANSMUTE_ITEM.get(), SoundCategory.BLOCKS, 1F, 0.9F + player.getRandom().nextFloat() * 0.2F);
-                this.randomizeResults(pos, player);
-            }
-            rerollPlayerUUID = null;
-        }
     }
 
     private static ItemStack createFromLootTable(BlockPos pos, PlayerEntity player, Identifier loc) {
@@ -137,7 +127,7 @@ public class TransmutationTableBlockEntity extends BlockEntity implements Extend
         }
     }
 
-    private void randomizeResults(BlockPos pos, PlayerEntity player){
+    public void randomizeResults(BlockPos pos, PlayerEntity player){
         rollPossiblity(pos, player, 0);
         rollPossiblity(pos, player, 1);
         rollPossiblity(pos, player, 2);

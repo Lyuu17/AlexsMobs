@@ -1,5 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity;
 
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -7,6 +8,8 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
@@ -40,7 +43,6 @@ public class EntityLaviathanPart extends PartEntity<EntityLaviathan> {
 
     // FIXME forge unused?
     protected void collideWithNearbyEntities() {
-
     }
 
     public ActionResult getEntityInteractionResult(PlayerEntity player, Hand hand) {
@@ -78,6 +80,11 @@ public class EntityLaviathanPart extends PartEntity<EntityLaviathan> {
     @Override
     public boolean isPartOf(Entity entityIn) {
         return this == entityIn || this.getParent() == entityIn;
+    }
+
+    @Override
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+        return NetworkManager.createAddEntityPacket(this);
     }
 
     @Override

@@ -1,12 +1,15 @@
 package com.github.alexthe666.alexsmobs.entity;
 
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -40,22 +43,10 @@ public class EntityMosquitoSpit extends Entity {
         this.setPos(p_i47273_2_.getX() - (double)(p_i47273_2_.getWidth()) * 0.5D * (double) MathHelper.sin(rot * MathHelper.RADIANS_PER_DEGREE), p_i47273_2_.getEyeY() - (double)0.2F, p_i47273_2_.getZ() + (double)(p_i47273_2_.getWidth()) * 0.5D * (double)MathHelper.cos(rot * MathHelper.RADIANS_PER_DEGREE));
     }
 
-    //FIXME
-//    @OnlyIn(Dist.CLIENT)
-//    public EntityMosquitoSpit(World worldIn, double x, double y, double z, double p_i47274_8_, double p_i47274_10_, double p_i47274_12_) {
-//        this(AMEntityRegistry.MOSQUITO_SPIT.get(), worldIn);
-//        this.setPos(x, y, z);
-//        this.setVelocity(p_i47274_8_, p_i47274_10_, p_i47274_12_);
-//    }
-//
-//    public EntityMosquitoSpit(PlayMessages.SpawnEntity spawnEntity, World world) {
-//        this(AMEntityRegistry.MOSQUITO_SPIT.get(), world);
-//    }
-//
-//    @Override
-//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-//        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
-//    }
+    @Override
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+        return NetworkManager.createAddEntityPacket(this);
+    }
 
     @Override
     public void tick() {

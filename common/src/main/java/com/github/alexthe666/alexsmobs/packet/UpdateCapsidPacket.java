@@ -13,20 +13,20 @@ import java.util.function.Supplier;
 
 public class UpdateCapsidPacket {
 
-    public long blockPos;
+    public BlockPos blockPos;
     public ItemStack heldStack;
 
-    public UpdateCapsidPacket(long blockPos, ItemStack heldStack) {
+    public UpdateCapsidPacket(BlockPos blockPos, ItemStack heldStack) {
         this.blockPos = blockPos;
         this.heldStack = heldStack;
     }
 
     private static UpdateCapsidPacket read(PacketByteBuf buf) {
-        return new UpdateCapsidPacket(buf.readInt(), buf.readItemStack());
+        return new UpdateCapsidPacket(buf.readBlockPos(), buf.readItemStack());
     }
 
     private void write(PacketByteBuf buf) {
-        buf.writeLong(this.blockPos);
+        buf.writeBlockPos(this.blockPos);
         buf.writeItemStack(this.heldStack);
     }
 
@@ -38,9 +38,8 @@ public class UpdateCapsidPacket {
 
         if (player != null) {
             if (player.getWorld() != null) {
-                BlockPos pos = BlockPos.fromLong(this.blockPos);
-                if (player.getWorld().getBlockEntity(pos) != null) {
-                    if (player.getWorld().getBlockEntity(pos) instanceof CapsidBlockEntity podium) {
+                if (player.getWorld().getBlockEntity(this.blockPos) != null) {
+                    if (player.getWorld().getBlockEntity(this.blockPos) instanceof CapsidBlockEntity podium) {
                         podium.setStack(0, this.heldStack);
                     }
                 }

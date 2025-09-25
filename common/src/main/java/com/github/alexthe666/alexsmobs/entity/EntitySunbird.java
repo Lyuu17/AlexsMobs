@@ -120,6 +120,11 @@ public class EntitySunbird extends AnimalEntity implements Flutterer {
     }
 
     @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
+    }
+
+    @Override
     protected void fall(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
@@ -162,7 +167,7 @@ public class EntitySunbird extends AnimalEntity implements Flutterer {
 
             //float f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
-            //FIXME
+            //FIXME doesnt make any sense
             if (this.isOnGround()) {
                 f = this.getWorld().getBlockState(ground).getBlock().getSlipperiness() * 0.91F;
             }

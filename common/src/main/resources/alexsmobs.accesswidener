@@ -20,3 +20,7 @@ accessible method net/minecraft/entity/mob/MobEntity changeAngle (FFF)F
 accessible method net/minecraft/block/Block dropExperience (Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;I)V
 accessible method net/minecraft/entity/boss/dragon/EnderDragonEntity parentDamage (Lnet/minecraft/entity/damage/DamageSource;F)Z
 accessible method net/minecraft/entity/Entity setWorld (Lnet/minecraft/world/World;)V
+accessible field net/minecraft/entity/mob/MobEntity leashNbt Lnet/minecraft/nbt/NbtCompound;
+accessible method net/minecraft/entity/mob/MobEntity readLeashNbt ()V
+accessible field net/minecraft/client/MinecraftClient itemColors Lnet/minecraft/client/color/item/ItemColors;
+accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionRecipe (Lnet/minecraft/potion/Potion;Lnet/minecraft/item/Item;Lnet/minecraft/potion/Potion;)V

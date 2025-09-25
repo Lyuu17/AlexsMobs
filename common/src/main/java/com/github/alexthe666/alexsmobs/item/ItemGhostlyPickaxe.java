@@ -174,18 +174,13 @@ public class ItemGhostlyPickaxe extends PickaxeItem {
         dropAllContents(itemEntity.getWorld(), itemEntity.getPos(), itemEntity.getStack());
     }
 
-    // FIXME forge
+//    // FIXME forge
 //    @Override
-//    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
-//        int i = super.damageItem(stack, amount, entity, onBroken);
+//    public boolean damage(int amount, Random random, @Nullable ServerPlayerEntity player) {
+//        int i = super.damage(amount, random, player);
 //        if(i + stack.getDamageValue() >= stack.getMaxDamage() && entity != null){
 //            dropAllContents(entity.getWorld(), entity.getPos(), stack);
 //        }
 //        return i;
 //    }
-
-    // FIXME override Item::getMaxDamage
-    public int getMaxDamage(ItemStack stack) {
-        return 700;
-    }
 }

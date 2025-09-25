@@ -1,0 +1,32 @@
+{
+  "name": "Komodo Dragon",
+  "icon": "minecraft:rotten_flesh",
+  "category": "alexsmobs:creatures",
+  "pages": [
+    {
+      "type": "entity",
+      "entity": "alexsmobs:komodo_dragon",
+      "text": "Komodo Dragons are the largest lizards in the world, often found in Sparse Jungle biomes. These big lizards see man and beast as food alike, and attack almost anything. They can often be seen wrestling others of their kind for dominance, standing on their hind legs."
+    },
+    {
+      "type": "text",
+      "text": "They are also cannibalistic, and will attack any other weakened Komodo Dragon, especially baby Komodos. These lizards have a terribly poisonous bite which they use to bring their prey down to size."
+    },
+    {
+      "type": "text",
+      "text": "Komodo Dragons have a fondness for Rotten Flesh, and will eat entire stacks of them out of players. If they are fed multiple entire stacks of Rotten Flesh, they can become tamed to a player."
+    },
+    {
+      "type": "text",
+      "text": "Tamed Komodos are just as savage as wild Komodos, yet they can be saddled and used a formidable mount that is surprisingly quick. Tame komodo dragons can be made to stay, follow and wander."
+    },
+    {
+      "type": "text",
+      "text": "Komodo Dragons can also occasionally drip their noxious saliva. If brewed with a Poison Resistance potion, it can extend the duration."
+    },
+    {
+      "type": "text",
+      "text": "This item can be bottled, and then brewed with a Cave Centipede leg to create an alternative to Poisonous Essence in a pinch as well. Three Komodo Dragon Spit can also be used to create a slimeball."
+    }
+  ]
+}

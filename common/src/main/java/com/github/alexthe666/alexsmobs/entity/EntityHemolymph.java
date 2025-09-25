@@ -2,12 +2,15 @@ package com.github.alexthe666.alexsmobs.entity;
 
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMParticleRegistry;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -28,30 +31,18 @@ public class EntityHemolymph extends Entity {
         super(entityType, world);
     }
 
-    public EntityHemolymph(World worldIn, EntityWarpedMosco p_i47273_2_) {
+    public EntityHemolymph(World worldIn, EntityWarpedMosco entityWarpedMosco) {
         this(AMEntityRegistry.HEMOLYMPH.get(), worldIn);
-        this.setShooter(p_i47273_2_);
-        this.setPos(p_i47273_2_.getX() - (double)(p_i47273_2_.getWidth() + 1.0F) * 0.35D * (double) MathHelper.sin(p_i47273_2_.bodyYaw * MathHelper.RADIANS_PER_DEGREE), p_i47273_2_.getEyeY() + (double)0.2F, p_i47273_2_.getZ() + (double)(p_i47273_2_.getWidth() + 1.0F) * 0.35D * (double)MathHelper.cos(p_i47273_2_.bodyYaw * MathHelper.RADIANS_PER_DEGREE));
+        this.setShooter(entityWarpedMosco);
+        this.setPos(entityWarpedMosco.getX() - (double)(entityWarpedMosco.getWidth() + 1.0F) * 0.35D * (double) MathHelper.sin(entityWarpedMosco.bodyYaw * MathHelper.RADIANS_PER_DEGREE), entityWarpedMosco.getEyeY() + (double)0.2F, entityWarpedMosco.getZ() + (double)(entityWarpedMosco.getWidth() + 1.0F) * 0.35D * (double)MathHelper.cos(entityWarpedMosco.bodyYaw * MathHelper.RADIANS_PER_DEGREE));
     }
 
-    public EntityHemolymph(World worldIn, LivingEntity p_i47273_2_, boolean right) {
+    public EntityHemolymph(World worldIn, LivingEntity livingEntity, boolean right) {
         this(AMEntityRegistry.HEMOLYMPH.get(), worldIn);
-        this.setShooter(p_i47273_2_);
-        float rot = p_i47273_2_.headYaw + (right ? 60 : -60);
-        this.setPos(p_i47273_2_.getX() - (double) (p_i47273_2_.getWidth()) * 0.5D * (double) MathHelper.sin(rot * MathHelper.RADIANS_PER_DEGREE), p_i47273_2_.getEyeY() - (double) 0.2F, p_i47273_2_.getZ() + (double) (p_i47273_2_.getWidth()) * 0.5D * (double) MathHelper.cos(rot * MathHelper.RADIANS_PER_DEGREE));
+        this.setShooter(livingEntity);
+        float rot = livingEntity.headYaw + (right ? 60 : -60);
+        this.setPos(livingEntity.getX() - (double) (livingEntity.getWidth()) * 0.5D * (double) MathHelper.sin(rot * MathHelper.RADIANS_PER_DEGREE), livingEntity.getEyeY() - (double) 0.2F, livingEntity.getZ() + (double) (livingEntity.getWidth()) * 0.5D * (double) MathHelper.cos(rot * MathHelper.RADIANS_PER_DEGREE));
     }
-
-    //FIXME
-//    @OnlyIn(Dist.CLIENT)
-//    public EntityHemolymph(Level worldIn, double x, double y, double z, double p_i47274_8_, double p_i47274_10_, double p_i47274_12_) {
-//        this(AMEntityRegistry.HEMOLYMPH.get(), worldIn);
-//        this.setPos(x, y, z);
-//        this.setVelocity(p_i47274_8_, p_i47274_10_, p_i47274_12_);
-//    }
-//
-//    public EntityHemolymph(PlayMessages.SpawnEntity spawnEntity, World world) {
-//        this(AMEntityRegistry.HEMOLYMPH.get(), world);
-//    }
 
     protected static float lerpRotation(float p_234614_0_, float p_234614_1_) {
         while (p_234614_1_ - p_234614_0_ < -180.0F) {
@@ -64,12 +55,11 @@ public class EntityHemolymph extends Entity {
 
         return MathHelper.lerp(0.2F, p_234614_0_, p_234614_1_);
     }
-    //FIXME forge
-//
-//    @Override
-//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-//        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
-//    }
+
+    @Override
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+        return NetworkManager.createAddEntityPacket(this);
+    }
 
     @Override
     public void tick() {
@@ -130,7 +120,6 @@ public class EntityHemolymph extends Entity {
             this.ownerUUID = entityIn.getUuid();
             this.ownerNetworkId = entityIn.getId();
         }
-
     }
 
     @Nullable

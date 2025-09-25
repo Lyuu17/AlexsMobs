@@ -3,6 +3,7 @@ package com.github.alexthe666.alexsmobs.entity;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
+import com.github.alexthe666.alexsmobs.misc.ModTagsCompat;
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMTagRegistry;
@@ -239,15 +240,14 @@ public class EntityRaccoon extends TameableEntity implements IAnimatedEntity, IF
                 return ActionResult.SUCCESS;
             }
             return ActionResult.PASS;
-            //FIXME
-//        } else if (owner && this.getColor() != null && itemstack.is(Tags.Items.SHEARS)) {
-//            this.emitGameEvent(GameEvent.ENTITY_INTERACT);
-//            this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-//            if (this.getColor() != null) {
-//                this.spawnAtLocation(this.getCarpetItemBeingWorn());
-//            }
-//            this.setColor(null);
-//            return ActionResult.SUCCESS;
+        } else if (owner && this.getColor() != null && ModTagsCompat.isAnyShear(itemstack)) {
+            this.emitGameEvent(GameEvent.ENTITY_INTERACT);
+            this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            if (this.getColor() != null) {
+                this.dropItem(this.getCarpetItemBeingWorn());
+            }
+            this.setColor(null);
+            return ActionResult.SUCCESS;
         } else if (isTamed() && isRaccoonFood(itemstack) && !isBreedingItem(itemstack) && this.getHealth() < this.getMaxHealth()) {
             if (this.getMainHandStack().isEmpty()) {
                 var copy = itemstack.copy();

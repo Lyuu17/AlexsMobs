@@ -1,18 +1,17 @@
 package com.github.alexthe666.alexsmobs.entity;
 
+import com.github.alexthe666.alexsmobs.client.sound.SoundBearMusicBox;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
-import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
-import com.github.alexthe666.alexsmobs.registry.AMItemRegistry;
-import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
-import com.github.alexthe666.alexsmobs.registry.AMTagRegistry;
+import com.github.alexthe666.alexsmobs.registry.*;
 import com.iafenvoy.uranus.animation.Animation;
 import com.iafenvoy.uranus.animation.AnimationHandler;
 import com.iafenvoy.uranus.animation.IAnimatedEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -267,20 +266,32 @@ public class EntityGrizzlyBear extends TameableEntity implements Angerable, IAni
 
     @Override
     public boolean isBreedingItem(ItemStack stack) {
-        var item = stack.getItem();
         return isTamed() && stack.isIn(AMTagRegistry.GRIZZLY_BREEDABLES);
     }
 
     @Environment(EnvType.CLIENT)
     public void handleStatus(byte id) {
-        //TODO
-//        if (id == 67) {
-//            AlexsMobs.PROXY.onEntityStatus(this, id);
-//        } else  if (id == 68) {
-//            AlexsMobs.PROXY.spawnSpecialParticle(0);
-//        } else{
-//            super.handleStatus(id);
-//        }
+        if (id == 67) {
+            SoundBearMusicBox sound;
+            if (SoundBearMusicBox.BEAR_MUSIC_BOX_SOUND_MAP.get(this.getId()) == null) {
+                sound = new SoundBearMusicBox(this);
+                SoundBearMusicBox.BEAR_MUSIC_BOX_SOUND_MAP.put(this.getId(), sound);
+            } else {
+                sound = SoundBearMusicBox.BEAR_MUSIC_BOX_SOUND_MAP.get(this.getId());
+            }
+            if (!MinecraftClient.getInstance().getSoundManager().isPlaying(sound) && sound.canPlay() && sound.isOnlyMusicBox()) {
+                MinecraftClient.getInstance().getSoundManager().play(sound);
+            }
+        } else  if (id == 68) {
+            MinecraftClient.getInstance().world.addParticle(
+                    AMParticleRegistry.BEAR_FREDDY.get(),
+                    MinecraftClient.getInstance().player.getX(),
+                    MinecraftClient.getInstance().player.getY(),
+                    MinecraftClient.getInstance().player.getZ(),
+                    0, 0, 0);
+        } else{
+            super.handleStatus(id);
+        }
     }
 
     @Nullable

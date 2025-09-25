@@ -3,11 +3,11 @@ package com.github.alexthe666.alexsmobs.screen;
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.block.entity.TransmutationTableBlockEntity;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
+import com.github.alexthe666.alexsmobs.packet.RequestTransmutationRerollPacket;
 import com.github.alexthe666.alexsmobs.packet.TransmuteFromMenuPacket;
 import com.github.alexthe666.alexsmobs.registry.AMMenuRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -24,13 +24,7 @@ public class TransmutationTableScreenHandler extends ScreenHandler {
     private final Slot transmuteSlot;
     private final TransmutationTableBlockEntity table;
 
-    public final SimpleInventory inventory = new SimpleInventory(1) {
-        @Override
-        public void markDirty() {
-            TransmutationTableScreenHandler.this.onContentChanged(this);
-            super.markDirty();
-        }
-    };
+    public final SimpleInventory inventory = new SimpleInventory(1);
 
     public TransmutationTableScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf packetByteBuf) {
         this(syncId, playerInventory, Objects.requireNonNull((TransmutationTableBlockEntity) playerInventory.player.getWorld().getBlockEntity(packetByteBuf.readBlockPos())));
@@ -46,6 +40,17 @@ public class TransmutationTableScreenHandler extends ScreenHandler {
                 Identifier name = Registries.ITEM.getId(stack.getItem());
                 return stack.getMaxCount() > 1 && (name == null || !AMConfig.transmutationBlacklist.contains(name.toString()));
             }
+
+            @Override
+            public void setStack(ItemStack stack) {
+                super.setStack(stack);
+
+                if (table != null && !table.hasPossibilities()) {
+                    if (player.getWorld().isClient) {
+                        AlexsMobs.sendMSGToServer(new RequestTransmutationRerollPacket(table.getPos(), player.getUuid()));
+                    }
+                }
+            }
         });
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -56,25 +61,11 @@ public class TransmutationTableScreenHandler extends ScreenHandler {
         for (int k = 0; k < 9; ++k) {
             this.addSlot(new Slot(playerInventory, k, 8 + k * 18, 177));
         }
-        if(table != null && player != null){
-            if(!table.hasPossibilities()){
-                table.setRerollPlayerUUID(player.getUuid());
-            }
-        }
     }
 
     @Override
     public boolean canUse(PlayerEntity player) {
         return this.inventory.canPlayerUse(player);
-    }
-
-    @Override
-    public void onContentChanged(Inventory container) {
-        if(table != null){
-            if(!table.hasPossibilities()){
-                table.setRerollPlayerUUID(player.getUuid());
-            }
-        }
     }
 
     @Override
@@ -130,11 +121,9 @@ public class TransmutationTableScreenHandler extends ScreenHandler {
         }
     }
 
-//    @Override
-//    public void onClosed(PlayerEntity player) {
-//        super.onClosed(player);
-//        this.copySharedSlots().run((world, blockPos) -> {
-//            this.dropInventory(player, this.inventory);
-//        });
-//    }
+    @Override
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
+        this.dropInventory(player, this.inventory);
+    }
 }

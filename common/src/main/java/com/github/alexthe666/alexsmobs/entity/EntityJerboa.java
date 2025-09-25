@@ -296,9 +296,13 @@ public class EntityJerboa extends AnimalEntity {
     }
 
     @Override
-    protected void fall(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
     }
 
+    @Override
+    protected void fall(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+    }
 
     public static boolean isValidLightLevel(ServerWorldAccess p_223323_0_, BlockPos p_223323_1_, Random p_223323_2_) {
         int light = p_223323_0_.getLightLevel(p_223323_1_);

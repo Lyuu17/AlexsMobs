@@ -3,6 +3,7 @@ package com.github.alexthe666.alexsmobs.entity.ai;
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.EntityRaccoon;
+import com.github.alexthe666.alexsmobs.platform.PlatformEvent;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.ai.goal.MoveToTargetPosGoal;
@@ -34,8 +35,6 @@ public class AnimalAILootChests extends MoveToTargetPosGoal {
 
     public boolean isChestRaidable(WorldView world, BlockPos pos) {
         if (world.getBlockState(pos).getBlock() instanceof BlockWithEntity) {
-            var block = world.getBlockState(pos).getBlock();
-            boolean listed = false;
             var entity = world.getBlockEntity(pos);
             if (entity instanceof Inventory inventory) {
                 try {
@@ -62,12 +61,11 @@ public class AnimalAILootChests extends MoveToTargetPosGoal {
         if (!this.entity.getStackInHand(Hand.MAIN_HAND).isEmpty()) {
             return false;
         }
-        //FIXME forge
-//        if (this.nextStartTick <= 0) {
-//            if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entity.getWorld(), this.entity)) {
-//                return false;
-//            }
-//        }
+        if (this.cooldown <= 0) {
+            if (!PlatformEvent.getMobGriefingEvent(this.entity.getWorld(), this.entity)) {
+                return false;
+            }
+        }
         return super.canStart();
     }
 

@@ -5,6 +5,7 @@ import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.EtherealMoveController;
 import com.github.alexthe666.alexsmobs.entity.ai.MonsterAIWalkThroughHallsOfStructure;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
+import com.github.alexthe666.alexsmobs.misc.ModTagsCompat;
 import com.github.alexthe666.alexsmobs.registry.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -376,6 +377,11 @@ public class EntityUnderminer extends PathAwareEntity {
     }
 
     @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
+    }
+
+    @Override
     protected void fall(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
@@ -400,30 +406,28 @@ public class EntityUnderminer extends PathAwareEntity {
                 for (int k = 0; k <= range && k >= -range; k = (k <= 0 ? 1 : 0) - k) {
                     BlockPos offset = blockpos.add(j, i, k);
                     BlockState state = this.getWorld().getBlockState(offset);
-                    //FIXME forge
-//                    if (isValidMiningBlock(state)) {
-//                        if (obscuredBlocks.size() < maxOres) {
-//                            BlockPos obscured = getObscuringBlockOf(offset);
-//                            if(obscured != null){
-//                                obscuredBlocks.add(obscured);
-//                            }
-//                        } else {
-//                            break;
-//                        }
-//                    }
+                    if (isValidMiningBlock(state)) {
+                        if (obscuredBlocks.size() < maxOres) {
+                            BlockPos obscured = getObscuringBlockOf(offset);
+                            if(obscured != null){
+                                obscuredBlocks.add(obscured);
+                            }
+                        } else {
+                            break;
+                        }
+                    }
                 }
             }
         }
         return obscuredBlocks;
     }
 
-    //FIXME forge
-//    private boolean isValidMiningBlock(BlockState state) {
-//        if(lastGivenStack != null){
-//            return lastGivenStack.getItem() == state.getBlock().asItem();
-//        }
-//        return state.is(Tags.Blocks.ORES);
-//    }
+    private boolean isValidMiningBlock(BlockState state) {
+        if(lastGivenStack != null){
+            return lastGivenStack.getItem() == state.getBlock().asItem();
+        }
+        return ModTagsCompat.isAnyOre(state);
+    }
 
     @Override
     public void tickMovement() {

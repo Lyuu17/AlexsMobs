@@ -2,6 +2,7 @@ package com.github.alexthe666.alexsmobs.registry;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.item.CustomTabBehavior;
+import com.github.alexthe666.alexsmobs.item.HiddenItemCreative;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.item.ItemGroup;
@@ -21,6 +22,10 @@ public class AMCreativeTabRegistry {
                     .icon(() -> new ItemStack(AMItemRegistry.TAB_ICON.get()))
                     .entries((enabledFeatures, output) -> {
                         for (var item : AMItemRegistry.DEF_REG) {
+                            if (item.get() instanceof HiddenItemCreative) {
+                                continue;
+                            }
+
                             if (item.get() instanceof CustomTabBehavior customTabBehavior) {
                                 customTabBehavior.fillItemCategory(output);
                             } else {

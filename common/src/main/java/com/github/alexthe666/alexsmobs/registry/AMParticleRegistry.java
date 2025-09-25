@@ -1,7 +1,9 @@
 package com.github.alexthe666.alexsmobs.registry;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
+import com.github.alexthe666.alexsmobs.client.particle.*;
 import com.github.alexthe666.alexsmobs.misc.SimpleParticleType;
+import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.particle.DefaultParticleType;
@@ -35,4 +37,30 @@ public class AMParticleRegistry {
     public static final RegistrySupplier<DefaultParticleType> SKULK_BOOM = DEF_REG.register("skulk_boom", ()-> new SimpleParticleType(false));
 
     public static final RegistrySupplier<DefaultParticleType> BIRD_SONG = DEF_REG.register("bird_song", ()-> new SimpleParticleType(false));
+
+    public static void init() {
+
+        ParticleProviderRegistry.register(AMParticleRegistry.GUSTER_SAND_SPIN.get(), ParticleGusterSandSpin.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.GUSTER_SAND_SHOT.get(), ParticleGusterSandShot.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.GUSTER_SAND_SPIN_RED.get(), ParticleGusterSandSpin.FactoryRed::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.GUSTER_SAND_SHOT_RED.get(), ParticleGusterSandShot.FactoryRed::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.GUSTER_SAND_SPIN_SOUL.get(), ParticleGusterSandSpin.FactorySoul::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.GUSTER_SAND_SHOT_SOUL.get(), ParticleGusterSandShot.FactorySoul::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.HEMOLYMPH.get(), ParticleHemolymph.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.PLATYPUS_SENSE.get(), ParticlePlatypus.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.WHALE_SPLASH.get(), ParticleWhaleSplash.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.DNA.get(), ParticleDna.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.SHOCKED.get(), ParticleSimpleHeart.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.WORM_PORTAL.get(), ParticleWormPortal.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.INVERT_DIG.get(), ParticleInvertDig.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.TEETH_GLINT.get(), ParticleTeethGlint.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.SMELLY.get(), ParticleSmelly.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.BUNFUNGUS_TRANSFORMATION.get(), ParticleBunfungusTransformation.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.FUNGUS_BUBBLE.get(), ParticleFungusBubble.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.BEAR_FREDDY.get(), new ParticleBearFreddy.Factory());
+        ParticleProviderRegistry.register(AMParticleRegistry.SUNBIRD_FEATHER.get(), ParticleSunbirdFeather.Factory::new);
+        ParticleProviderRegistry.register(AMParticleRegistry.STATIC_SPARK.get(), new ParticleStaticSpark.Factory());
+        ParticleProviderRegistry.register(AMParticleRegistry.SKULK_BOOM.get(), new ParticleSkulkBoom.Factory());
+        ParticleProviderRegistry.register(AMParticleRegistry.BIRD_SONG.get(), ParticleBirdSong.Factory::new);
+    }
 }

@@ -1,17 +1,15 @@
 package com.github.alexthe666.alexsmobs.entity;
 
 import com.github.alexthe666.alexsmobs.block.EnderResidueBlock;
+import com.github.alexthe666.alexsmobs.client.sound.SoundWormBoss;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.DirectPathNavigator;
 import com.github.alexthe666.alexsmobs.entity.ai.EntityAINearestTarget3D;
 import com.github.alexthe666.alexsmobs.entity.ai.FlightMoveController;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
-import com.github.alexthe666.alexsmobs.registry.AMAdvancementTriggerRegistry;
-import com.github.alexthe666.alexsmobs.registry.AMBlockRegistry;
-import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
-import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
-import com.github.alexthe666.alexsmobs.sound.SoundWormBoss;
+import com.github.alexthe666.alexsmobs.platform.PlatformEvent;
+import com.github.alexthe666.alexsmobs.registry.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Blocks;
@@ -34,6 +32,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -670,29 +669,28 @@ public class EntityVoidWorm extends HostileEntity {
             return;
         }
         boolean flag = false;
-        //FIXME forge
-//        if (!this.getWorld().isClient && this.blockBreakCounter == 0 && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(getWorld(), this)) {
-//            for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
-//                for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
-//                    for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {
-//                        BlockPos pos = new BlockPos(a, b, c);
-//                        BlockState state = getWorld().getBlockState(pos);
-//                        FluidState fluidState = getWorld().getFluidState(pos);
-//                        Block block = state.getBlock();
-//                        if (!state.isAir() && !state.getShape(getWorld(), pos).isEmpty() && state.isIn(AMTagRegistry.VOID_WORM_BREAKABLES) && fluidState.isEmpty()) {
-//                            if (block != Blocks.AIR) {
-//                                this.setVelocity(this.getVelocity().multiply(0.6F, 1, 0.6F));
-//                                flag = true;
-//                                getWorld().destroyBlock(pos, true);
-//                                if (state.is(BlockTags.ICE)) {
-//                                    getWorld().setBlockState(pos, Blocks.WATER.getDefaultState());
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        if (!this.getWorld().isClient && this.blockBreakCounter == 0 && PlatformEvent.getMobGriefingEvent(getWorld(), this)) {
+            for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
+                for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
+                    for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {
+                        var pos = new BlockPos(a, b, c);
+                        var state = getWorld().getBlockState(pos);
+                        var fluidState = getWorld().getFluidState(pos);
+                        var block = state.getBlock();
+                        if (!state.isAir() && !state.getOutlineShape(getWorld(), pos).isEmpty() && state.isIn(AMTagRegistry.VOID_WORM_BREAKABLES) && fluidState.isEmpty()) {
+                            if (block != Blocks.AIR) {
+                                this.setVelocity(this.getVelocity().multiply(0.6F, 1, 0.6F));
+                                flag = true;
+                                getWorld().breakBlock(pos, true);
+                                if (state.isIn(BlockTags.ICE)) {
+                                    getWorld().setBlockState(pos, Blocks.WATER.getDefaultState());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if (flag) {
             blockBreakCounter = 10;
         }

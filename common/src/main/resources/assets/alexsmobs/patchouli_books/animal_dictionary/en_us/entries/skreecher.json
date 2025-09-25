@@ -1,0 +1,32 @@
+{
+  "name": "Skreecher",
+  "icon": "minecraft:sculk",
+  "category": "alexsmobs:creatures",
+  "pages": [
+    {
+      "type": "entity",
+      "entity": "alexsmobs:skreecher",
+      "text": "The Skreecher is a strange, hideously-mutated primate found clinging to the ceiling of the deep dark biome. Since its native biome is so dark, it can often only be distinguished by its gigantic, glowing eyes."
+    },
+    {
+      "type": "text",
+      "text": "Although considered a hostile monster, the Skreecher cannot fight in any typical sense. Instead, when detecting prey, it will begin to create an extremely loud racket, both by howling and clapping together its two large feet."
+    },
+    {
+      "type": "text",
+      "text": "Given a few seconds, such a loud noise in such a sound-sensitive biome is bound to awaken a warden right beneath its target."
+    },
+    {
+      "type": "text",
+      "text": "Lucky for adventurers, the Skreecher has extremely limited health, and any projectile can temporarily disable it from calling for a warden - along with sending it plummeting towards the ground. The most difficult part of facing these beasts is identifying them before they identify you."
+    },
+    {
+      "type": "text",
+      "text": "If slain, a Skreecher has a chance to drop its soul. The Skreecher Soul can be used to craft a Sculk Boomer."
+    },
+    {
+      "type": "text",
+      "text": "When activated by a nearby skulk sensor, this block will emit a loud boom that can damage nearby mobs that are within 3 horizontal blocks of the boomer. It can be temporarily disabled with a redstone signal, and the booms themselves have a slight cooldown, making the Sculk Boomer useful for traps."
+    }
+  ]
+}

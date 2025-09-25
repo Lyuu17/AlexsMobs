@@ -4,9 +4,18 @@
   "package": "com.github.alexthe666.alexsmobs.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "EntityMixin"
+    "EntityMixin",
+    "ItemEntityMixin",
+    "LivingEntityMixin",
+    "MobEntityMixin",
+    "ProjectileEntityMixin"
   ],
-  "client": [],
+  "client": [
+    "AbstractClientPlayerEntityMixin",
+    "GuiMixin",
+    "RenderBuffersMixin",
+    "WorldRendererMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

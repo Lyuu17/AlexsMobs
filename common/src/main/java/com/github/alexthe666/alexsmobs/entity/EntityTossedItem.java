@@ -2,6 +2,7 @@ package com.github.alexthe666.alexsmobs.entity;
 
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMItemRegistry;
+import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.EntityType;
@@ -13,6 +14,8 @@ import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.hit.EntityHitResult;
@@ -51,12 +54,11 @@ public class EntityTossedItem extends ThrownItemEntity {
         this.dataTracker.set(DART, dart);
     }
 
-    //FIXME
-//    @Override
-//    public Packet<ClientPlayPacketListener> createSpawnPacket() {
-//        return (Packet<ClientPlayPacketListener>) NetworkHooks.getEntitySpawningPacket(this);
-//    }
-//
+    @Override
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+        return NetworkManager.createAddEntityPacket(this);
+    }
+
     @Environment(EnvType.CLIENT)
     public void handleStatus(byte id) {
         if (id == 3) {

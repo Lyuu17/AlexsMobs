@@ -4,6 +4,7 @@ package com.github.alexthe666.alexsmobs.block.entity;
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.block.CapsidBlock;
 import com.github.alexthe666.alexsmobs.misc.CapsidRecipe;
+import com.github.alexthe666.alexsmobs.packet.UpdateCapsidPacket;
 import com.github.alexthe666.alexsmobs.registry.AMBlockEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
@@ -41,8 +42,6 @@ public class CapsidBlockEntity extends LockableContainerBlockEntity implements S
     public float prevYawSwitchProgress;
     public float yawSwitchProgress;
     public boolean vibratingThisTick = false;
-//    net.minecraftforge.common.util.LazyOptional<? extends net.minecraftforge.items.IItemHandler>[] handlers =
-//            net.minecraftforge.items.wrapper.SidedInvWrapper.create(this, Direction.UP, Direction.DOWN);
     private float yawTarget = 0;
     private int transformTime = 0;
     private boolean fnaf = false;
@@ -210,21 +209,21 @@ public class CapsidBlockEntity extends LockableContainerBlockEntity implements S
         }
         lastRecipe = AlexsMobs.getCapsidRecipeManager().getRecipeFor(stack);
         this.writeNbt(this.toInitialChunkDataNbt());
-        // FIXME crash
-//        if (!world.isClient) {
-//            AlexsMobs.sendMSGToAll(new UpdateCapsidPacket(this.getPos().asLong(), stacks.get(0)));
-//        }
-    }
-
-    public ItemStack getStackInSlotOnClosing(int index) {
-        if (!this.stacks.get(index).isEmpty()) {
-            ItemStack itemstack = this.stacks.get(index);
-            this.stacks.set(index, itemstack);
-            return itemstack;
-        } else {
-            return ItemStack.EMPTY;
+        if (!world.isClient) {
+            AlexsMobs.sendMSGToAll(new UpdateCapsidPacket(this.getPos(), stacks.get(0)));
         }
     }
+
+    // FIXME forge
+//    public ItemStack getStackInSlotOnClosing(int index) {
+//        if (!this.stacks.get(index).isEmpty()) {
+//            ItemStack itemstack = this.stacks.get(index);
+//            this.stacks.set(index, itemstack);
+//            return itemstack;
+//        } else {
+//            return ItemStack.EMPTY;
+//        }
+//    }
 
     @Override
     public void readNbt(NbtCompound compound) {
@@ -291,15 +290,6 @@ public class CapsidBlockEntity extends LockableContainerBlockEntity implements S
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
         return BlockEntityUpdateS2CPacket.create(this);
     }
-
-    // FIXME forge?
-//    @Override
-//    public void onDataPacket(ClientConnection net, BlockEntityUpdateS2CPacket packet) {
-//        if (packet != null && packet.getTag() != null) {
-//            this.stacks = NonNullList.withSize(this.size(), ItemStack.EMPTY);
-//            ContainerHelper.loadAllItems(packet.getTag(), this.stacks);
-//        }
-//    }
 
     @Override
     public NbtCompound toInitialChunkDataNbt() {

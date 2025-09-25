@@ -18,7 +18,11 @@ public class AMPacketRegistry {
         KangarooInventorySyncPacket.register();
         MosquitoDismountPacket.register();
         MosquitoMountPlayerPacket.register();
+        RequestTransmutationRerollPacket.register();
         SendVisualFlagFromServerPacket.register();
+        SetPupfishChunkOnClientPacket.register();
+        StartDancingPacket.register();
+        SwingArmPacket.register();
         SyncEntityPosPacket.register();
         TarantulaHawkStingPacket.register();
         TransmuteFromMenuPacket.register();

@@ -38,17 +38,6 @@ public class StraddleEnchantment extends Enchantment {
         return super.isAvailableForRandomSelection() && AMConfig.straddleboardEnchants;
     }
 
-    //FIXME: forge
-//    @Override
-//    public boolean isAllowedOnBooks() {
-//        return super.isAllowedOnBooks() && AMConfig.straddleboardEnchants;
-//    }
-    //FIXME: forge
-//    @Override
-//    public boolean canApplyAtEnchantingTable(ItemStack stack) {
-//        return super.canApplyAtEnchantingTable(stack) && AMConfig.straddleboardEnchants;
-//    }
-
     @Override
     public boolean isAcceptableItem(ItemStack stack) {
         return stack.getItem() instanceof ItemStraddleboard;

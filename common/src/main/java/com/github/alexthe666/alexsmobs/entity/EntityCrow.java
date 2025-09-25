@@ -166,8 +166,13 @@ public class EntityCrow extends TameableEntity implements ITargetsDroppedItems {
         }
     }
 
-    // FIXME unused?
+    // FIXME forge
     public boolean canTrample(BlockState state, BlockPos pos, float fallDistance) {
+        return false;
+    }
+
+    @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
         return false;
     }
 

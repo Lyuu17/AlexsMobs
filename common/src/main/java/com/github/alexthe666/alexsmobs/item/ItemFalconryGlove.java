@@ -5,6 +5,10 @@ import com.github.alexthe666.alexsmobs.entity.IFalconry;
 import com.github.alexthe666.alexsmobs.packet.SyncEntityPosPacket;
 import com.github.alexthe666.alexsmobs.registry.AMItemRegistry;
 import com.google.common.base.Predicate;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -15,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ItemFalconryGlove extends Item implements ILeftClick {
+public class ItemFalconryGlove extends Item implements ILeftClick, IItemRender {
 
     public ItemFalconryGlove(Item.Settings properties) {
         super(properties);
@@ -26,6 +30,7 @@ public class ItemFalconryGlove extends Item implements ILeftClick {
 //        consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
 //    }
 
+    @Override
     public boolean onLeftClick(ItemStack stack, LivingEntity playerIn) {
         if(stack.getItem() == AMItemRegistry.FALCONRY_GLOVE.get()){
             final float dist = 128;
@@ -70,8 +75,7 @@ public class ItemFalconryGlove extends Item implements ILeftClick {
 
             if(!playerIn.getPassengerList().isEmpty()){
                 for(Entity entity : playerIn.getPassengerList()){
-                    if(entity instanceof IFalconry && entity instanceof AnimalEntity animal){
-                        IFalconry falcon = (IFalconry)entity;
+                    if(entity instanceof IFalconry falcon && entity instanceof AnimalEntity animal){
                         animal.dismountVehicle();
                         animal.refreshPositionAndAngles(playerIn.getX(), playerIn.getEyeY(), playerIn.getZ(), animal.getYaw(), animal.getPitch());
                         if(animal.getWorld().isClient){
@@ -90,4 +94,15 @@ public class ItemFalconryGlove extends Item implements ILeftClick {
         return false;
     }
 
+    @Override
+    public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        var world = MinecraftClient.getInstance().world;
+
+        matrices.translate(0.5F, 0.5f, 0.5f);
+        if (mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND || mode == ModelTransformationMode.FIRST_PERSON_RIGHT_HAND || mode == ModelTransformationMode.FIRST_PERSON_LEFT_HAND) {
+            MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(AMItemRegistry.FALCONRY_GLOVE_HAND.get()), mode, light, overlay, matrices, vertexConsumers, world, 0);
+        } else {
+            MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(AMItemRegistry.FALCONRY_GLOVE_INVENTORY.get()), mode, mode == ModelTransformationMode.GROUND ? light : 240, overlay, matrices, vertexConsumers, world, 0);
+        }
+    }
 }

@@ -298,7 +298,7 @@ public class EntityEmu extends AnimalEntity implements IAnimatedEntity, IHerdPan
         @Override
         public void start() {
             if (EntityEmu.this.isBaby() || !emuAttackedDirectly) {
-                this.setGroupRevenge();
+                this.callSameTypeForRevenge();
                 this.stop();
             } else {
                 super.start();

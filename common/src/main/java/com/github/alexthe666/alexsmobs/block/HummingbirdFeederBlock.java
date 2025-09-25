@@ -42,7 +42,8 @@ public class HummingbirdFeederBlock extends Block {
                 .sounds(BlockSoundGroup.LANTERN)
                 .strength(0.5F)
                 .ticksRandomly()
-                .nonOpaque());
+                .nonOpaque()
+                .pistonBehavior(PistonBehavior.DESTROY));
         this.setDefaultState(this.stateManager.getDefaultState()
                 .with(CONTENTS, 0)
                 .with(HANGING, false));
@@ -120,11 +121,6 @@ public class HummingbirdFeederBlock extends Block {
         return Block.sideCoversSmallSquare(worldIn, pos.offset(direction), direction.getOpposite());
     }
 
-    // FIXME piston behavior should be a setting
-    public PistonBehavior getPistonBehavior(BlockState state) {
-        return PistonBehavior.DESTROY;
-    }
-
     @Override
     public BlockState getStateForNeighborUpdate(BlockState stateIn, Direction facing, BlockState facingState, WorldAccess worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (stateIn.get(WATERLOGGED)) {
@@ -144,6 +140,7 @@ public class HummingbirdFeederBlock extends Block {
         return false;
     }
 
+    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(CONTENTS, HANGING, WATERLOGGED);
     }

@@ -1,5 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
+import com.github.alexthe666.alexsmobs.entity.EntityKangaroo;
 import net.minecraft.entity.ai.FuzzyTargeting;
 import net.minecraft.entity.ai.goal.WanderAroundGoal;
 import net.minecraft.entity.mob.PathAwareEntity;
@@ -24,8 +25,7 @@ public class AnimalAIWanderRanged extends WanderAroundGoal {
 
     @Override
     public boolean canStart() {
-        //TODO
-        if (this.mob.hasPassengers() /*&& !(this.mob instanceof EntityKangaroo)*/) {
+        if (this.mob.hasPassengers() && !(this.mob instanceof EntityKangaroo)) {
             return false;
         } else {
             if (!this.ignoringChance) {

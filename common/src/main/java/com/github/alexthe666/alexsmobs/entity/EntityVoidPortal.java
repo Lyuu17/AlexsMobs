@@ -1,8 +1,11 @@
 package com.github.alexthe666.alexsmobs.entity;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
+import com.github.alexthe666.alexsmobs.event.CommonEvents;
 import com.github.alexthe666.alexsmobs.item.ItemDimensionalCarver;
 import com.github.alexthe666.alexsmobs.registry.*;
+import com.iafenvoy.uranus.util.Tuple3;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
@@ -10,6 +13,8 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -56,11 +61,10 @@ public class EntityVoidPortal extends Entity {
         }
     }
 
-    //FIXME
-//    @Override
-//    public Packet<ClientPlayPacketListener> createSpawnPacket() {
-//        return (Packet<ClientPlayPacketListener>) NetworkHooks.getEntitySpawningPacket(this);
-//    }
+    @Override
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+        return NetworkManager.createAddEntityPacket(this);
+    }
 
     @Override
     public void tick() {
@@ -169,9 +173,8 @@ public class EntityVoidPortal extends Entity {
     }
 
     private void teleportEntityFromDimension(Entity entity, ServerWorld endpointWorld, BlockPos endpoint, boolean b) {
-        if (entity instanceof ServerPlayerEntity) {
-            //FIXME
-//            ServerEvents.teleportPlayers.add(new Triple<>((ServerPlayer)entity, endpointWorld, endpoint));
+        if (entity instanceof ServerPlayerEntity serverPlayerEntity) {
+            CommonEvents.teleportPlayers.add(new Tuple3<>(serverPlayerEntity, endpointWorld, endpoint));
             if(this.getSisterId() == null){
                 createAndSetSister(endpointWorld, Direction.DOWN);
             }

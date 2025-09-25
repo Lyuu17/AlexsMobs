@@ -1,6 +1,7 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
 import com.github.alexthe666.alexsmobs.entity.EntityJerboa;
+import com.github.alexthe666.alexsmobs.misc.ModTagsCompat;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
@@ -41,7 +42,7 @@ public class JerboaAIBeg extends Goal {
     }
 
     private boolean isFood(ItemStack stack) {
-        return /* FIXME forge stack.isIn(Tags.Items.SEEDS) ||*/ jerboa.isBreedingItem(stack);
+        return ModTagsCompat.isAnySeeds(stack) || jerboa.isBreedingItem(stack);
     }
 
     @Override

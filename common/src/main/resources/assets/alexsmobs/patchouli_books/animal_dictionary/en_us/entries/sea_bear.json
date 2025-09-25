@@ -1,0 +1,20 @@
+{
+  "name": "Sea Bear",
+  "icon": "minecraft:stick",
+  "category": "alexsmobs:creatures",
+  "pages": [
+    {
+      "type": "entity",
+      "entity": "alexsmobs:sea_bear",
+      "text": "Sea Bears are all too real. All the things you shouldn't do if you want to keep sea bears away are:"
+    },
+    {
+      "type": "text",
+      "text": "First off, don't play the clarinet.$(br)$(br)Never wear a Sombrero IN A GOOFY FASHION.$(br)$(br)Or clown shoes, or a hoop skirt.$(br)$(br)And never, ever, ever, screech like a chimpanzee!"
+    },
+    {
+      "type": "text",
+      "text": "If you know a sea bear is certain to come and eat you, draw an Anti-Sea Bear Circle in the sand with a stick. All the experts say its the only defense against a Sea Bear attack."
+    }
+  ]
+}

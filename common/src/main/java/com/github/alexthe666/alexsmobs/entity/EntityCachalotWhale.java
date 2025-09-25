@@ -4,6 +4,7 @@ import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
+import com.github.alexthe666.alexsmobs.platform.PlatformEvent;
 import com.github.alexthe666.alexsmobs.registry.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -29,6 +30,7 @@ import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -271,30 +273,29 @@ public class EntityCachalotWhale extends AnimalEntity implements IMultipartEntit
             return;
         }
         boolean flag = false;
-        //FiXME FORGE
-//        if (!this.getWorld().isClient && this.blockBreakCounter == 0 && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(getWorld(), this)) {
-//            final TagKey<Block> breakables = this.isCharging() && this.getTarget() != null && AMConfig.cachalotDestruction ? AMTagRegistry.CACHALOT_WHALE_BREAKABLES : AMTagRegistry.ORCA_BREAKABLES;
-//            for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
-//                for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
-//                    for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {
-//                        final BlockPos pos = new BlockPos(a, b, c);
-//                        final BlockState state = getWorld().getBlockState(pos);
-//                        final FluidState fluidState = getWorld().getFluidState(pos);
-//                        if (!state.isAir() && !state.getOutlineShape(getWorld(), pos).isEmpty() && state.isIn(breakables) && fluidState.isEmpty()) {
-//                            final Block block = state.getBlock();
-//                            if (block != Blocks.AIR) {
-//                                this.setVelocity(this.getVelocity().multiply(0.6F, 1, 0.6F));
-//                                flag = true;
-//                                getWorld().breakBlock(pos, true);
-//                                if (state.isIn(BlockTags.ICE)) {
-//                                    getWorld().setBlockState(pos, Blocks.WATER.getDefaultState());
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        if (!this.getWorld().isClient && this.blockBreakCounter == 0 && PlatformEvent.getMobGriefingEvent(getWorld(), this)) {
+            final var breakables = this.isCharging() && this.getTarget() != null && AMConfig.cachalotDestruction ? AMTagRegistry.CACHALOT_WHALE_BREAKABLES : AMTagRegistry.ORCA_BREAKABLES;
+            for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
+                for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
+                    for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {
+                        final var pos = new BlockPos(a, b, c);
+                        final var state = getWorld().getBlockState(pos);
+                        final var fluidState = getWorld().getFluidState(pos);
+                        if (!state.isAir() && !state.getOutlineShape(getWorld(), pos).isEmpty() && state.isIn(breakables) && fluidState.isEmpty()) {
+                            final var block = state.getBlock();
+                            if (block != Blocks.AIR) {
+                                this.setVelocity(this.getVelocity().multiply(0.6F, 1, 0.6F));
+                                flag = true;
+                                getWorld().breakBlock(pos, true);
+                                if (state.isIn(BlockTags.ICE)) {
+                                    getWorld().setBlockState(pos, Blocks.WATER.getDefaultState());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if (flag) {
             blockBreakCounter = this.isCharging() && this.getTarget() != null ? 2 : 20;
         }

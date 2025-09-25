@@ -3,6 +3,7 @@ package com.github.alexthe666.alexsmobs.entity;
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.packet.HurtMultipartPacket;
 import com.google.common.collect.ImmutableList;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -16,6 +17,8 @@ import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Arm;
@@ -185,10 +188,10 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
         return null;
     }
 
-//    @Override
-//    public Packet<ClientPlayPacketListener> createSpawnPacket() {
-//        return (Packet<ClientPlayPacketListener>) NetworkHooks.getEntitySpawningPacket(this);
-//    }
+    @Override
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+        return NetworkManager.createAddEntityPacket(this);
+    }
 
     @Override
     public void tickCramming() {
@@ -246,11 +249,6 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
         this.dataTracker.set(BODYINDEX, index);
     }
 
-    public boolean shouldNotExist() {
-        Entity parent = getParent();
-        return !parent.isAlive();
-    }
-
     @Override
     public void onAttackedFromServer(LivingEntity parent, float damage, DamageSource damageSource) {
         if (parent.deathTime > 0) {
@@ -260,9 +258,4 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
             this.hurtTime = parent.hurtTime;
         }
     }
-
-    //FIXME
-//    public boolean shouldContinuePersisting() {
-//        return isAddedToWorld() || this.isRemoved();
-//    }
 }

@@ -45,7 +45,7 @@ public class CapsidRecipeManager extends JsonDataLoader {
     }
 
     public CapsidRecipe getRecipeFor(ItemStack stack){
-        for(CapsidRecipe recipe : capsidRecipes){
+        for(var recipe : capsidRecipes){
             if(recipe.matches(stack)){
                 return recipe;
             }

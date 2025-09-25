@@ -270,8 +270,8 @@ public class EntityCosmicCod extends MobEntity implements Bucketable {
         return true;
     }
 
-    // FIXME should be isPushedByFluids?
-    public boolean isPushedByWater() {
+    @Override
+    public boolean isPushedByFluids() {
         return false;
     }
 
@@ -289,6 +289,11 @@ public class EntityCosmicCod extends MobEntity implements Bucketable {
 
     public void decrementFishPitch(float pitch) {
         this.dataTracker.set(FISH_PITCH, getFishPitch() - pitch);
+    }
+
+    @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
     }
 
     @Override

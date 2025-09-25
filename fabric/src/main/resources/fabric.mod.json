@@ -28,6 +28,8 @@
   "depends": {
     "minecraft": "1.20.1",
     "jupiter": ">=2",
-    "uranus": ">=2"
+    "uranus": ">=2",
+    "patchouli": ">=1.20.1-84.1",
+    "framework": ">=0.6.16"
   }
 }

@@ -1,0 +1,24 @@
+{
+  "name": "Maned Wolf",
+  "icon": "minecraft:apple",
+  "category": "alexsmobs:creatures",
+  "pages": [
+    {
+      "type": "entity",
+      "entity": "alexsmobs:maned_wolf",
+      "text": "The Maned Wolf is a strange, passive canine found exclusively in savannas. This animal, despite its name, is neither a wolf nor a fox."
+    },
+    {
+      "type": "text",
+      "text": "It is primarily frugivorous and loves apples. Although it cannot be tamed like its wolf cousin, the Maned Wolf can be fed apples to make the animal shake its fur."
+    },
+    {
+      "type": "text",
+      "text": "When the Maned Wolf shakes, it releases a smell that makes it clear why this canine is also known as the Skunk Wolf."
+    },
+    {
+      "type": "text",
+      "text": "However, this smell attracts other animals to the area, making the Maned Wolf quite useful for herding livestock. This smell also increased the production of fungus in nearby Leafcutter anthills. Maned Wolves can be bred with the meat of rabbits or chickens."
+    }
+  ]
+}

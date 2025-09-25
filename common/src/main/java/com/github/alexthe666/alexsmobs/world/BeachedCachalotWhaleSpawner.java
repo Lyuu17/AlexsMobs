@@ -1,13 +1,17 @@
 package com.github.alexthe666.alexsmobs.world;
 
 import com.github.alexthe666.alexsmobs.config.AMConfig;
+import com.github.alexthe666.alexsmobs.config.BiomeConfig;
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.SpawnHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
@@ -93,11 +97,10 @@ public class BeachedCachalotWhaleSpawner {
             int k = p_221244_1_.getZ() + this.random.nextInt(p_221244_2_ * 2) - p_221244_2_;
             int l = this.world.getTopY(Heightmap.Type.WORLD_SURFACE, j, k);
             var blockpos1 = new BlockPos(j, l, k);
-            //TODO
-//            if (AMWorldRegistry.testBiome(BiomeConfig.cachalot_whale_beached_spawns, world.getBiome(blockpos1)) && NaturalSpawner.isSpawnPositionOk(Type.ON_GROUND, this.world, blockpos1, EntityType.WANDERING_TRADER)) {
-//                blockpos = blockpos1;
-//                break;
-//            }
+            if (AMWorldRegistry.testBiome(BiomeConfig.cachalot_whale_beached_spawns, world.getBiome(blockpos1)) && SpawnHelper.canSpawn(SpawnRestriction.Location.ON_GROUND, this.world, blockpos1, EntityType.WANDERING_TRADER)) {
+                blockpos = blockpos1;
+                break;
+            }
         }
 
         return blockpos;
@@ -112,7 +115,7 @@ public class BeachedCachalotWhaleSpawner {
                 return true;
             }
 
-            blockpos = (BlockPos)var2.next();
+            blockpos = var2.next();
         } while(this.world.getBlockState(blockpos).getSidesShape(this.world, blockpos).isEmpty() && world.getFluidState(blockpos).isEmpty());
 
         return false;

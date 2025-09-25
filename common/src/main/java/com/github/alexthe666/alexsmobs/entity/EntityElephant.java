@@ -3,6 +3,7 @@ package com.github.alexthe666.alexsmobs.entity;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
+import com.github.alexthe666.alexsmobs.misc.ModTagsCompat;
 import com.github.alexthe666.alexsmobs.registry.AMAdvancementTriggerRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
@@ -11,6 +12,8 @@ import com.google.common.collect.Maps;
 import com.iafenvoy.uranus.animation.Animation;
 import com.iafenvoy.uranus.animation.AnimationHandler;
 import com.iafenvoy.uranus.animation.IAnimatedEntity;
+import dev.architectury.registry.menu.ExtendedMenuProvider;
+import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -30,6 +33,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -39,22 +43,27 @@ import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.*;
 import net.minecraft.world.event.GameEvent;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -550,33 +559,32 @@ public class EntityElephant extends TameableEntity implements ITargetsDroppedIte
                 return ActionResult.SUCCESS;
             }
             return ActionResult.PASS;
-            //FIXME
-//        } else if (owner && this.getColor() != null && stack.is(Tags.Items.SHEARS)) {
-//            this.emitGameEvent(GameEvent.ENTITY_INTERACT);
-//            this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-//            if (this.getColor() != null) {
-//                this.spawnAtLocation(this.getCarpetItemBeingWorn());
-//            }
-//            this.setColor(null);
-//            return ActionResult.SUCCESS;
-//        } else if (owner && !this.isChested() && stack.is(Tags.Items.CHESTS_WOODEN)) {
-//            this.setChested(true);
-//            this.emitGameEvent(GameEvent.ENTITY_INTERACT);
-//            this.playSound(SoundEvents.DONKEY_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-//            if (!player.getAbilities().creativeMode) {
-//                stack.shrink(1);
-//            }
-//            return ActionResult.success(this.getWorld().isClient);
-//        } else if (owner && isChested() && stack.is(Tags.Items.SHEARS)) {
-//            this.emitGameEvent(GameEvent.ENTITY_INTERACT);
-//            this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-//            this.spawnAtLocation(Blocks.CHEST);
-//            for (int i = 0; i < elephantInventory.getContainerSize(); i++) {
-//                this.spawnAtLocation(elephantInventory.getItem(i));
-//            }
-//            elephantInventory.clearContent();
-//            this.setChested(false);
-//            return ActionResult.SUCCESS;
+        } else if (owner && this.getColor() != null && ModTagsCompat.isAnyShear(stack)) {
+            this.emitGameEvent(GameEvent.ENTITY_INTERACT);
+            this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            if (this.getColor() != null) {
+                this.dropItem(this.getCarpetItemBeingWorn());
+            }
+            this.setColor(null);
+            return ActionResult.SUCCESS;
+        } else if (owner && !this.isChested() && ModTagsCompat.isAnyWoodenChest(stack)) {
+            this.setChested(true);
+            this.emitGameEvent(GameEvent.ENTITY_INTERACT);
+            this.playSound(SoundEvents.ENTITY_DONKEY_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            if (!player.getAbilities().creativeMode) {
+                stack.decrement(1);
+            }
+            return ActionResult.success(this.getWorld().isClient);
+        } else if (owner && isChested() && ModTagsCompat.isAnyShear(stack)) {
+            this.emitGameEvent(GameEvent.ENTITY_INTERACT);
+            this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            this.dropItem(Blocks.CHEST);
+            for (int i = 0; i < elephantInventory.size(); i++) {
+                this.dropStack(elephantInventory.getStack(i));
+            }
+            elephantInventory.clear();
+            this.setChested(false);
+            return ActionResult.SUCCESS;
         } else if (owner && !this.isBaby() && type != ActionResult.CONSUME) {
             if(!this.getWorld().isClient){
                 player.startRiding(this);
@@ -1000,20 +1008,23 @@ public class EntityElephant extends TameableEntity implements ITargetsDroppedIte
     }
 
     public void openGUI(PlayerEntity playerEntity) {
-        //FIXME forge
-//        if (!this.getWorld().isClient && (!this.hasPassenger(playerEntity))) {
-//            NetworkHooks.openScreen((ServerPlayer) playerEntity, new MenuProvider() {
-//                @Override
-//                public AbstractContainerMenu createMenu(int p_createMenu_1_, Inventory p_createMenu_2_, Player p_createMenu_3_) {
-//                    return ChestMenu.sixRows(p_createMenu_1_, p_createMenu_2_, elephantInventory);
-//                }
-//
-//                @Override
-//                public Component getDisplayName() {
-//                    return Component.translatable("entity.alexsmobs.elephant.chest");
-//                }
-//            });
-//        }
+        if (!this.getWorld().isClient && (!this.hasPassenger(playerEntity))) {
+            MenuRegistry.openMenu((ServerPlayerEntity) playerEntity, new ExtendedMenuProvider() {
+                @Override
+                public void saveExtraData(PacketByteBuf buf) {
+                }
+
+                @Override
+                public Text getDisplayName() {
+                    return Text.translatable("entity.alexsmobs.elephant.chest");
+                }
+
+                @Override
+                public @NotNull ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
+                    return GenericContainerScreenHandler.createGeneric9x6(syncId, playerInventory, elephantInventory);
+                }
+            });
+        }
     }
 
     public boolean isTrader() {

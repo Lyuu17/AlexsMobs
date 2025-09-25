@@ -3,14 +3,13 @@ package com.github.alexthe666.alexsmobs.registry;
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.block.*;
 import com.github.alexthe666.alexsmobs.item.AMBlockItem;
-import com.github.alexthe666.alexsmobs.item.BlockItemAMRender;
+import com.github.alexthe666.alexsmobs.platform.PlatformRegisterItemRenderer;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.block.*;
 import net.minecraft.item.Item;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Rarity;
 
 import java.util.function.Supplier;
 
@@ -27,8 +26,8 @@ public class AMBlockRegistry {
     public static final RegistrySupplier<Block> GUSTMAKER = registerBlockAndItem("gustmaker", GustmakerBlock::new);
     public static final RegistrySupplier<Block> STRADDLITE_BLOCK = registerBlockAndItem("straddlite_block", () -> new Block(AbstractBlock.Settings.create().mapColor(MapColor.IRON_GRAY).requiresTool().strength(1.0F, 1200.0F).sounds(BlockSoundGroup.ANCIENT_DEBRIS)), new Item.Settings().fireproof(), false);
     public static final RegistrySupplier<Block> PLATYPUS_EGG = registerBlockAndItem("platypus_egg", () -> new ReptileEggBlock<>(AMEntityRegistry.PLATYPUS));
-//    public static final RegistrySupplier<Block> LEAFCUTTER_ANTHILL = registerBlockAndItem("leafcutter_anthill", BlockLeafcutterAnthill::new);
-//    public static final RegistrySupplier<Block> LEAFCUTTER_ANT_CHAMBER = registerBlockAndItem("leafcutter_ant_chamber", BlockLeafcutterAntChamber::new);
+    public static final RegistrySupplier<Block> LEAFCUTTER_ANTHILL = registerBlockAndItem("leafcutter_anthill", LeafcutterAnthillBlock::new);
+    public static final RegistrySupplier<Block> LEAFCUTTER_ANT_CHAMBER = registerBlockAndItem("leafcutter_ant_chamber", LeafcutterAntChamberBlock::new);
     public static final RegistrySupplier<Block> CAPSID = registerBlockAndItem("capsid", CapsidBlock::new);
     public static final RegistrySupplier<Block> VOID_WORM_BEAK = registerBlockAndItem("void_worm_beak", VoidWormBeakBlock::new);
     public static final RegistrySupplier<Block> VOID_WORM_EFFIGY = registerBlockAndItem("void_worm_effigy", VoidWormEffigyBlock::new);
@@ -39,7 +38,7 @@ public class AMBlockRegistry {
     public static final RegistrySupplier<Block> SAND_CIRCLE = registerBlockAndItem("sand_circle", () -> new SandBlock(14406560, AbstractBlock.Settings.copy(Blocks.SAND)), new Item.Settings(), false);
     public static final RegistrySupplier<Block> RED_SAND_CIRCLE = registerBlockAndItem("red_sand_circle", () -> new SandBlock(11098145, AbstractBlock.Settings.copy(Blocks.RED_SAND)), new Item.Settings(), false);
     public static final RegistrySupplier<Block> ENDER_RESIDUE = registerBlockAndItem("ender_residue", EnderResidueBlock::new);
-    public static final RegistrySupplier<Block> TRANSMUTATION_TABLE = registerBlockAndItem("transmutation_table", TransmutationTableBlock::new, new Item.Settings().rarity(Rarity.EPIC).fireproof(), true);
+    public static final RegistrySupplier<Block> TRANSMUTATION_TABLE = registerBlock("transmutation_table", TransmutationTableBlock::new);
     public static final RegistrySupplier<Block> SCULK_BOOMER = registerBlockAndItem("sculk_boomer", SculkBoomerBlock::new);
     public static final RegistrySupplier<Block> SKUNK_SPRAY = DEF_REG.register("skunk_spray", SkunkSprayBlock::new);
     public static final RegistrySupplier<Block> BANANA_SLUG_SLIME_BLOCK = registerBlockAndItem("banana_slug_slime_block", BananaSlugSlimeBlock::new);
@@ -60,13 +59,19 @@ public class AMBlockRegistry {
 //    public static final RegistrySupplier<Block> PHANTOM_SAIL = registerBlockAndItem("phantom_sail", () -> new BlockEndPirateSail(false));
 //    public static final RegistrySupplier<Block> SPECTRE_SAIL = registerBlockAndItem("spectre_sail", () -> new BlockEndPirateSail(true));
 
+    public static RegistrySupplier<Block> registerBlock(String name, Supplier<Block> block){
+        return DEF_REG.register(name, block);
+    }
+
     public static RegistrySupplier<Block> registerBlockAndItem(String name, Supplier<Block> block){
         return registerBlockAndItem(name, block, new Item.Settings(), false);
     }
 
     public static RegistrySupplier<Block> registerBlockAndItem(String name, Supplier<Block> block, Item.Settings blockItemProps, boolean specialRender){
-        RegistrySupplier<Block> blockObj = DEF_REG.register(name, block);
-        AMItemRegistry.DEF_REG.register(name, () -> specialRender ?  new BlockItemAMRender(blockObj, blockItemProps) :  new AMBlockItem(blockObj, blockItemProps));
+        RegistrySupplier<Block> blockObj = registerBlock(name, block);
+        AMItemRegistry.DEF_REG.register(name, () -> specialRender
+                ? PlatformRegisterItemRenderer.register(blockObj, blockItemProps)
+                : new AMBlockItem(blockObj, blockItemProps));
         return blockObj;
     }
 }

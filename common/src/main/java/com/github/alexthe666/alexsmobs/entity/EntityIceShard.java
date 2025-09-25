@@ -1,12 +1,15 @@
 package com.github.alexthe666.alexsmobs.entity;
 
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -45,11 +48,10 @@ public class EntityIceShard extends Entity {
         return MathHelper.lerp(0.2F, p_234614_0_, p_234614_1_);
     }
 
-    //FIXME
-//    @Override
-//    public Packet<ClientPlayPacketListener> createSpawnPacket() {
-//        return (Packet<ClientPlayPacketListener>) NetworkHooks.getEntitySpawningPacket(this);
-//    }
+    @Override
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+        return NetworkManager.createAddEntityPacket(this);
+    }
 
     @Override
     public void tick() {

@@ -54,6 +54,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.*;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
@@ -91,8 +92,9 @@ public class EntityToucan extends AnimalEntity implements ITargetsDroppedItems {
         switchNavigator(true);
     }
 
-    public static boolean canToucanSpawn(EntityType type, WorldAccess worldIn, SpawnReason reason, BlockPos pos, Random randomIn) {
-        return true;
+    public static boolean canToucanSpawn(EntityType<EntityToucan> type, WorldAccess worldIn, SpawnReason reason, BlockPos pos, Random randomIn) {
+        var blockstate = worldIn.getBlockState(pos.down());
+        return blockstate.isIn(BlockTags.LEAVES);
     }
 
     private static void initFeedingData() {
@@ -305,6 +307,11 @@ public class EntityToucan extends AnimalEntity implements ITargetsDroppedItems {
             float f = this.getYaw() * MathHelper.RADIANS_PER_DEGREE;
             this.setVelocity(this.getVelocity().add(-MathHelper.sin(f) * 0.2F, 0.4F, MathHelper.cos(f) * 0.2F));
         }
+    }
+
+    @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
     }
 
     @Override

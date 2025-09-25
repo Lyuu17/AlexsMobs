@@ -1,0 +1,40 @@
+{
+  "name": "Mimic Octopus",
+  "icon": "minecraft:ink_sac",
+  "category": "alexsmobs:creatures",
+  "pages": [
+    {
+      "type": "entity",
+      "entity": "alexsmobs:mimic_octopus",
+      "text": "The Mimic Octopus is a curious, passive cephalopod found in warm oceans. Prey to many other animals, the Mimic Octopus relies on its rapid regeneration and its ability to change shape and color to survive."
+    },
+    {
+      "type": "text",
+      "text": "The octopus can change color to match any block it decides to, and is known to mimic Pufferfish, Creepers and Guardians if any are nearby. When mimicking a block, the creature is almost invisible to any predators."
+    },
+    {
+      "type": "text",
+      "text": "Mimic Octopi can be tamed by a player by feeding them five to eight Lobster tails, but only when they are not actively camouflaged. Although naturally passive, tamed Mimics will attempt to scare any would-be attackers of their owners by changing form, often into a monster."
+    },
+    {
+      "type": "text",
+      "text": "Once tamed, the Octopus can follow its owner onto land, but one must note that they can dry out in this toxic environment. A slimeball can be applied every few days in order to nullify this. By interacting with a tame Mimic Octopus with an ink sac, one can toggle whether or not it should randomly change form."
+    },
+    {
+      "type": "text",
+      "text": "By using a Prismarine shard on an octopus, it can remember and take the form of a Guardian. The same is true for Pufferfish and Creeper drops. None of these 'reminders' consume the item."
+    },
+    {
+      "type": "text",
+      "text": "Like other tamable creatures, these octopi can be commanded to sit, wander or follow. If one applies five to eight mimicream to a Mimic Octopus, it can learn to not only mimic the shape of creatures, but their abilities in combat."
+    },
+    {
+      "type": "text",
+      "text": "These octopi can shoot beams as Guardians, stab with poison spikes as Pufferfish, and explode as Creepers."
+    },
+    {
+      "type": "text",
+      "text": "Tamed Mimic Octopi can be bucketed, and bred with tropical fish. One should make sure not to keep any Mimic Octopi near any sharks or Mantis Shrimps, their natural predators."
+    }
+  ]
+}

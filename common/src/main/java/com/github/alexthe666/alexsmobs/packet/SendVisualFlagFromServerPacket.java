@@ -1,5 +1,6 @@
 package com.github.alexthe666.alexsmobs.packet;
 
+import com.github.alexthe666.alexsmobs.AlexsMobsClient;
 import com.github.alexthe666.alexsmobs.registry.AMPacketRegistry;
 import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
@@ -35,9 +36,8 @@ public class SendVisualFlagFromServerPacket {
 
         if (player != null) {
             if (player.getWorld() != null) {
-                //FIXME
-//                var entity = player.getWorld().getEntityById(this.entityID);
-//                AlexsMobs.PROXY.processVisualFlag(entity, this.flag);
+                var entity = player.getWorld().getEntityById(this.entityID);
+                AlexsMobsClient.processVisualFlag(entity, this.flag);
             }
         }
     }

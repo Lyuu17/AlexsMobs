@@ -113,6 +113,7 @@ public class ReptileEggBlock<T extends Entity> extends Block {
 
     }
 
+    @Override
     public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
         if (this.canGrow(worldIn) && hasProperHabitat(worldIn, pos)) {
             int i = state.get(HATCH);
@@ -181,15 +182,18 @@ public class ReptileEggBlock<T extends Entity> extends Block {
     }
 
     @Nullable
+    @Override
     public BlockState getPlacementState(ItemPlacementContext context) {
         BlockState blockstate = context.getWorld().getBlockState(context.getBlockPos());
         return blockstate.getBlock() == this ? blockstate.with(EGGS, Integer.valueOf(Math.min(4, blockstate.get(EGGS) + 1))) : super.getPlacementState(context);
     }
 
-    public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return state.get(EGGS) > 1 ? MULTI_EGG_SHAPE : ONE_EGG_SHAPE;
     }
 
+    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(HATCH, EGGS);
     }

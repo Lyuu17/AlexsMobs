@@ -149,11 +149,11 @@ public class ItemModArmor extends ArmorItem {
 //    @Nullable
 //    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 //        if (this.material == AMItemRegistry.CROCODILE_ARMOR_MATERIAL) {
-//            return "alexsmobs:textures/armor/crocodile_chestplate.png";
+//            return "alexsmobs:textures/armor/crocodile_layer_1.png";
 //        } else if (this.material == AMItemRegistry.ROADRUNNER_ARMOR_MATERIAL) {
 //            return "alexsmobs:textures/armor/roadrunner_boots.png";
 //        } else if (this.material == AMItemRegistry.CENTIPEDE_ARMOR_MATERIAL) {
-//            return "alexsmobs:textures/armor/centipede_leggings.png";
+//            return "alexsmobs:textures/armor/centipede_layer_2.png";
 //        } else if (this.material == AMItemRegistry.MOOSE_ARMOR_MATERIAL) {
 //            return "alexsmobs:textures/armor/moose_headgear.png";
 //        } else if (this.material == AMItemRegistry.RACCOON_ARMOR_MATERIAL) {
@@ -165,7 +165,7 @@ public class ItemModArmor extends ArmorItem {
 //        } else if (this.material == AMItemRegistry.FEDORA_ARMOR_MATERIAL) {
 //            return "alexsmobs:textures/armor/fedora.png";
 //        } else if (this.material == AMItemRegistry.EMU_ARMOR_MATERIAL) {
-//            return "alexsmobs:textures/armor/emu_leggings.png";
+//            return "alexsmobs:textures/armor/emu_layer_2.png";
 //        } else if (this.material == AMItemRegistry.FROSTSTALKER_ARMOR_MATERIAL) {
 //            return "alexsmobs:textures/armor/froststalker_helmet.png";
 //        } else if (this.material == AMItemRegistry.ROCKY_ARMOR_MATERIAL) {

@@ -1,7 +1,8 @@
 package com.github.alexthe666.alexsmobs.registry;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
-import com.github.alexthe666.alexsmobs.model.layered.ModelSombrero;
+import com.github.alexthe666.alexsmobs.client.model.ModelWanderingVillagerRider;
+import com.github.alexthe666.alexsmobs.client.model.layered.*;
 import dev.architectury.registry.client.level.entity.EntityModelLayerRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -35,8 +36,21 @@ public class AMModelLayerRegistry {
     }
 
     public static void register() {
-        EntityModelLayerRegistry.register(SOMBRERO, () -> ModelSombrero.createArmorLayer(Dilation.NONE));
-        EntityModelLayerRegistry.register(SOMBRERO_GOOFY_FASHION, () -> ModelSombrero.createArmorLayerAprilFools(Dilation.NONE));
+        
+        EntityModelLayerRegistry.register(SITTING_WANDERING_VILLAGER, () -> TexturedModelData.of(ModelWanderingVillagerRider.getModelData(), 64, 64));
         EntityModelLayerRegistry.register(UNDERMINER, () -> TexturedModelData.of(BipedEntityModel.getModelData(Dilation.NONE, 0.05F), 64, 64) );
+        EntityModelLayerRegistry.register(ROADRUNNER_BOOTS, () -> ModelRoadrunnerBoots.createArmorLayer(new Dilation(0.5F)));
+        EntityModelLayerRegistry.register(MOOSE_HEADGEAR, () -> ModelMooseHeadgear.createArmorLayer(new Dilation(0.5F)));
+        EntityModelLayerRegistry.register(FRONTIER_CAP, () -> ModelFrontierCap.createArmorLayer(new Dilation(0.5F)));
+        EntityModelLayerRegistry.register(SPIKED_TURTLE_SHELL, () -> ModelSpikedTurtleShell.createArmorLayer(new Dilation(0.5F)));
+        EntityModelLayerRegistry.register(FEDORA, () -> ModelFedora.createArmorLayer(new Dilation(0.5F)));
+        EntityModelLayerRegistry.register(AM_ELYTRA, () -> ModelAMElytra.createLayer(new Dilation(1.0F)));
+        EntityModelLayerRegistry.register(SOMBRERO, () -> ModelSombrero.createArmorLayer(new Dilation(0.5F)));
+        EntityModelLayerRegistry.register(SOMBRERO_GOOFY_FASHION, () -> ModelSombrero.createArmorLayerAprilFools(new Dilation(0.5F)));
+        EntityModelLayerRegistry.register(FROSTSTALKER_HELMET, () -> ModelFroststalkerHelmet.createArmorLayer(new Dilation(0.5F)));
+        EntityModelLayerRegistry.register(ROCKY_CHESTPLATE, () -> ModelRockyChestplate.createArmorLayer(new Dilation(0.7F)));
+        EntityModelLayerRegistry.register(FLYING_FISH_BOOTS, () -> ModelFlyingFishBoots.createArmorLayer(new Dilation(0.5F)));
+        EntityModelLayerRegistry.register(NOVELTY_HAT, () -> ModelNoveltyHat.createArmorLayer(new Dilation(0.5F)));
+        EntityModelLayerRegistry.register(UNSETTLING_KIMONO, () -> ModelUnsettlingKimono.createArmorLayer(new Dilation(0.5F)));
     }
 }

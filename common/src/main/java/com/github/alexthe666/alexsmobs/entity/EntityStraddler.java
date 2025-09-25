@@ -10,6 +10,8 @@ import com.iafenvoy.uranus.animation.AnimationHandler;
 import com.iafenvoy.uranus.animation.IAnimatedEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FluidBlock;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.*;
@@ -143,21 +145,20 @@ public class EntityStraddler extends HostileEntity implements IAnimatedEntity {
     }
 
     private void floatStrider() {
-        //FIXME forge
-//        if (this.isInLava()) {
-//            ShapeContext lvt_1_1_ = CollisionContext.of(this);
-//            double d1 = this.getFluidTypeHeight(ForgeMod.LAVA_TYPE.get());
-//            if(d1 <= 0.5F && d1 > 0){
-//                if(this.getVelocity().y < 0){
-//                    this.setVelocity(this.getVelocity().multiply(1, 0, 1));
-//                }
-//                this.setOnGround(true);
-//            }else if (lvt_1_1_.isAbove(LiquidBlock.STABLE_SHAPE, this.getBlockPos().down(), true) && !this.getWorld().getFluidState(this.getBlockPos().up()).is(FluidTags.LAVA)) {
-//                this.setOnGround(true);
-//            } else {
-//                this.setVelocity(0, Math.min((d1 - 0.5F), 1) * 0.2F, 0);
-//            }
-//        }
+        if (this.isInLava()) {
+            var lvt_1_1_ = ShapeContext.of(this);
+            double d1 = this.getFluidHeight(FluidTags.LAVA);
+            if(d1 <= 0.5F && d1 > 0){
+                if(this.getVelocity().y < 0){
+                    this.setVelocity(this.getVelocity().multiply(1, 0, 1));
+                }
+                this.setOnGround(true);
+            }else if (lvt_1_1_.isAbove(FluidBlock.COLLISION_SHAPE, this.getBlockPos().down(), true) && !this.getWorld().getFluidState(this.getBlockPos().up()).isIn(FluidTags.LAVA)) {
+                this.setOnGround(true);
+            } else {
+                this.setVelocity(0, Math.min((d1 - 0.5F), 1) * 0.2F, 0);
+            }
+        }
 
     }
 

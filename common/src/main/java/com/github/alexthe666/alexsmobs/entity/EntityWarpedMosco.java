@@ -7,6 +7,7 @@ import com.github.alexthe666.alexsmobs.entity.ai.FlightMoveController;
 import com.github.alexthe666.alexsmobs.entity.ai.GroundPathNavigatorWide;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
+import com.github.alexthe666.alexsmobs.platform.PlatformEvent;
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMTagRegistry;
@@ -145,6 +146,11 @@ public class EntityWarpedMosco extends HostileEntity implements IAnimatedEntity 
     }
 
     @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
+    }
+
+    @Override
     protected void fall(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
@@ -210,20 +216,20 @@ public class EntityWarpedMosco extends HostileEntity implements IAnimatedEntity 
             timeFlying = 0;
             this.setNoGravity(false);
         }
-        //FIXME forge
-//        if (this.horizontalCollision && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.getWorld(), this)) {
-//            boolean flag = false;
-//            AABB axisalignedbb = this.getBoundingBox().expand(0.2D);
-//            for (BlockPos blockpos : BlockPos.betweenClosed(MathHelper.floor(axisalignedbb.minX), MathHelper.floor(axisalignedbb.minY), MathHelper.floor(axisalignedbb.minZ), MathHelper.floor(axisalignedbb.maxX), MathHelper.floor(axisalignedbb.maxY), MathHelper.floor(axisalignedbb.maxZ))) {
-//                BlockState blockstate = this.getWorld().getBlockState(blockpos);
-//                if (blockstate.is(AMTagRegistry.WARPED_MOSCO_BREAKABLES)) {
-//                    flag = this.getWorld().destroyBlock(blockpos, true, this) || flag;
-//                }
-//            }
-//            if (!flag && this.isOnGround()) {
-//                this.jumpFromGround();
-//            }
-//        }
+
+        if (this.horizontalCollision && PlatformEvent.getMobGriefingEvent(this.getWorld(), this)) {
+            boolean flag = false;
+            var axisalignedbb = this.getBoundingBox().expand(0.2D);
+            for (var blockpos : BlockPos.iterate(MathHelper.floor(axisalignedbb.minX), MathHelper.floor(axisalignedbb.minY), MathHelper.floor(axisalignedbb.minZ), MathHelper.floor(axisalignedbb.maxX), MathHelper.floor(axisalignedbb.maxY), MathHelper.floor(axisalignedbb.maxZ))) {
+                var blockstate = this.getWorld().getBlockState(blockpos);
+                if (blockstate.isIn(AMTagRegistry.WARPED_MOSCO_BREAKABLES)) {
+                    flag = this.getWorld().breakBlock(blockpos, true, this) || flag;
+                }
+            }
+            if (!flag && this.isOnGround()) {
+                this.jump();
+            }
+        }
 
         var target = this.getTarget();
         if (target != null && this.isAlive()) {

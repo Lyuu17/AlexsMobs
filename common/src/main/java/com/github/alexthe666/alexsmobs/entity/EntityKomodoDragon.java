@@ -3,6 +3,7 @@ package com.github.alexthe666.alexsmobs.entity;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
+import com.github.alexthe666.alexsmobs.misc.ModTagsCompat;
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMItemRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
@@ -392,11 +393,10 @@ public class EntityKomodoDragon extends TameableEntity implements ITargetsDroppe
                 this.eat(player, hand, itemstack);
                 this.setSaddled(true);
                 return ActionResult.SUCCESS;
-                //FIXME
-//            }else if(itemstack.is(Tags.Items.SHEARS) && this.isSaddled()){
-//                this.setSaddled(false);
-//                this.spawnAtLocation(Items.SADDLE);
-//                return ActionResult.SUCCESS;
+            }else if(ModTagsCompat.isAnyShear(itemstack) && this.isSaddled()){
+                this.setSaddled(false);
+                this.dropItem(Items.SADDLE);
+                return ActionResult.SUCCESS;
             }else{
                 if(!player.isSneaking() && !this.isBaby() && this.isSaddled()){
                     player.startRiding(this);

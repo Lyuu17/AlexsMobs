@@ -5,10 +5,12 @@ import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
 import com.github.alexthe666.alexsmobs.misc.IngredientUtil;
+import com.github.alexthe666.alexsmobs.platform.PlatformEvent;
 import com.github.alexthe666.alexsmobs.registry.*;
 import com.google.common.collect.Sets;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.AnimalMateGoal;
@@ -766,26 +768,25 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
             return;
         }
         boolean flag = false;
-        //FIXME forge
-//        if (!this.getWorld().isClient && this.hasPassengers() && this.blockBreakCounter == 0 && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(getWorld(), this)) {
-//            for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
-//                for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
-//                    for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {
-//                        var pos = new BlockPos(a, b, c);
-//                        var state = getWorld().getBlockState(pos);
-//                        var fluidState = getWorld().getFluidState(pos);
-//                        var block = state.getBlock();
-//                        if (!state.isAir() && !state.getOutlineShape(getWorld(), pos).isEmpty() && state.isIn(AMTagRegistry.LAVIATHAN_BREAKABLES) && fluidState.isEmpty()) {
-//                            if (block != Blocks.AIR) {
-//                                this.setVelocity(this.getVelocity().multiply(0.6F, 1, 0.6F));
-//                                flag = true;
-//                                getWorld().breakBlock(pos, true);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        if (!this.getWorld().isClient && this.hasPassengers() && this.blockBreakCounter == 0 && PlatformEvent.getMobGriefingEvent(getWorld(), this)) {
+            for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
+                for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
+                    for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {
+                        var pos = new BlockPos(a, b, c);
+                        var state = getWorld().getBlockState(pos);
+                        var fluidState = getWorld().getFluidState(pos);
+                        var block = state.getBlock();
+                        if (!state.isAir() && !state.getOutlineShape(getWorld(), pos).isEmpty() && state.isIn(AMTagRegistry.LAVIATHAN_BREAKABLES) && fluidState.isEmpty()) {
+                            if (block != Blocks.AIR) {
+                                this.setVelocity(this.getVelocity().multiply(0.6F, 1, 0.6F));
+                                flag = true;
+                                getWorld().breakBlock(pos, true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if (flag) {
             blockBreakCounter = 10;
         }
@@ -920,6 +921,11 @@ public class EntityLaviathan extends AnimalEntity implements ISemiAquatic, IHerd
         }
 
         return (float) (l + 1);
+    }
+
+    @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
     }
 
     @Override

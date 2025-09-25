@@ -42,6 +42,13 @@ dependencies {
 
     modImplementation "maven.modrinth:uranus:TICNdyfo"
     modImplementation "maven.modrinth:jupiter:nhqjUZZy"
+
+    modCompileOnly("maven.modrinth:patchouli:1.20.1-84.1-fabric") {
+        transitive = false
+    }
+    modCompileOnly("curse.maven:framework-549225:6531429") {
+        transitive = false
+    }
 }
 
 processResources {

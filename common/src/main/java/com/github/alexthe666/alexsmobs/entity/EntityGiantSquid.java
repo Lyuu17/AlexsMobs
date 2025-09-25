@@ -42,13 +42,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.*;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
+import java.util.List;
+import java.util.function.Supplier;
 
-public class EntityGiantSquid extends WaterCreatureEntity implements IMultipartEntity {
+public class EntityGiantSquid extends WaterCreatureEntity implements IAdjustCollision, IMultipartEntity {
 
     private static final TrackedData<Float> SQUID_PITCH = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.FLOAT);
     private static final TrackedData<Float> DEPRESSURIZATION = DataTracker.registerData(EntityGiantSquid.class, TrackedDataHandlerRegistry.FLOAT);
@@ -510,6 +513,37 @@ public class EntityGiantSquid extends WaterCreatureEntity implements IMultipartE
     @Override
     public float getSoundPitch() {
         return getSquidPitch();
+    }
+
+    @Override
+    public Vec3d adjustMovementForCollisions(Vec3d movement, Supplier<Vec3d> supplier) {
+        if (this.isRegionUnloaded() || !this.isInsideWaterOrBubbleColumn()) {
+            return supplier.get();
+        }
+
+        var aabb = this.mantleCollisionPart.getBoundingBox();
+        List<VoxelShape> list = this.getWorld().getEntityCollisions(this, aabb.stretch(movement));
+        var vec3 = movement.lengthSquared() == 0.0D ? movement : adjustMovementForCollisions(this, movement, aabb, this.getWorld(), list);
+        boolean flag = movement.x != vec3.x;
+        boolean flag1 = movement.y != vec3.y;
+        boolean flag2 = movement.z != vec3.z;
+        boolean flag3 = this.isOnGround() || flag1 && movement.y < 0.0D;
+        if (this.getStepHeight() > 0.0F && flag3 && (flag || flag2)) {
+            var vec31 = adjustMovementForCollisions(this, new Vec3d(movement.x, this.getStepHeight(), movement.z), aabb, this.getWorld(), list);
+            var vec32 = adjustMovementForCollisions(this, new Vec3d(0.0D, this.getStepHeight(), 0.0D), aabb.expand(movement.x, 0.0D, movement.z), this.getWorld(), list);
+            if (vec32.y < (double) this.getStepHeight()) {
+                var vec33 = Entity.adjustMovementForCollisions(this, new Vec3d(movement.x, 0.0D, movement.z), aabb.offset(vec32), this.getWorld(), list).add(vec32);
+                if (vec33.horizontalLengthSquared() > vec31.horizontalLengthSquared()) {
+                    vec31 = vec33;
+                }
+            }
+
+            if (vec31.horizontalLengthSquared() > vec3.horizontalLengthSquared()) {
+                return vec31.add(Entity.adjustMovementForCollisions(this, new Vec3d(0.0D, -vec31.y + movement.y, 0.0D), aabb.offset(vec31), this.getWorld(), list));
+            }
+        }
+
+        return vec3;
     }
 
     @Override

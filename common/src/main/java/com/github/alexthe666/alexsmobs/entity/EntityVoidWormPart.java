@@ -6,6 +6,7 @@ import com.github.alexthe666.alexsmobs.registry.AMAdvancementTriggerRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMParticleRegistry;
 import com.google.common.collect.ImmutableList;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -20,6 +21,8 @@ import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -394,10 +397,10 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
         return null;
     }
 
-//    @Override
-//    public Packet<ClientPlayPacketListener> createSpawnPacket() {
-//        return (Packet<ClientPlayPacketListener>) NetworkHooks.getEntitySpawningPacket(this);
-//    }
+    @Override
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+        return NetworkManager.createAddEntityPacket(this);
+    }
 
     @Override
     public void tickCramming() {
@@ -465,11 +468,6 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
         this.dataTracker.set(BODYINDEX, index);
     }
 
-    public boolean shouldNotExist() {
-        Entity parent = getParent();
-        return !parent.isAlive();
-    }
-
     @Override
     public void onAttackedFromServer(LivingEntity parent, float damage, DamageSource damageSource) {
         if (parent.deathTime > 0) {
@@ -479,10 +477,6 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
             this.hurtTime = parent.hurtTime;
         }
     }
-// FIXME
-//    public boolean shouldContinuePersisting() {
-//        return isAddedToWorld() || this.isRemoved();
-//    }
 
     public float getWormYaw(float partialTicks) {
         return partialTicks == 0 ? this.dataTracker.get(WORM_YAW) : prevWormYaw + (this.dataTracker.get(WORM_YAW) - prevWormYaw) * partialTicks;

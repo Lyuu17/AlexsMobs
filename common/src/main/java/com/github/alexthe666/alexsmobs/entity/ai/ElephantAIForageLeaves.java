@@ -1,11 +1,15 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
 import com.github.alexthe666.alexsmobs.entity.EntityElephant;
+import com.github.alexthe666.alexsmobs.platform.PlatformEvent;
+import com.github.alexthe666.alexsmobs.registry.AMItemRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMTagRegistry;
 import com.iafenvoy.uranus.animation.IAnimatedEntity;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.ai.goal.MoveToTargetPosGoal;
 import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
@@ -107,25 +111,24 @@ public class ElephantAIForageLeaves extends MoveToTargetPosGoal {
     }
 
     private void breakLeaves() {
-        // FIXME forge
-//        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(elephant.getWorld(), elephant)) {
-//            var blockstate = elephant.getWorld().getBlockState(this.blockPos);
-//            if (blockstate.is(AMTagRegistry.ELEPHANT_FOODBLOCKS)) {
-//                elephant.getWorld().destroyBlock(blockPos, false);
-//                final Random rand = this.elephant.getRandom();
-//                ItemStack stack = new ItemStack(blockstate.getBlock().asItem());
-//                ItemEntity itementity = new ItemEntity(elephant.getWorld(), blockPos.getX() + rand.nextFloat(), blockPos.getY() + rand.nextFloat(), blockPos.getZ() + rand.nextFloat(), stack);
-//                itementity.setToDefaultPickupDelay();
-//                elephant.getWorld().spawnEntity(itementity);
-//                if (blockstate.is(AMTagRegistry.DROPS_ACACIA_BLOSSOMS) && rand.nextInt(30) == 0) {
-//                    ItemStack banana = new ItemStack(AMItemRegistry.ACACIA_BLOSSOM.get());
-//                    ItemEntity itementity2 = new ItemEntity(elephant.getWorld(), blockPos.getX() + rand.nextFloat(), blockPos.getY() + rand.nextFloat(), blockPos.getZ() + rand.nextFloat(), banana);
-//                    itementity2.setToDefaultPickupDelay();
-//                    elephant.getWorld().spawnEntity(itementity2);
-//                }
-//                stop();
-//            }
-//        }
+        if (PlatformEvent.getMobGriefingEvent(elephant.getWorld(), elephant)) {
+            var blockstate = elephant.getWorld().getBlockState(this.targetPos);
+            if (blockstate.isIn(AMTagRegistry.ELEPHANT_FOODBLOCKS)) {
+                elephant.getWorld().breakBlock(targetPos, false);
+                final var rand = this.elephant.getRandom();
+                var stack = new ItemStack(blockstate.getBlock().asItem());
+                var itementity = new ItemEntity(elephant.getWorld(), targetPos.getX() + rand.nextFloat(), targetPos.getY() + rand.nextFloat(), targetPos.getZ() + rand.nextFloat(), stack);
+                itementity.setToDefaultPickupDelay();
+                elephant.getWorld().spawnEntity(itementity);
+                if (blockstate.isIn(AMTagRegistry.DROPS_ACACIA_BLOSSOMS) && rand.nextInt(30) == 0) {
+                    var banana = new ItemStack(AMItemRegistry.ACACIA_BLOSSOM.get());
+                    var itementity2 = new ItemEntity(elephant.getWorld(), targetPos.getX() + rand.nextFloat(), targetPos.getY() + rand.nextFloat(), targetPos.getZ() + rand.nextFloat(), banana);
+                    itementity2.setToDefaultPickupDelay();
+                    elephant.getWorld().spawnEntity(itementity2);
+                }
+                stop();
+            }
+        }
     }
 
     @Override

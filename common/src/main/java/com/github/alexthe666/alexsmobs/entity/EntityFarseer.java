@@ -98,7 +98,8 @@ public class EntityFarseer extends HostileEntity implements IAnimatedEntity {
         return true;
     }
 
-    public boolean handleFallDamage(float distance, float damageMultiplier) {
+    @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
         return false;
     }
 

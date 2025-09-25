@@ -758,12 +758,6 @@ public class EntityKangaroo extends TameableEntity implements InventoryChangedLi
             if (this.jumpControl instanceof JumpHelperController rabbitController) {
                 if (!rabbitController.getIsJumping()) {
                     if (this.moveControl.isMoving() && this.currentMoveTypeDuration == 0) {
-                        var path = this.navigation.getCurrentPath();
-                        //FIXME unused?
-                        Vec3d vector3d = new Vec3d(this.moveControl.getTargetX(), this.moveControl.getTargetY(), this.moveControl.getTargetZ());
-                        if (path != null && !path.isFinished()) {
-                            vector3d = path.getNodePosition(this);
-                        }
                         this.startJumping();
                     }
                 } else if (!rabbitController.canJump()) {
@@ -828,6 +822,11 @@ public class EntityKangaroo extends TameableEntity implements InventoryChangedLi
     @Override
     protected float getJumpVelocity() {
         return 0.5F;
+    }
+
+    @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
     }
 
     @Override

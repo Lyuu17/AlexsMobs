@@ -367,8 +367,8 @@ public class EntityCaiman extends TameableEntity implements ISemiAquatic,IFollow
         }
     }
 
-    // FIXME wrong signature??
-    public void updateLimbs(LivingEntity living, boolean flying) {
+    @Override
+    public void updateLimbs(boolean flying) {
         float f1 = (float) MathHelper.magnitude(this.getX() - this.prevX, 0, this.getZ() - this.prevZ);
         float f2 = Math.min(f1 * 8.0F, 1.0F);
         this.limbAnimator.updateLimbs(f2, 0.4F);

@@ -5,6 +5,7 @@ import com.github.alexthe666.alexsmobs.entity.ai.AdvancedPathNavigateNoTeleport;
 import com.github.alexthe666.alexsmobs.entity.ai.AnimalAIHurtByTargetNotBaby;
 import com.github.alexthe666.alexsmobs.entity.ai.AnimalAIPanicBaby;
 import com.github.alexthe666.alexsmobs.entity.ai.AnimalAIWanderRanged;
+import com.github.alexthe666.alexsmobs.platform.PlatformEvent;
 import com.github.alexthe666.alexsmobs.registry.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMItemRegistry;
 import com.github.alexthe666.alexsmobs.registry.AMSoundRegistry;
@@ -15,6 +16,7 @@ import com.iafenvoy.uranus.animation.IAnimatedEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SnowBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -365,23 +367,22 @@ public abstract class EntityBison extends AnimalEntity implements IAnimatedEntit
             return;
         }
         boolean flag = false;
-        //FIXME forge
-//        if (!this.getWorld().isClient && this.blockBreakCounter == 0 && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(getWorld(), this)) {
-//            for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
-//                for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
-//                    for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {
-//                        final BlockPos pos = new BlockPos(a, b, c);
-//                        final BlockState state = getWorld().getBlockState(pos);
-//                        final Block block = state.getBlock();
-//                        if (block == Blocks.SNOW && state.getValue(SnowLayerBlock.LAYERS) <= 1) {
-//                            this.setVelocity(this.getVelocity().multiply(0.6F, 1, 0.6F));
-//                            flag = true;
-//                            getWorld().destroyBlock(pos, true);
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        if (!this.getWorld().isClient && this.blockBreakCounter == 0 && PlatformEvent.getMobGriefingEvent(getWorld(), this)) {
+            for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
+                for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
+                    for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {
+                        final BlockPos pos = new BlockPos(a, b, c);
+                        final BlockState state = getWorld().getBlockState(pos);
+                        final Block block = state.getBlock();
+                        if (block == Blocks.SNOW && state.get(SnowBlock.LAYERS) <= 1) {
+                            this.setVelocity(this.getVelocity().multiply(0.6F, 1, 0.6F));
+                            flag = true;
+                            getWorld().breakBlock(pos, true);
+                        }
+                    }
+                }
+            }
+        }
         if (flag) {
             blockBreakCounter = this.isCharging() && this.getTarget() != null ? 2 : 20;
         }

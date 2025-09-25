@@ -43,11 +43,6 @@ public class ItemDimensionalCarver extends Item {
         return worldIn.raycast(new RaycastContext(vector3d, vector3d1, RaycastContext.ShapeType.OUTLINE, fluidMode, player));
     }
 
-    //FIXME forge
-    public int getItemStackLimit(ItemStack stack) {
-        return 1; // fix for incompatibility with other mods
-    }
-
     @Override
     public TypedActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getStackInHand(handIn);
@@ -113,9 +108,9 @@ public class ItemDimensionalCarver extends Item {
             if (count == 1 && !player.getWorld().isClient) {
                 player.emitGameEvent(GameEvent.ITEM_INTERACT_START);
                 player.playSound(SoundEvents.BLOCK_GLASS_BREAK, 1, 0.5F);
-                EntityVoidPortal portal = new EntityVoidPortal(player.getWorld(), this);
+                var portal = new EntityVoidPortal(player.getWorld(), this);
                 portal.setPos(x, y, z);
-                Direction dir = Direction.getEntityFacingOrder(player)[0].getOpposite();
+                var dir = Direction.getEntityFacingOrder(player)[0].getOpposite();
                 if (dir == Direction.UP) {
                     dir = Direction.DOWN;
                 }
@@ -149,10 +144,6 @@ public class ItemDimensionalCarver extends Item {
         stack.getOrCreateNbt().putDouble("BLOCKZ", 0);
         stack.setNbt(stack.getOrCreateNbt());
     }
-//FIXME forge?
-//    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-//        return !ItemStack.isSameItem(oldStack, newStack);
-//    }
 
     public void onPortalOpen(World worldIn, LivingEntity player, EntityVoidPortal portal, Direction dir){
         portal.setLifespan(1200);

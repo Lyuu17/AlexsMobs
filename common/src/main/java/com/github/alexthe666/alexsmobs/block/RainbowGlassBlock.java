@@ -105,7 +105,7 @@ public class RainbowGlassBlock extends AbstractGlassBlock {
     }
 
     private static Boolean yes(BlockState p_50806_, BlockView p_50807_, BlockPos p_50808_) {
-        return (boolean)false;
+        return false;
     }
 
     private static Boolean noOption(BlockState p_50779_, BlockView p_50780_, BlockPos p_50781_, EntityType<?> p_50782_) {

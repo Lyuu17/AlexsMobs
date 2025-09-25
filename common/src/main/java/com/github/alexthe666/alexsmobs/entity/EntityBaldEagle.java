@@ -6,6 +6,7 @@ import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
 import com.github.alexthe666.alexsmobs.misc.IngredientUtil;
+import com.github.alexthe666.alexsmobs.misc.ModTagsCompat;
 import com.github.alexthe666.alexsmobs.packet.MosquitoDismountPacket;
 import com.github.alexthe666.alexsmobs.packet.MosquitoMountPlayerPacket;
 import com.github.alexthe666.alexsmobs.registry.*;
@@ -393,18 +394,17 @@ public class EntityBaldEagle extends TameableEntity implements IFollower, IFalco
                     this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, this.getSoundVolume(), this.getSoundPitch());
                     return ActionResult.SUCCESS;
                 }
-                //FIXME forge
-//            } else if (itemstack.isIn(Tags.Items.SHEARS) && this.hasCap()) {
-//                this.emitGameEvent(GameEvent.ENTITY_INTERACT);
-//                this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-//                if (!this.getWorld().isClient) {
-//                    if (player instanceof ServerPlayerEntity serverPlayerEntity) {
-//                        itemstack.damage(1, random, serverPlayerEntity);
-//                    }
-//                }
-//                this.dropItem(AMItemRegistry.FALCONRY_HOOD.get());
-//                this.setCap(false);
-//                return ActionResult.SUCCESS;
+            } else if (ModTagsCompat.isAnyShear(itemstack) && this.hasCap()) {
+                this.emitGameEvent(GameEvent.ENTITY_INTERACT);
+                this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+                if (!this.getWorld().isClient) {
+                    if (player instanceof ServerPlayerEntity serverPlayerEntity) {
+                        itemstack.damage(1, random, serverPlayerEntity);
+                    }
+                }
+                this.dropItem(AMItemRegistry.FALCONRY_HOOD.get());
+                this.setCap(false);
+                return ActionResult.SUCCESS;
             } else if (!this.isBaby() && getRidingFalcons(player) <= 0 && (player.getStackInHand(Hand.MAIN_HAND).getItem() == AMItemRegistry.FALCONRY_GLOVE.get() || player.getStackInHand(Hand.OFF_HAND).getItem() == AMItemRegistry.FALCONRY_GLOVE.get())) {
                 ridingCooldown = 30;
                 this.setLaunched(false);
@@ -632,6 +632,11 @@ public class EntityBaldEagle extends TameableEntity implements IFollower, IFalco
     @Override
     public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
         return AMEntityRegistry.BALD_EAGLE.get().create(world);
+    }
+
+    @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
     }
 
     @Override

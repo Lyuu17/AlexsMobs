@@ -2,13 +2,19 @@ package com.github.alexthe666.alexsmobs.entity.ai;
 
 import com.github.alexthe666.alexsmobs.entity.EntityGrizzlyBear;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
+import com.github.alexthe666.alexsmobs.platform.PlatformEvent;
 import com.github.alexthe666.alexsmobs.registry.AMTagRegistry;
 import com.iafenvoy.uranus.animation.IAnimatedEntity;
 import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.entity.BeehiveBlockEntity;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.ai.goal.MoveToTargetPosGoal;
+import net.minecraft.entity.passive.BeeEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldView;
 
@@ -84,39 +90,37 @@ public class GrizzlyBearAIBeehive extends MoveToTargetPosGoal {
     }
 
     private void eatHive() {
-        // FIXME forge
-//        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(bear.getWorld(), bear)) {
-//            var blockstate = bear.getWorld().getBlockState(this.blockPos);
-//            if (blockstate.is(AMTagRegistry.GRIZZLY_BEEHIVE)) {
-//                if (bear.getWorld().getBlockEntity(this.blockPos) instanceof BeehiveBlockEntity) {
-//                    final Random rand = this.bear.getRandom();
-//                    BeehiveBlockEntity beehivetileentity = (BeehiveBlockEntity) bear.getWorld().getBlockEntity(this.blockPos);
-//                    beehivetileentity.emptyAllLivingFromHive(null, blockstate, BeehiveBlockEntity.BeeReleaseStatus.EMERGENCY);
-//                    bear.getWorld().updateNeighbourForOutputSignal(this.blockPos, blockstate.getBlock());
-//                    ItemStack stack = new ItemStack(Items.HONEYCOMB);
-//                    int level = 0;
-//                    if (blockstate.getBlock() instanceof BeehiveBlock) {
-//                        level = blockstate.getValue(BeehiveBlock.HONEY_LEVEL);
-//                    }
-//                    for (int i = 0; i < level; i++) {
-//                        ItemEntity itementity = new ItemEntity(bear.getWorld(), blockPos.getX() + rand.nextFloat(), blockPos.getY() + rand.nextFloat(), blockPos.getZ() + rand.nextFloat(), stack);
-//                        itementity.setToDefaultPickupDelay();
-//                        bear.getWorld().spawnEntity(itementity);
-//                    }
-//                    bear.getWorld().destroyBlock(blockPos, false);
-//                    if (blockstate.getBlock() instanceof BeehiveBlock) {
-//                        bear.getWorld().setBlockState(blockPos, blockstate.setValue(BeehiveBlock.HONEY_LEVEL, 0));
-//                    }
-//                    double d0 = 15;
-//                    for (Bee bee : bear.getWorld().getEntitiesOfClass(Bee.class, new AABB((double) blockPos.getX() - d0, (double) blockPos.getY() - d0, (double) blockPos.getZ() - d0, (double) blockPos.getX() + d0, (double) blockPos.getY() + d0, (double) blockPos.getZ() + d0))) {
-//                        bee.setAngerTime(100);
-//                        bee.setTarget(bear);
-//                        bee.setStayOutOfHiveCountdown(400);
-//                    }
-//                    stop();
-//                }
-//            }
-//        }
+        if (PlatformEvent.getMobGriefingEvent(bear.getWorld(), bear)) {
+            var blockstate = bear.getWorld().getBlockState(this.targetPos);
+            if (blockstate.isIn(AMTagRegistry.GRIZZLY_BEEHIVE)) {
+                if (bear.getWorld().getBlockEntity(this.targetPos) instanceof BeehiveBlockEntity beehivetileentity) {
+                    final var rand = this.bear.getRandom();
+                    beehivetileentity.angerBees(null, blockstate, BeehiveBlockEntity.BeeState.EMERGENCY);
+                    bear.getWorld().updateComparators(this.targetPos, blockstate.getBlock());
+                    var stack = new ItemStack(Items.HONEYCOMB);
+                    int level = 0;
+                    if (blockstate.getBlock() instanceof BeehiveBlock) {
+                        level = blockstate.get(BeehiveBlock.HONEY_LEVEL);
+                    }
+                    for (int i = 0; i < level; i++) {
+                        var itementity = new ItemEntity(bear.getWorld(), targetPos.getX() + rand.nextFloat(), targetPos.getY() + rand.nextFloat(), targetPos.getZ() + rand.nextFloat(), stack);
+                        itementity.setToDefaultPickupDelay();
+                        bear.getWorld().spawnEntity(itementity);
+                    }
+                    bear.getWorld().breakBlock(targetPos, false);
+                    if (blockstate.getBlock() instanceof BeehiveBlock) {
+                        bear.getWorld().setBlockState(targetPos, blockstate.with(BeehiveBlock.HONEY_LEVEL, 0));
+                    }
+                    double d0 = 15;
+                    for (var bee : bear.getWorld().getNonSpectatingEntities(BeeEntity.class, new Box((double) targetPos.getX() - d0, (double) targetPos.getY() - d0, (double) targetPos.getZ() - d0, (double) targetPos.getX() + d0, (double) targetPos.getY() + d0, (double) targetPos.getZ() + d0))) {
+                        bee.setAngerTime(100);
+                        bee.setTarget(bear);
+                        bee.setCannotEnterHiveTicks(400);
+                    }
+                    stop();
+                }
+            }
+        }
     }
 
     @Override

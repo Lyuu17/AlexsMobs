@@ -1,5 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity;
 
+import com.github.alexthe666.alexsmobs.AlexsMobsClient;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
@@ -46,6 +47,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -115,8 +117,9 @@ public class EntityBlueJay extends AnimalEntity implements ITargetsDroppedItems{
         this.targetSelector.add(4, (new RevengeGoal(this, PlayerEntity.class)).setGroupRevenge());
     }
 
-    public static boolean checkBlueJaySpawnRules(EntityType type, WorldAccess worldIn, SpawnReason reason, BlockPos pos, Random randomIn) {
-        return isLightLevelValidForNaturalSpawn(worldIn, pos);
+    public static boolean checkBlueJaySpawnRules(EntityType<?> type, WorldAccess worldIn, SpawnReason reason, BlockPos pos, Random randomIn) {
+        var blockstate = worldIn.getBlockState(pos.down());
+        return blockstate.isIn(BlockTags.LEAVES) && isLightLevelValidForNaturalSpawn(worldIn, pos);
     }
 
     @Override
@@ -137,6 +140,11 @@ public class EntityBlueJay extends AnimalEntity implements ITargetsDroppedItems{
     @Override
     public boolean isBreedingItem(ItemStack stack) {
         return stack.isIn(AMTagRegistry.BLUE_JAY_BREEDABLES);
+    }
+
+    @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
     }
 
     @Override
@@ -624,9 +632,10 @@ public class EntityBlueJay extends AnimalEntity implements ITargetsDroppedItems{
 
     @Environment(EnvType.CLIENT)
     public void handleStatus(byte id) {
-        if (id == 67 || id == 68) {
-            // TODO
-//            AlexsMobs.PROXY.onEntityStatus(this, id);
+        if (this.isAlive() && id == 57) {
+            AlexsMobsClient.singingBlueJayId = this.getId();
+        } else if (this.isAlive() && id == 68) {
+            AlexsMobsClient.singingBlueJayId = -1;
         } else {
             super.handleStatus(id);
         }

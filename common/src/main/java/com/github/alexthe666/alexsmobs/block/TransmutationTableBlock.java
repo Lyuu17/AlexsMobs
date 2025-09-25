@@ -2,6 +2,7 @@ package com.github.alexthe666.alexsmobs.block;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.block.entity.TransmutationTableBlockEntity;
+import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.packet.UpdateTransmutablesToDisplayPacket;
 import dev.architectury.registry.menu.ExtendedMenuProvider;
 import dev.architectury.registry.menu.MenuRegistry;
@@ -106,13 +107,12 @@ public class TransmutationTableBlock extends BlockWithEntity implements AMSpecia
         };
     }
 
-    // FIXME forge
-//    @Override
-//    public boolean onDestroyedByPlayer(BlockState state, World level, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid) {
-//        if(AMConfig.transmutingTableExplodes){
-//            level.explode(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 3F, false, Level.ExplosionInteraction.BLOCK);
-//        }
-//        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
-//    }
+    @Override
+    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        if (AMConfig.transmutingTableExplodes){
+            world.createExplosion(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 3F, false, World.ExplosionSourceType.BLOCK);
+        }
+        super.onBreak(world, pos, state, player);
+    }
 }
 

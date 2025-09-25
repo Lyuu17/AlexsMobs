@@ -4,12 +4,12 @@ import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.*;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
 import com.github.alexthe666.alexsmobs.misc.IngredientUtil;
+import com.github.alexthe666.alexsmobs.misc.ModTagsCompat;
 import com.github.alexthe666.alexsmobs.registry.*;
 import com.iafenvoy.uranus.animation.Animation;
 import com.iafenvoy.uranus.animation.AnimationHandler;
 import com.iafenvoy.uranus.animation.IAnimatedEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -84,9 +84,9 @@ public class EntityCapuchinMonkey extends TameableEntity implements IAnimatedEnt
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0D);
     }
 
-    public static <T extends MobEntity> boolean canCapuchinSpawn(EntityType<EntityCapuchinMonkey> gorilla, WorldAccess worldIn, SpawnReason reason, BlockPos p_223317_3_, Random random) {
-        BlockState blockstate = worldIn.getBlockState(p_223317_3_.down());
-        return (blockstate.isIn(AMTagRegistry.CAPUCHIN_MONKEY_SPAWNS) || blockstate.isOf(Blocks.AIR)) && worldIn.getBaseLightLevel(p_223317_3_, 0) > 8;
+    public static boolean canCapuchinSpawn(EntityType<EntityCapuchinMonkey> gorilla, WorldAccess worldIn, SpawnReason reason, BlockPos pos, Random random) {
+        var blockstate = worldIn.getBlockState(pos.down());
+        return blockstate.isIn(AMTagRegistry.CAPUCHIN_MONKEY_SPAWNS) && isLightLevelValidForNaturalSpawn(worldIn, pos);
     }
 
     @Override
@@ -266,6 +266,11 @@ public class EntityCapuchinMonkey extends TameableEntity implements IAnimatedEnt
             this.getNavigation().stop();
         }
         AnimationHandler.INSTANCE.updateAnimations(this);
+    }
+
+    @Override
+    public boolean handleFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
     }
 
     @Override
@@ -472,17 +477,15 @@ public class EntityCapuchinMonkey extends TameableEntity implements IAnimatedEnt
                 this.eat(player, hand, itemstack);
                 return ActionResult.CONSUME;
             }
-            // FIXME forge
-//            if (this.hasDart() && itemstack.is(Tags.Items.SHEARS)) {
-//                this.setDart(false);
-//                itemstack.hurtAndBreak(1, this, (p_233654_0_) -> {
-//                });
-//                return ActionResult.SUCCESS;
-//            }
+            if (this.hasDart() && ModTagsCompat.isAnyShear(itemstack)) {
+                this.setDart(false);
+                itemstack.damage(1, this, (p_233654_0_) -> {
+                });
+                return ActionResult.SUCCESS;
+            }
             if (player.isSneaking() && player.getPassengerList().isEmpty()) {
                 this.startRiding(player);
                 rideCooldown = 20;
-                return ActionResult.SUCCESS;
             } else {
                 this.setCommand(this.getCommand() + 1);
                 if (this.getCommand() == 3) {
@@ -497,8 +500,8 @@ public class EntityCapuchinMonkey extends TameableEntity implements IAnimatedEnt
                     this.forcedSit = false;
                     this.setSitting(false);
                 }
-                return ActionResult.SUCCESS;
             }
+            return ActionResult.SUCCESS;
         }
         return type;
     }

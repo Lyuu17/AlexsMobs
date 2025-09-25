@@ -62,10 +62,6 @@ public class AMArmorMaterial implements ArmorMaterial {
         return this.ingredient == null ? Ingredient.EMPTY : this.ingredient;
     }
 
-    public void setRepairMaterial(Ingredient ingredient) {
-        this.ingredient = ingredient;
-    }
-
     @Override
     public String getName() {
         return name;

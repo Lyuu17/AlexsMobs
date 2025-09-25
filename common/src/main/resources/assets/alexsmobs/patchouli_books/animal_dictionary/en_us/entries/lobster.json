@@ -1,0 +1,20 @@
+{
+  "name": "Lobster",
+  "icon": "minecraft:red_dye",
+  "category": "alexsmobs:creatures",
+  "pages": [
+    {
+      "type": "entity",
+      "entity": "alexsmobs:lobster",
+      "text": "Lobsters are small, aquatic crustaceans that can be found underwater in beach biomes. If attacked, lobsters can pinch any aggressive mob nearby, but will not pursue or chase them."
+    },
+    {
+      "type": "text",
+      "text": "Although most commonly red, lobsters can also come in other, rarer colors."
+    },
+    {
+      "type": "text",
+      "text": "If slain, Lobsters occasionally drop their delicious tails, which can be cooked. They can also be bucketed like any species of fish."
+    }
+  ]
+}
